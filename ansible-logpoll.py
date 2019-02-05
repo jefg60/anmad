@@ -315,13 +315,13 @@ if __name__ == '__main__':
         LOGGER.setLevel(logging.DEBUG)
 
     if ARGS.playbook is not None:
-        PLAYSTORUN = [ARGS.playbook]
+        PLAYSTORUN = ARGS.playbook
 
     if ARGS.playbooks is not None:
         PLAYSTORUN = ARGS.playbooks
 
     if ARGS.inventory is not None:
-        WORKINGINVENTORYLIST = [ARGS.inventory]
+        WORKINGINVENTORYLIST = ARGS.inventory
         MAININVENTORY = ARGS.inventory
 
     if ARGS.inventories is not None:

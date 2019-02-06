@@ -26,28 +26,32 @@
 @test "run with 1 playbook and 1 inventory" {
   run ./ansible_logpoll.py -p p1.yml -i i1.yml --debug --no-syslog --logdir /tmp/ --dry-run --interval 1
   [[ "$output" = *"Polling for updates"* ]]
+  [[ "$output" != *"error"* ]]
+  [ "$status" -eq 0 ]
 }
 
 @test "run with 1 playbook and 2 inventories" {
-  skip
   run ./ansible_logpoll.py -p p1.yml -i i1.yml i2.yml --debug --no-syslog --logdir /tmp/ --dry-run --interval 1
   [[ "$output" = *"Polling for updates"* ]]
+  [[ "$output" != *"error"* ]]
+  [ "$status" -eq 0 ]
 }
 
 @test "run with 2 inventories and 2 playbooks" {
-  skip
   run ./ansible_logpoll.py -p p1.yml p2.yml -i i1.yml i2.yml --debug --no-syslog --logdir /tmp/ --dry-run --interval 1
   [[ "$output" = *"Polling for updates"* ]]
+  [[ "$output" != *"error"* ]]
+  [ "$status" -eq 0 ]
 }
 
 @test "run without --debug" {
-  skip
   run ./ansible_logpoll.py -p p1.yml p2.yml -i i1.yml i2.yml --no-syslog --logdir /tmp/ --dry-run --interval 1
-  [[ "$output" = *"Polling for updates"* ]]
+  [[ "$output" != *"error"* ]]
+  [ "$status" -eq 0 ]
 }
 
 @test "run without --no-syslog but with --debug" {
-  skip
-  run ./ansible_logpoll.py -p p1.yml p2.yml -i i1.yml i2.yml --debug --logdir /tmp/ --dry-run --interval 1
-  [[ "$output" = *"Polling for updates"* ]]
+  run ./ansible_logpoll.py -p p1.yml p2.yml -i i1.yml i2.yml --debug --logdir /tmp/ --dry-run --interval 1 --syslogdevice /var/run/syslog
+  [[ "$output" != *"error"* ]]
+  [ "$status" -eq 0 ]
 }

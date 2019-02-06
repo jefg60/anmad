@@ -76,13 +76,19 @@ def parse_args():
         help="disable logging to syslog"
         )
     parser.add_argument(
+        "--dry-run",
+        dest="dryrun",
+        action="store_true",
+        help="don't actually run anything, for testing"
+        )
+    parser.add_argument(
         "--debug",
         dest="debug",
         action="store_true",
         help="print debugging info to logs"
         )
 
-    parser.set_defaults(debug=False, syslog=True)
+    parser.set_defaults(debug=False, syslog=True, dryrun=False)
 
     myargs = parser.parse_args()
 
@@ -215,6 +221,8 @@ class Watcher:
         try:
             while True:
                 time.sleep(ARGS.interval)
+                if ARGS.dryrun:
+                    self.observer.stop()
         except KeyboardInterrupt:
             self.observer.stop()
 

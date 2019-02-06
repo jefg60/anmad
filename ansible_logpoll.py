@@ -45,10 +45,6 @@ def parse_args():
         default="/srv/git/log"
         )
     parser.add_argument(
-        "--debug",
-        help="print debugging info to logs"
-        )
-    parser.add_argument(
         "--vault_password_file",
         help="vault password file",
         default=home + "/.vaultpw"
@@ -73,6 +69,14 @@ def parse_args():
              "will be the one that playbooks are run against if syntax "
              "checks pass"
         )
+    parser.add_argument(
+        "--debug",
+        dest="debug",
+        action="store_true",
+        help="print debugging info to logs"
+        )
+
+    parser.set_defaults(debug=False)
 
     myargs = parser.parse_args()
 

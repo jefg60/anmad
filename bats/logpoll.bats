@@ -50,6 +50,7 @@
   [ "$status" -eq 0 ]
 }
 
+# This should work on OSX 10.14
 @test "run without --no-syslog but with --debug" {
   run ./ansible_logpoll.py -p p1.yml p2.yml -i i1.yml i2.yml --debug --logdir /tmp/ --dry-run --interval 1 --syslogdevice /var/run/syslog
   [[ "$output" != *"error"* ]]

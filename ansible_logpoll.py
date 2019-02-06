@@ -70,13 +70,19 @@ def parse_args():
              "checks pass"
         )
     parser.add_argument(
+        "--no-syslog",
+        dest="syslog",
+        action="store_false",
+        help="disable logging to syslog"
+        )
+    parser.add_argument(
         "--debug",
         dest="debug",
         action="store_true",
         help="print debugging info to logs"
         )
 
-    parser.set_defaults(debug=False)
+    parser.set_defaults(debug=False, syslog=True)
 
     myargs = parser.parse_args()
 
@@ -286,12 +292,12 @@ if __name__ == '__main__':
 
     # add handlers to the logger
     LOGGER.addHandler(CONSOLEHANDLER)
-    #LOGGER.addHandler(SYSLOGHANDLER)
-
     ARGS = parse_args()
     # decide which args to use
     if ARGS.debug:
         LOGGER.setLevel(logging.DEBUG)
+    if ARGS.syslog:
+        LOGGER.addHandler(SYSLOGHANDLER)
 
     MAININVENTORY = ARGS.inventories[0]
 

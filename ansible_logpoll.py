@@ -79,6 +79,11 @@ def parse_args():
         help="disable logging to syslog"
         )
     parser.add_argument(
+        "--syslogdevice",
+        help="syslog device to use",
+        default="/dev/log"
+        )
+    parser.add_argument(
         "--dry-run",
         dest="dryrun",
         action="store_true",
@@ -286,10 +291,13 @@ class Handler(FileSystemEventHandler):
 
 
 if __name__ == '__main__':
+
+    ARGS = parse_args()
+
     # Setup Logging globally
     LOGGER = logging.getLogger('ansible_logpoll')
     # create sysloghandler
-    SYSLOGHANDLER = logging.handlers.SysLogHandler(address='/dev/log')
+    SYSLOGHANDLER = logging.handlers.SysLogHandler(address=ARGS.syslogdevice)
     SYSLOGHANDLER.setLevel(logging.DEBUG)
 
     # create console handler with a higher log level
@@ -303,7 +311,6 @@ if __name__ == '__main__':
 
     # add handlers to the logger
     LOGGER.addHandler(CONSOLEHANDLER)
-    ARGS = parse_args()
     # decide which args to use
     if ARGS.debug:
         LOGGER.setLevel(logging.DEBUG)

@@ -31,6 +31,7 @@ def parse_args():
         )
     parser.add_argument(
         "--interval",
+        type=int,
         help="interval in seconds at which to check for new code",
         default=15
         )

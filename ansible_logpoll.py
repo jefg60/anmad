@@ -82,7 +82,7 @@ def parse_args():
         "--dry-run",
         dest="dryrun",
         action="store_true",
-        help="don't actually run anything, for testing"
+        help="only wait for one --interval, for testing"
         )
     parser.add_argument(
         "--debug",

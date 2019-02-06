@@ -58,48 +58,23 @@ def parse_args():
         help="Optional directory to search for *.yml and *.yaml files to "
              "syntax check when changes are detected"
         )
-
-    playbookgroup = parser.add_mutually_exclusive_group(required=True)
-    playbookgroup.add_argument(
-        "-p",
-        "--playbook",
-        action='append',
-        help="a single ansible playbook to run"
-        )
-    playbookgroup.add_argument(
+    parser.add_argument(
         "--playbooks",
+        "-p",
         nargs='*',
         help="space separated list of ansible playbooks to run. "
-             "Overrides --playbook"
         )
-
-    inventorygroup = parser.add_mutually_exclusive_group(required=True)
-    inventorygroup.add_argument(
-        "-i",
-        "--inventory",
-        help="a single ansible inventory to use"
-        )
-    inventorygroup.add_argument(
+    parser.add_argument(
         "--inventories",
+        "-i",
         nargs='*',
         help="space separated list of ansible inventories to syntax check "
-             "against. Overrides --inventory. The first inventory file "
+             "against. The first inventory file "
              "will be the one that playbooks are run against if syntax "
              "checks pass"
         )
 
     myargs = parser.parse_args()
-
-    # check --playbook is only called once. if it doesnt exist, argparse
-    # handles things
-    try:
-        if len(myargs.playbook) > 1:
-            parser.error(
-                "--playbook or -p should only be specified once. to run "
-                "multiple playbooks use --playbooks instead."
-                )
-    except TypeError:
-        pass
 
     return myargs
 
@@ -122,7 +97,7 @@ def checkplaybooks(listofplaybooks, listofinventories):
     """Syntax check playbooks passed on command line."""
 
     # Check that files exist before continuing
-    fileargs = WORKINGINVENTORYLIST + PLAYSTORUN
+    fileargs = ARGS.inventories + ARGS.playbooks
 
     fileargs.append(ARGS.ssh_id)
     fileargs.append(ARGS.logdir)
@@ -187,7 +162,7 @@ def checkeverything():
     yamlfiles = glob.glob(ARGS.syntax_check_dir + '/*.yaml')
     ymlfiles = glob.glob(ARGS.syntax_check_dir + '/*.yml')
     yamlfiles = yamlfiles + ymlfiles
-    problemlist = checkplaybooks(yamlfiles, WORKINGINVENTORYLIST)
+    problemlist = checkplaybooks(yamlfiles, ARGS.inventories)
     return problemlist
 
 
@@ -256,7 +231,7 @@ class Handler(FileSystemEventHandler):
             LOGGER.debug("logdir: %s", ARGS.logdir)
             LOGGER.debug("interval: %s", str(ARGS.interval))
             LOGGER.debug("maininventory: %s", MAININVENTORY)
-            LOGGER.debug("workinginventorylist: %s", WORKINGINVENTORYLIST)
+            LOGGER.debug("workinginventorylist: %s", ARGS.inventories)
 
             # Additional syntax check of everything if requested
             if ARGS.syntax_check_dir is not None:
@@ -265,16 +240,16 @@ class Handler(FileSystemEventHandler):
                 problemlisteverything = []
 
             # Now do the syntax check of the playbooks we're about to run.
-            problemlist = checkplaybooks(PLAYSTORUN, WORKINGINVENTORYLIST)
+            problemlist = checkplaybooks(ARGS.playbooks, ARGS.inventories)
 
             if not problemlist and not problemlisteverything:
-                LOGGER.info("Running playbooks %s", PLAYSTORUN)
-                runplaybooks(PLAYSTORUN)
+                LOGGER.info("Running playbooks %s", ARGS.playbooks)
+                runplaybooks(ARGS.playbooks)
             elif ARGS.syntax_check_dir is not None:
                 print("Playbooks/inventories that had failures: ",
                       " ".join(problemlisteverything))
 
-                LOGGER.info("Playbooks/inventories that had failures: ",
+                LOGGER.info("Playbooks/inventories that had failures: %s",
                             " ".join(problemlisteverything))
 
                 print("Refusing to run requested playbooks until "
@@ -284,7 +259,7 @@ class Handler(FileSystemEventHandler):
             else:
                 print("Playbooks/inventories that failed syntax check: ",
                       " ".join(problemlist))
-                LOGGER.info("Playbooks/inventories that failed syntax check: ",
+                LOGGER.info("Playbooks/inventories that failed syntax check: %s",
                             " ".join(problemlist))
 
 
@@ -307,34 +282,22 @@ if __name__ == '__main__':
 
     # add handlers to the logger
     LOGGER.addHandler(CONSOLEHANDLER)
-    LOGGER.addHandler(SYSLOGHANDLER)
+    #LOGGER.addHandler(SYSLOGHANDLER)
 
     ARGS = parse_args()
     # decide which args to use
     if ARGS.debug:
         LOGGER.setLevel(logging.DEBUG)
 
-    if ARGS.playbook is not None:
-        PLAYSTORUN = ARGS.playbook
-
-    if ARGS.playbooks is not None:
-        PLAYSTORUN = ARGS.playbooks
-
-    if ARGS.inventory is not None:
-        WORKINGINVENTORYLIST = ARGS.inventory
-        MAININVENTORY = ARGS.inventory
-
-    if ARGS.inventories is not None:
-        WORKINGINVENTORYLIST = ARGS.inventories
-        MAININVENTORY = ARGS.inventories[0]
+    MAININVENTORY = ARGS.inventories[0]
 
     # log main arguments used
-    LOGGER.info("ssh id: ", ARGS.ssh_id)
-    LOGGER.info("logdir: ", ARGS.logdir)
-    LOGGER.info("inventorylist: ", " ".join(WORKINGINVENTORYLIST))
-    LOGGER.info("maininventory: ", MAININVENTORY)
-    LOGGER.info("playbooks: ", " ".join(PLAYSTORUN))
-    LOGGER.info("interval: ", str(ARGS.interval))
+    LOGGER.info("ssh id: %s", ARGS.ssh_id)
+    LOGGER.info("logdir: %s", ARGS.logdir)
+    LOGGER.info("inventorylist: %s", " ".join(ARGS.inventories))
+    LOGGER.info("maininventory: %s", MAININVENTORY)
+    LOGGER.info("playbooks: %s", " ".join(ARGS.playbooks))
+    LOGGER.info("interval: %s", str(ARGS.interval))
 
     add_ssh_key_to_agent()
     LOGGER.info("Polling for updates...")

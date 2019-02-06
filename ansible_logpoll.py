@@ -225,7 +225,7 @@ class Watcher:
             while True:
                 time.sleep(ARGS.interval)
                 if ARGS.dryrun:
-                    self.observer.stop()
+                    exit()
         except KeyboardInterrupt:
             self.observer.stop()
 

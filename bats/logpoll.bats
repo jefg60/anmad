@@ -14,7 +14,8 @@
 }
 
 @test "run without args, print help" {
-  ./ansible_logpoll.py
+  run ./ansible_logpoll.py
+  [[ "$output" = *"error: the following arguments are required:"* ]]
 }
 
 @test "run with incorrect args, print help" {

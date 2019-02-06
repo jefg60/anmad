@@ -19,13 +19,12 @@
 }
 
 @test "run with incorrect args, print help" {
-  skip
-  ./ansible_logpoll.py -i i1.yml --debug --no-syslog
+  run ./ansible_logpoll.py -i i1.yml --debug --no-syslog
+  [[ "$output" = *"error: the following arguments are required:"* ]]
 }
 
 @test "run with 1 playbook and 1 inventory" {
-  skip
-  ./ansible_logpoll.py -p p1.yml -i i1.yml --debug --no-syslog --logdir /tmp/ --dry-run --interval 1
+  run ./ansible_logpoll.py -p p1.yml -i i1.yml --debug --no-syslog --logdir /tmp/ --dry-run --interval 1
 }
 
 @test "run with 1 playbook and 2 inventories" {

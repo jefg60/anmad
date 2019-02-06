@@ -56,3 +56,8 @@
   [[ "$output" != *"error"* ]]
   [ "$status" -eq 0 ]
 }
+
+@test "Version is 0.4" {
+  run ./ansible_logpoll.py --version
+  [ "$output" = "0.4" ]
+}

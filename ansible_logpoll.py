@@ -58,12 +58,14 @@ def parse_args():
         "--playbooks",
         "-p",
         nargs='*',
+        required=True,
         help="space separated list of ansible playbooks to run. "
         )
     parser.add_argument(
         "--inventories",
         "-i",
         nargs='*',
+        required=True,
         help="space separated list of ansible inventories to syntax check "
              "against. The first inventory file "
              "will be the one that playbooks are run against if syntax "

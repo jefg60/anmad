@@ -63,6 +63,13 @@ def parse_args():
         help="space separated list of ansible playbooks to run. "
         )
     parser.add_argument(
+        "--pre_run_playbooks",
+        nargs='*',
+        help="space separated list of ansible playbooks to run "
+             "before doing any syntax checking. Useful "
+             "for playbooks that fetch roles required by other playbooks"
+        )
+    parser.add_argument(
         "--inventories",
         "-i",
         nargs='*',
@@ -259,6 +266,11 @@ class Handler(FileSystemEventHandler):
             LOGGER.debug("maininventory: %s", MAININVENTORY)
             LOGGER.debug("workinginventorylist: %s", ARGS.inventories)
 
+            if ARGS.pre_run_playbooks is not None:
+                LOGGER.info("Pre-Running playbooks %s",
+                            ARGS.pre_run_playbooks)
+                runplaybooks(ARGS.pre_run_playbooks)
+
             # Additional syntax check of everything if requested
             if ARGS.syntax_check_dir is not None:
                 problemlisteverything = checkeverything()
@@ -285,8 +297,8 @@ class Handler(FileSystemEventHandler):
             else:
                 print("Playbooks/inventories that failed syntax check: ",
                       " ".join(problemlist))
-                LOGGER.info("Playbooks/inventories that failed syntax check: %s",
-                            " ".join(problemlist))
+                LOGGER.info("Playbooks/inventories that failed syntax check: "
+                            "%s", " ".join(problemlist))
 
 
 

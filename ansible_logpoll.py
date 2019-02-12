@@ -110,7 +110,6 @@ def parse_args():
     return myargs
 
 
-
 def add_ssh_key_to_agent():
     """Attempt to load ssh key into ssh-agent."""
     LOGGER.info("Loading ssh key...")

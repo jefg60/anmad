@@ -7,6 +7,7 @@ import logging.handlers
 import argparse
 import subprocess
 import time
+import os
 from os.path import expanduser
 from pathlib import Path
 import glob
@@ -80,6 +81,12 @@ def parse_args():
              "checks pass"
         )
     parser.add_argument(
+        "--ssh_askpass",
+        help="location of a script to pass as SSH_ASKPASS env var,"
+             "which will enable this program to load an ssh key if "
+             "it has a passphrase. Only works if not running in a terminal"
+        )
+    parser.add_argument(
         "--no-syslog",
         dest="syslog",
         action="store_false",
@@ -110,15 +117,24 @@ def parse_args():
     return myargs
 
 
-def add_ssh_key_to_agent():
-    """Attempt to load ssh key into ssh-agent."""
+def add_ssh_key_to_agent(key_file):
+    """Adds ssh key, with ssh_askpass if possible"""
     LOGGER.info("Loading ssh key...")
+    ssh_agent_setup.setup()
+    my_env = os.environ.copy()
     try:
-        ssh_agent_setup.setup()
-        ssh_agent_setup.addKey(ARGS.ssh_id)
-    except Exception:
+        my_env["SSH_ASKPASS"] = ARGS.ssh_askpass
+        my_env["DISPLAY"] = ":0"
+    except TypeError:
+        my_env = os.environ.copy()
+
+    try:
+        subprocess.run(['ssh-add', key_file], env=my_env, check=True)
+    except TypeError:
+        subprocess.run(['ssh-add', key_file], check=True)
+    except subprocess.CalledProcessError:
         LOGGER.exception("Exception adding ssh key, shutting down")
-        exit()
+        raise Exception
     else:
         LOGGER.info("SSH key loaded")
 
@@ -338,7 +354,7 @@ if __name__ == '__main__':
     LOGGER.info("playbooks: %s", " ".join(ARGS.playbooks))
     LOGGER.info("interval: %s", str(ARGS.interval))
 
-    add_ssh_key_to_agent()
+    add_ssh_key_to_agent(ARGS.ssh_id)
     LOGGER.info("Polling for updates...")
     W = Watcher()
     W.run()

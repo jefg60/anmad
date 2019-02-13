@@ -57,7 +57,7 @@
   [ "$status" -eq 0 ]
 }
 
-@test "Version is 0.5" {
+@test "Version is 0.6" {
   run ./ansible_logpoll.py --version
-  [ "$output" = "0.5" ]
+  [ "$output" = "0.6" ]
 }

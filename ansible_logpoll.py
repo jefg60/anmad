@@ -266,7 +266,8 @@ class Handler(FileSystemEventHandler):
     def on_any_event(event):
         """Tasks to perform if any events are received."""
         if event.is_directory:
-            return None
+            LOGGER.info("Received directory event for %s, ignoring",
+                        event.src_path)
 
         elif event.event_type == 'created':
             # actions when a file is first created.
@@ -355,6 +356,7 @@ if __name__ == '__main__':
     LOGGER.info("interval: %s", str(ARGS.interval))
 
     add_ssh_key_to_agent(ARGS.ssh_id)
-    LOGGER.info("Polling for updates...")
+    LOGGER.info("Polling %s directory for updated files every %s seconds...",
+                ARGS.logdir, ARGS.interval)
     W = Watcher()
     W.run()

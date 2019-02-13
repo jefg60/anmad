@@ -7,6 +7,7 @@ import logging.handlers
 import argparse
 import subprocess
 import time
+import shutil
 import os
 from os.path import expanduser
 from pathlib import Path
@@ -33,7 +34,7 @@ def parse_args():
     parser.add_argument(
         "--venv",
         help="python virtualenv to run ansible from",
-        default=os.getcwd()
+        default=os.path.dirname(shutil.which("ansible-playbook"))
         )
     parser.add_argument(
         "--interval",
@@ -174,7 +175,7 @@ def checkplaybooks(listofplaybooks, listofinventories):
 
             ret = subprocess.call(
                 [
-                    'ansible-playbook',
+                    ANSIBLE_PLAYBOOK_CMD,
                     '--inventory', my_inventory,
                     '--vault-password-file', ARGS.vault_password_file,
                     my_playbook,
@@ -224,7 +225,7 @@ def runplaybooks(listofplaybooks):
                      MAININVENTORY, my_playbook)
         ret = subprocess.call(
             [
-                'ansible-playbook',
+                ANSIBLE_PLAYBOOK_CMD,
                 '--inventory', MAININVENTORY,
                 '--vault-password-file', ARGS.vault_password_file,
                 my_playbook
@@ -326,6 +327,7 @@ class Handler(FileSystemEventHandler):
 if __name__ == '__main__':
 
     ARGS = parse_args()
+    ANSIBLE_PLAYBOOK_CMD = ARGS.venv + '/bin/ansible-playbook'
 
     # Setup Logging globally
     LOGGER = logging.getLogger('ansible_logpoll')
@@ -354,6 +356,8 @@ if __name__ == '__main__':
 
     # log main arguments used
     LOGGER.info("ssh id: %s", ARGS.ssh_id)
+    LOGGER.info("venv: %s", ARGS.venv)
+    LOGGER.info("ansible_playbook_cmd: %s", ANSIBLE_PLAYBOOK_CMD)
     LOGGER.info("logdir: %s", ARGS.logdir)
     LOGGER.info("inventorylist: %s", " ".join(ARGS.inventories))
     LOGGER.info("maininventory: %s", MAININVENTORY)

@@ -20,8 +20,15 @@ import ssh_agent_setup
 # Functions
 def parse_args():
     """Read arguments from command line."""
-    home = expanduser("~")
+
     __version__ = "0.7"
+
+    home = expanduser("~")
+
+    try:
+        ansible_home = os.path.dirname(shutil.which("ansible-playbook"))
+    except TypeError:
+        ansible_home = os.getcwd()
 
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -34,7 +41,7 @@ def parse_args():
     parser.add_argument(
         "--venv",
         help="python virtualenv to run ansible from",
-        default=os.path.dirname(shutil.which("ansible-playbook"))
+        default=ansible_home
         )
     parser.add_argument(
         "--interval",

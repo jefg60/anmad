@@ -31,6 +31,11 @@ def parse_args():
         version=__version__
         )
     parser.add_argument(
+        "--venv",
+        help="python virtualenv to run ansible from",
+        default=os.getcwd()
+        )
+    parser.add_argument(
         "--interval",
         type=int,
         help="interval in seconds at which to check for new code",
@@ -174,7 +179,7 @@ def checkplaybooks(listofplaybooks, listofinventories):
                     '--vault-password-file', ARGS.vault_password_file,
                     my_playbook,
                     '--syntax-check'
-                ]
+                ], cwd=ARGS.venv
             )
 
             if ret == 0:
@@ -223,7 +228,7 @@ def runplaybooks(listofplaybooks):
                 '--inventory', MAININVENTORY,
                 '--vault-password-file', ARGS.vault_password_file,
                 my_playbook
-            ]
+            ], cwd=ARGS.venv
         )
 
         if ret == 0:

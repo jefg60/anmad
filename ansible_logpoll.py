@@ -20,7 +20,7 @@ import ssh_agent_setup
 def parse_args():
     """Read arguments from command line."""
     home = expanduser("~")
-    __version__ = "0.6"
+    __version__ = "0.7"
 
     parser = argparse.ArgumentParser()
     parser.add_argument(

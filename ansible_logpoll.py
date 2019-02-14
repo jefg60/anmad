@@ -174,14 +174,16 @@ def syntax_check_play_inv(my_playbook, my_inventory):
         LOGGER.info(
             "ansible-playbook syntax check return code: "
             "%s", ret)
-        return None, None
-
-    LOGGER.info(
-        "Playbook %s failed syntax check!!!", my_playbook)
-    LOGGER.debug(
-        "ansible-playbook syntax check return code: "
-        "%s", ret)
-    return my_playbook + my_inventory
+        bad_syntax = ''
+    else:
+        LOGGER.info(
+            "Playbook %s failed syntax check!!!", my_playbook)
+        LOGGER.debug(
+            "ansible-playbook syntax check return code: "
+            "%s", ret)
+        bad_syntax = (my_playbook + ' (playbook) ' +
+                      my_inventory + ' (inventory)' )
+    return bad_syntax
 
 
 def checkplaybooks(listofplaybooks, listofinventories):
@@ -202,14 +204,14 @@ def checkplaybooks(listofplaybooks, listofinventories):
             LOGGER.error("Unable to find path %s , aborting", filename)
             return [filename]
 
-    bad_syntax = []
+    bad_playbooks = []
     for my_playbook in listofplaybooks:
         for my_inventory in listofinventories:
 
             failed = syntax_check_play_inv(my_playbook, my_inventory)
-            bad_syntax.append(failed)
+            bad_playbooks.append(failed)
 
-    return bad_syntax
+    return bad_playbooks
 
 
 def checkeverything():
@@ -319,6 +321,7 @@ class Handler(FileSystemEventHandler):
                 LOGGER.info("Running playbooks %s", ARGS.playbooks)
                 runplaybooks(ARGS.playbooks)
             elif ARGS.syntax_check_dir is not None:
+                print(problemlisteverything)
                 LOGGER.info("Playbooks/inventories that had failures: %s",
                             " ".join(problemlisteverything))
 

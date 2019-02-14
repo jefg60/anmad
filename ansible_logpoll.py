@@ -12,6 +12,7 @@ import os
 from os.path import expanduser
 from pathlib import Path
 import glob
+from multiprocessing import Pool
 
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
@@ -157,6 +158,7 @@ def syntax_check_play_inv(my_playbook, my_inventory):
     """Check a single playbook against a single inventory."""
     my_playbook = os.path.abspath(my_playbook)
     my_inventory = os.path.abspath(my_inventory)
+    bad_syntax = str()
     LOGGER.info("Syntax Checking ansible playbook %s against "
                 "inventory %s", my_playbook, my_inventory)
 
@@ -174,15 +176,14 @@ def syntax_check_play_inv(my_playbook, my_inventory):
         LOGGER.info(
             "ansible-playbook syntax check return code: "
             "%s", ret)
-        bad_syntax = ''
     else:
         LOGGER.info(
             "Playbook %s failed syntax check!!!", my_playbook)
         LOGGER.debug(
             "ansible-playbook syntax check return code: "
             "%s", ret)
-        bad_syntax = ('playbook: \n' + my_playbook +
-                      '\n with inventory: \n' + my_inventory)
+        bad_syntax = ('   playbook: ' + my_playbook +
+                      '\n   inventory: ' + my_inventory)
     return bad_syntax
 
 
@@ -193,20 +194,17 @@ def syntax_check_play(my_playbook):
 
         my_inventory = os.path.abspath(my_inventory)
         failed = syntax_check_play_inv(my_playbook, my_inventory)
-        bad_inventories.append(failed)
 
-    return bad_inventories
+    return failed
 
 
-def checkplaybooks(listofplaybooks, listofinventories):
-    """Syntax check playbooks passed on command line."""
+def checkplaybooks(listofplaybooks):
+    """Syntax check a list of playbooks."""
 
     bad_playbooks = []
-    for my_playbook in listofplaybooks:
-        for my_inventory in listofinventories:
 
-            failed = syntax_check_play_inv(my_playbook, my_inventory)
-            bad_playbooks.append(failed)
+    pool = Pool()
+    bad_playbooks = pool.map(syntax_check_play, listofplaybooks)
 
     return bad_playbooks
 
@@ -223,7 +221,7 @@ def checkeverything():
     yamlfiles = glob.glob(ARGS.syntax_check_dir + '/*.yaml')
     ymlfiles = glob.glob(ARGS.syntax_check_dir + '/*.yml')
     yamlfiles = yamlfiles + ymlfiles
-    problemlist = checkplaybooks(yamlfiles, ARGS.inventories)
+    problemlist = checkplaybooks(yamlfiles)
     return problemlist
 
 
@@ -312,7 +310,7 @@ class Handler(FileSystemEventHandler):
                 problemlisteverything = []
 
             # Now do the syntax check of the playbooks we're about to run.
-            problemlist = checkplaybooks(ARGS.playbooks, ARGS.inventories)
+            problemlist = checkplaybooks(ARGS.playbooks)
 
             if not problemlist and not problemlisteverything:
                 LOGGER.info("Running playbooks %s", ARGS.playbooks)
@@ -371,15 +369,15 @@ if __name__ == '__main__':
     LOGGER.info("interval: %s", str(ARGS.interval))
 
     # Check that files exist before continuing
-    fileargs = ARGS.inventories + ARGS.playbooks
+    FILEARGS = ARGS.inventories + ARGS.playbooks
 
-    fileargs.append(ARGS.ssh_id)
-    fileargs.append(ARGS.logdir)
+    FILEARGS.append(ARGS.ssh_id)
+    FILEARGS.append(ARGS.logdir)
     try:
-        fileargs.append(ARGS.vault_password_file)
+        FILEARGS.append(ARGS.vault_password_file)
     except NameError:
         pass
-    for filename in fileargs:
+    for filename in FILEARGS:
         filenamepath = Path(filename)
         if not filenamepath.exists():
             LOGGER.error("Unable to find path %s , aborting", filename)

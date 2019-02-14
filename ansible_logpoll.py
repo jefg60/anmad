@@ -167,7 +167,7 @@ def checkplaybooks(listofplaybooks, listofinventories):
     for filename in fileargs:
         filenamepath = Path(filename)
         if not filenamepath.exists():
-            LOGGER.info("Unable to find path %s , aborting", filename)
+            LOGGER.error("Unable to find path %s , aborting", filename)
             return [filename]
 
     bad_syntax_playbooks = []
@@ -274,7 +274,7 @@ class Handler(FileSystemEventHandler):
     def on_any_event(event):
         """Tasks to perform if any events are received."""
         if event.is_directory:
-            LOGGER.info("Received directory event for %s, ignoring",
+            LOGGER.debug("Received directory event for %s, ignoring",
                         event.src_path)
 
         elif event.event_type == 'created':

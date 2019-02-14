@@ -181,7 +181,7 @@ def syntax_check_play_inv(my_playbook, my_inventory):
         LOGGER.debug(
             "ansible-playbook syntax check return code: "
             "%s", ret)
-        bad_syntax = ('playbook: \n' + my_playbook + 
+        bad_syntax = ('playbook: \n' + my_playbook +
                       '\n with inventory: \n' + my_inventory)
     return bad_syntax
 

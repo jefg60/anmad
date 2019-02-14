@@ -181,8 +181,8 @@ def syntax_check_play_inv(my_playbook, my_inventory):
         LOGGER.debug(
             "ansible-playbook syntax check return code: "
             "%s", ret)
-        bad_syntax = (my_playbook + ' (playbook) ' +
-                      my_inventory + ' (inventory)')
+        bad_syntax = ('playbook: \n' + my_playbook + 
+                      '\n with inventory: \n' + my_inventory)
     return bad_syntax
 
 
@@ -322,13 +322,13 @@ class Handler(FileSystemEventHandler):
                 runplaybooks(ARGS.playbooks)
             elif ARGS.syntax_check_dir is not None:
                 LOGGER.info("Playbooks/inventories that had failures: %s",
-                            " ".join(problemlisteverything))
+                            " \n".join(problemlisteverything))
 
                 LOGGER.info("Refusing to run requested playbooks until "
                             "syntax checks pass")
             else:
                 LOGGER.info("Playbooks/inventories that failed syntax check: "
-                            "%s", " ".join(problemlist))
+                            "%s", " \n".join(problemlist))
 
 
 

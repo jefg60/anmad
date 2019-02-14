@@ -321,7 +321,6 @@ class Handler(FileSystemEventHandler):
                 LOGGER.info("Running playbooks %s", ARGS.playbooks)
                 runplaybooks(ARGS.playbooks)
             elif ARGS.syntax_check_dir is not None:
-                print(problemlisteverything)
                 LOGGER.info("Playbooks/inventories that had failures: %s",
                             " ".join(problemlisteverything))
 

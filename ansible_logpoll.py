@@ -186,6 +186,18 @@ def syntax_check_play_inv(my_playbook, my_inventory):
     return bad_syntax
 
 
+def syntax_check_play(my_playbook):
+    """Check a single playbook against all inventories."""
+    my_playbook = os.path.abspath(my_playbook)
+    for my_inventory in ARGS.inventories:
+
+        my_inventory = os.path.abspath(my_inventory)
+        failed = syntax_check_play_inv(my_playbook, my_inventory)
+        bad_inventories.append(failed)
+
+    return bad_inventories
+
+
 def checkplaybooks(listofplaybooks, listofinventories):
     """Syntax check playbooks passed on command line."""
 

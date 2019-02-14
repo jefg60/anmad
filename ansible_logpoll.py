@@ -201,21 +201,6 @@ def syntax_check_play(my_playbook):
 def checkplaybooks(listofplaybooks, listofinventories):
     """Syntax check playbooks passed on command line."""
 
-    # Check that files exist before continuing
-    fileargs = ARGS.inventories + ARGS.playbooks
-
-    fileargs.append(ARGS.ssh_id)
-    fileargs.append(ARGS.logdir)
-    try:
-        fileargs.append(ARGS.vault_password_file)
-    except NameError:
-        pass
-    for filename in fileargs:
-        filenamepath = Path(filename)
-        if not filenamepath.exists():
-            LOGGER.error("Unable to find path %s , aborting", filename)
-            return [filename]
-
     bad_playbooks = []
     for my_playbook in listofplaybooks:
         for my_inventory in listofinventories:
@@ -384,6 +369,21 @@ if __name__ == '__main__':
     LOGGER.info("maininventory: %s", MAININVENTORY)
     LOGGER.info("playbooks: %s", " ".join(ARGS.playbooks))
     LOGGER.info("interval: %s", str(ARGS.interval))
+
+    # Check that files exist before continuing
+    fileargs = ARGS.inventories + ARGS.playbooks
+
+    fileargs.append(ARGS.ssh_id)
+    fileargs.append(ARGS.logdir)
+    try:
+        fileargs.append(ARGS.vault_password_file)
+    except NameError:
+        pass
+    for filename in fileargs:
+        filenamepath = Path(filename)
+        if not filenamepath.exists():
+            LOGGER.error("Unable to find path %s , aborting", filename)
+            exit(1)
 
     add_ssh_key_to_agent(ARGS.ssh_id)
     LOGGER.info("Polling %s directory for updated files every %s seconds...",

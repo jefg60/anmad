@@ -340,23 +340,25 @@ if __name__ == '__main__':
     # Setup Logging globally
     logging.basicConfig(
         level=logging.INFO,
-        format="%(asctime)s ansible_logpoll [%(levelname)-5.5s]  %(message)s",
-        handlers=[
-            logging.StreamHandler()
-        ])
-    
-    LOGGER = logging.getLogger()
+        format="%(asctime)s [%(levelname)s]  %(message)s",
+        handlers=[logging.StreamHandler()]
+        )
+
+    LOGGER = logging.getLogger('ansible_logpoll')
 
     # create sysloghandler if needed
     if ARGS.syslog:
         SYSLOGHANDLER = logging.handlers.SysLogHandler(
             address=ARGS.syslogdevice,
             facility='local3')
+        SYSLOGFORMATTER = logging.Formatter(
+            '%(name)s - [%(levelname)s] - %(message)s')
+        SYSLOGHANDLER.setFormatter(SYSLOGFORMATTER)
         LOGGER.addHandler(SYSLOGHANDLER)
 
     # debug logging
     if ARGS.debug:
-        LOGGER.level=logging.DEBUG
+        LOGGER.level = logging.DEBUG
 
     # First inventory is the one that plays run against
     MAININVENTORY = os.path.abspath(ARGS.inventories[0])

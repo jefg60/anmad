@@ -327,7 +327,8 @@ class Handler(FileSystemEventHandler):
             if ARGS.pre_run_playbooks is not None:
                 LOGGER.info("Pre-Running playbooks %s",
                             ARGS.pre_run_playbooks)
-                runplaybooks(ARGS.pre_run_playbooks)
+                for my_playbook in ARGS.pre_run_playbooks:
+                    run_one_playbook(my_playbook)
 
             # Additional syntax check of everything if requested
             if ARGS.syntax_check_dir is not None:

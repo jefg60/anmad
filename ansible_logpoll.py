@@ -338,33 +338,25 @@ if __name__ == '__main__':
     ANSIBLE_PLAYBOOK_CMD = ARGS.venv + '/bin/ansible-playbook'
 
     # Setup Logging globally
-    LOGGER = logging.getLogger('ansible_logpoll')
-    # create sysloghandler
-    SYSLOGHANDLER = logging.handlers.SysLogHandler(
-        address=ARGS.syslogdevice,
-        facility='local3')
-    SYSLOGHANDLER.setLevel(logging.DEBUG)
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s ansible_logpoll [%(levelname)-5.5s]  %(message)s",
+        handlers=[
+            logging.StreamHandler()
+        ])
+    
+    LOGGER = logging.getLogger()
 
-    # create console handler with a higher log level
-    CONSOLEHANDLER = logging.StreamHandler()
-    CONSOLEHANDLER.setLevel(logging.INFO)
-
-    # create formatter and add it to the handlers
-    FORMATTER = logging.Formatter(
-        '%(name)s - %(levelname)s - %(message)s')
-    SYSLOGHANDLER.setFormatter(FORMATTER)
-    CONSOLEHANDLER.setFormatter(FORMATTER)
-
-    # add handlers to the logger
-    LOGGER.addHandler(CONSOLEHANDLER)
-    # decide which loglevel to use
-    if ARGS.debug:
-        LOGGER.setLevel(logging.DEBUG)
-    else:
-        LOGGER.setLevel(logging.INFO)
-
+    # create sysloghandler if needed
     if ARGS.syslog:
+        SYSLOGHANDLER = logging.handlers.SysLogHandler(
+            address=ARGS.syslogdevice,
+            facility='local3')
         LOGGER.addHandler(SYSLOGHANDLER)
+
+    # debug logging
+    if ARGS.debug:
+        LOGGER.level=logging.DEBUG
 
     # First inventory is the one that plays run against
     MAININVENTORY = os.path.abspath(ARGS.inventories[0])

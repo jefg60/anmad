@@ -182,7 +182,7 @@ def syntax_check_play_inv(my_playbook, my_inventory):
             "ansible-playbook syntax check return code: "
             "%s", ret)
         bad_syntax = (my_playbook + ' (playbook) ' +
-                      my_inventory + ' (inventory)' )
+                      my_inventory + ' (inventory)')
     return bad_syntax
 
 

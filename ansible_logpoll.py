@@ -243,9 +243,11 @@ def runplaybooks(listofplaybooks):
         )
 
         if ret == 0:
-            LOGGER.info("ansible-playbook return code: %s", ret)
+            LOGGER.info("ansible-playbook %s return code: %s",
+                        my_playbook, ret)
         else:
-            LOGGER.error("ansible-playbook return code: %s", ret)
+            LOGGER.error("ansible-playbook %s return code: %s",
+                         my_playbook, ret)
 
 
 class Watcher:
@@ -310,7 +312,7 @@ class Handler(FileSystemEventHandler):
             # Now do the syntax check of the playbooks we're about to run.
             problemlist = checkplaybooks(ARGS.playbooks)
 
-            if not problemlist and not problemlisteverything:
+            if not ''.join(problemlist) and not ''.join(problemlisteverything):
                 LOGGER.info("Running playbooks %s", ARGS.playbooks)
                 runplaybooks(ARGS.playbooks)
             elif ARGS.syntax_check_dir is not None:

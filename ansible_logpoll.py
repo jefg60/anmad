@@ -151,6 +151,34 @@ def add_ssh_key_to_agent(key_file):
     else:
         LOGGER.info("SSH key loaded")
 
+def syntax_check_play_inv(my_playbook, my_inventory):
+    """Check a single playbook against a single inventory."""
+    LOGGER.info("Syntax Checking ansible playbook %s against "
+                "inventory %s", my_playbook, my_inventory)
+
+    ret = subprocess.call(
+        [
+            ANSIBLE_PLAYBOOK_CMD,
+            '--inventory', my_inventory,
+            '--vault-password-file', ARGS.vault_password_file,
+            my_playbook,
+            '--syntax-check'
+        ], cwd=ARGS.venv
+    )
+
+    if ret == 0:
+        LOGGER.info(
+            "ansible-playbook syntax check return code: "
+            "%s", ret)
+        return None, None
+
+    LOGGER.info(
+        "Playbook %s failed syntax check!!!", my_playbook)
+    LOGGER.debug(
+        "ansible-playbook syntax check return code: "
+        "%s", ret)
+    return my_playbook, my_inventory
+
 
 def checkplaybooks(listofplaybooks, listofinventories):
     """Syntax check playbooks passed on command line."""
@@ -170,39 +198,14 @@ def checkplaybooks(listofplaybooks, listofinventories):
             LOGGER.error("Unable to find path %s , aborting", filename)
             return [filename]
 
-    bad_syntax_playbooks = []
-    bad_syntax_inventories = []
+    bad_syntax = []
     for my_playbook in listofplaybooks:
         for my_inventory in listofinventories:
-            LOGGER.info("Syntax Checking ansible playbook %s against "
-                        "inventory %s", my_playbook, my_inventory)
 
-            ret = subprocess.call(
-                [
-                    ANSIBLE_PLAYBOOK_CMD,
-                    '--inventory', my_inventory,
-                    '--vault-password-file', ARGS.vault_password_file,
-                    my_playbook,
-                    '--syntax-check'
-                ], cwd=ARGS.venv
-            )
+            failed = syntax_check_play_inv(my_playbook, my_inventory)
+            bad_syntax.append(failed)
 
-            if ret == 0:
-                LOGGER.info(
-                    "ansible-playbook syntax check return code: "
-                    "%s", ret)
-
-            else:
-                LOGGER.info(
-                    "Playbook %s failed syntax check!!!", my_playbook)
-                LOGGER.debug(
-                    "ansible-playbook syntax check return code: "
-                    "%s", ret)
-
-                bad_syntax_playbooks.append(my_playbook)
-                bad_syntax_inventories.append(my_inventory)
-
-    return bad_syntax_playbooks + bad_syntax_inventories
+    return bad_syntax
 
 
 def checkeverything():
@@ -225,7 +228,7 @@ def runplaybooks(listofplaybooks):
     """Run a list of ansible playbooks."""
     for my_playbook in listofplaybooks:
         LOGGER.info("Attempting to run ansible-playbook --inventory %s %s",
-                     MAININVENTORY, my_playbook)
+                    MAININVENTORY, my_playbook)
         ret = subprocess.call(
             [
                 ANSIBLE_PLAYBOOK_CMD,
@@ -276,7 +279,7 @@ class Handler(FileSystemEventHandler):
         """Tasks to perform if any events are received."""
         if event.is_directory:
             LOGGER.debug("Received directory event for %s, ignoring",
-                        event.src_path)
+                         event.src_path)
 
         elif event.event_type == 'created':
             # actions when a file is first created.

@@ -22,7 +22,7 @@ import ssh_agent_setup
 def parse_args():
     """Read arguments from command line."""
 
-    __version__ = "0.7"
+    __version__ = "0.8"
 
     home = expanduser("~")
 
@@ -223,30 +223,35 @@ def checkeverything():
     problemlist = checkplaybooks(yamlfiles)
     return problemlist
 
+def run_one_playbook(my_playbook):
+    """Run exactly one ansible playbook."""
+    my_playbook = os.path.abspath(my_playbook)
+
+    LOGGER.info("Attempting to run ansible-playbook --inventory %s %s",
+                MAININVENTORY, my_playbook)
+    ret = subprocess.call(
+        [
+            ANSIBLE_PLAYBOOK_CMD,
+            '--inventory', MAININVENTORY,
+            '--vault-password-file', ARGS.vault_password_file,
+            my_playbook
+        ], cwd=ARGS.venv
+    )
+
+    if ret == 0:
+        LOGGER.info("ansible-playbook %s return code: %s",
+                    my_playbook, ret)
+    else:
+        LOGGER.error("ansible-playbook %s return code: %s",
+                     my_playbook, ret)
+
+    return ret
+
 
 def runplaybooks(listofplaybooks):
     """Run a list of ansible playbooks."""
-    for my_playbook in listofplaybooks:
-
-        my_playbook = os.path.abspath(my_playbook)
-
-        LOGGER.info("Attempting to run ansible-playbook --inventory %s %s",
-                    MAININVENTORY, my_playbook)
-        ret = subprocess.call(
-            [
-                ANSIBLE_PLAYBOOK_CMD,
-                '--inventory', MAININVENTORY,
-                '--vault-password-file', ARGS.vault_password_file,
-                my_playbook
-            ], cwd=ARGS.venv
-        )
-
-        if ret == 0:
-            LOGGER.info("ansible-playbook %s return code: %s",
-                        my_playbook, ret)
-        else:
-            LOGGER.error("ansible-playbook %s return code: %s",
-                         my_playbook, ret)
+    pool = Pool()
+    pool.map(run_one_playbook, listofplaybooks)
 
 
 def verify_files_exist():

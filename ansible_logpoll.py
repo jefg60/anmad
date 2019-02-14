@@ -340,7 +340,9 @@ if __name__ == '__main__':
     # Setup Logging globally
     LOGGER = logging.getLogger('ansible_logpoll')
     # create sysloghandler
-    SYSLOGHANDLER = logging.handlers.SysLogHandler(address=ARGS.syslogdevice, facility='local3')
+    SYSLOGHANDLER = logging.handlers.SysLogHandler(
+        address=ARGS.syslogdevice,
+        facility='local3')
     SYSLOGHANDLER.setLevel(logging.DEBUG)
 
     # create console handler with a higher log level
@@ -348,7 +350,8 @@ if __name__ == '__main__':
     CONSOLEHANDLER.setLevel(logging.INFO)
 
     # create formatter and add it to the handlers
-    FORMATTER = logging.Formatter('%(name)s - %(levelname)s - %(message)s')
+    FORMATTER = logging.Formatter(
+        '%(name)s - %(levelname)s - %(message)s')
     SYSLOGHANDLER.setFormatter(FORMATTER)
     CONSOLEHANDLER.setFormatter(FORMATTER)
 

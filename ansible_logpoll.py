@@ -246,8 +246,6 @@ def runplaybooks(listofplaybooks):
             LOGGER.info("ansible-playbook return code: %s", ret)
         else:
             LOGGER.error("ansible-playbook return code: %s", ret)
-            # Is this break a good idea or not? should it be a bool param?
-            break
 
 
 class Watcher:

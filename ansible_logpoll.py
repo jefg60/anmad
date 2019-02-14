@@ -174,11 +174,8 @@ def checkplaybooks(listofplaybooks, listofinventories):
     bad_syntax_inventories = []
     for my_playbook in listofplaybooks:
         for my_inventory in listofinventories:
-            LOGGER.debug("Syntax Checking ansible playbook %s against "
-                         "inventory %s", my_playbook, my_inventory)
-
-            print("Syntax Checking ansible playbook %s against inventory %s"
-                  % (my_playbook, my_inventory))
+            LOGGER.info("Syntax Checking ansible playbook %s against "
+                        "inventory %s", my_playbook, my_inventory)
 
             ret = subprocess.call(
                 [
@@ -196,11 +193,9 @@ def checkplaybooks(listofplaybooks, listofinventories):
                     "%s", ret)
 
             else:
-                print(
-                    "ansible-playbook %s failed syntax check!!!", my_playbook)
-                LOGGER.error(
+                LOGGER.info(
                     "Playbook %s failed syntax check!!!", my_playbook)
-                LOGGER.error(
+                LOGGER.debug(
                     "ansible-playbook syntax check return code: "
                     "%s", ret)
 
@@ -213,7 +208,7 @@ def checkeverything():
     """Check all YAML in a directory for ansible syntax."""
     syntax_check_dir_path = Path(ARGS.syntax_check_dir)
     if not syntax_check_dir_path.exists():
-        LOGGER.info(
+        LOGGER.error(
             "--syntax_check_dir option passed but %s cannot be found",
             ARGS.syntax_check_dir)
         return ARGS.syntax_check_dir
@@ -228,7 +223,7 @@ def checkeverything():
 def runplaybooks(listofplaybooks):
     """Run a list of ansible playbooks."""
     for my_playbook in listofplaybooks:
-        LOGGER.debug("Attempting to run ansible-playbook --inventory %s %s",
+        LOGGER.info("Attempting to run ansible-playbook --inventory %s %s",
                      MAININVENTORY, my_playbook)
         ret = subprocess.call(
             [
@@ -313,19 +308,12 @@ class Handler(FileSystemEventHandler):
                 LOGGER.info("Running playbooks %s", ARGS.playbooks)
                 runplaybooks(ARGS.playbooks)
             elif ARGS.syntax_check_dir is not None:
-                print("Playbooks/inventories that had failures: ",
-                      " ".join(problemlisteverything))
-
                 LOGGER.info("Playbooks/inventories that had failures: %s",
                             " ".join(problemlisteverything))
 
-                print("Refusing to run requested playbooks until "
-                      "syntax checks pass")
                 LOGGER.info("Refusing to run requested playbooks until "
                             "syntax checks pass")
             else:
-                print("Playbooks/inventories that failed syntax check: ",
-                      " ".join(problemlist))
                 LOGGER.info("Playbooks/inventories that failed syntax check: "
                             "%s", " ".join(problemlist))
 
@@ -353,12 +341,16 @@ if __name__ == '__main__':
 
     # add handlers to the logger
     LOGGER.addHandler(CONSOLEHANDLER)
-    # decide which args to use
+    # decide which loglevel to use
     if ARGS.debug:
         LOGGER.setLevel(logging.DEBUG)
+    else:
+        LOGGER.setLevel(logging.INFO)
+
     if ARGS.syslog:
         LOGGER.addHandler(SYSLOGHANDLER)
 
+    # First inventory is the one that plays run against
     MAININVENTORY = ARGS.inventories[0]
 
     # log main arguments used

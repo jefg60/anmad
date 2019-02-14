@@ -201,6 +201,7 @@ def checkplaybooks(listofplaybooks, listofinventories):
 
                 bad_syntax_playbooks.append(my_playbook)
                 bad_syntax_inventories.append(my_inventory)
+
     return bad_syntax_playbooks + bad_syntax_inventories
 
 

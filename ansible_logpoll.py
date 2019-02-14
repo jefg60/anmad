@@ -26,7 +26,9 @@ def parse_args():
     home = expanduser("~")
 
     try:
-        ansible_home = os.path.dirname(shutil.which("ansible-playbook"))
+        ansible_home = os.path.dirname(
+            os.path.dirname(shutil.which("ansible-playbook"))
+        )
     except TypeError:
         ansible_home = os.getcwd()
 
@@ -177,7 +179,7 @@ def syntax_check_play_inv(my_playbook, my_inventory):
     LOGGER.debug(
         "ansible-playbook syntax check return code: "
         "%s", ret)
-    return my_playbook, my_inventory
+    return my_playbook + my_inventory
 
 
 def checkplaybooks(listofplaybooks, listofinventories):

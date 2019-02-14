@@ -217,7 +217,6 @@ def checkeverything():
             "--syntax_check_dir option passed but %s cannot be found",
             ARGS.syntax_check_dir)
         return ARGS.syntax_check_dir
-
     yamlfiles = glob.glob(ARGS.syntax_check_dir + '/*.yaml')
     ymlfiles = glob.glob(ARGS.syntax_check_dir + '/*.yml')
     yamlfiles = yamlfiles + ymlfiles
@@ -248,6 +247,23 @@ def runplaybooks(listofplaybooks):
         else:
             LOGGER.error("ansible-playbook %s return code: %s",
                          my_playbook, ret)
+
+
+def verify_files_exist():
+    """ Check that files exist before continuing."""
+    fileargs = ARGS.inventories + ARGS.playbooks
+
+    fileargs.append(ARGS.ssh_id)
+    fileargs.append(ARGS.logdir)
+    try:
+        fileargs.append(ARGS.vault_password_file)
+    except NameError:
+        pass
+    for filename in fileargs:
+        filenamepath = Path(filename)
+        if not filenamepath.exists():
+            LOGGER.error("Unable to find path %s , aborting", filename)
+            raise FileNotFoundError
 
 
 class Watcher:
@@ -297,6 +313,11 @@ class Handler(FileSystemEventHandler):
             LOGGER.debug("interval: %s", str(ARGS.interval))
             LOGGER.debug("maininventory: %s", MAININVENTORY)
             LOGGER.debug("workinginventorylist: %s", ARGS.inventories)
+
+            try:
+                verify_files_exist()
+            except FileNotFoundError:
+                return
 
             if ARGS.pre_run_playbooks is not None:
                 LOGGER.info("Pre-Running playbooks %s",
@@ -367,21 +388,6 @@ if __name__ == '__main__':
     LOGGER.info("maininventory: %s", MAININVENTORY)
     LOGGER.info("playbooks: %s", " ".join(ARGS.playbooks))
     LOGGER.info("interval: %s", str(ARGS.interval))
-
-    # Check that files exist before continuing
-    FILEARGS = ARGS.inventories + ARGS.playbooks
-
-    FILEARGS.append(ARGS.ssh_id)
-    FILEARGS.append(ARGS.logdir)
-    try:
-        FILEARGS.append(ARGS.vault_password_file)
-    except NameError:
-        pass
-    for filename in FILEARGS:
-        filenamepath = Path(filename)
-        if not filenamepath.exists():
-            LOGGER.error("Unable to find path %s , aborting", filename)
-            exit(1)
 
     add_ssh_key_to_agent(ARGS.ssh_id)
     LOGGER.info("Polling %s directory for updated files every %s seconds...",

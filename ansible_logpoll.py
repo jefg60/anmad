@@ -155,6 +155,8 @@ def add_ssh_key_to_agent(key_file):
 
 def syntax_check_play_inv(my_playbook, my_inventory):
     """Check a single playbook against a single inventory."""
+    my_playbook = os.path.abspath(my_playbook)
+    my_inventory = os.path.abspath(my_inventory)
     LOGGER.info("Syntax Checking ansible playbook %s against "
                 "inventory %s", my_playbook, my_inventory)
 
@@ -229,6 +231,9 @@ def checkeverything():
 def runplaybooks(listofplaybooks):
     """Run a list of ansible playbooks."""
     for my_playbook in listofplaybooks:
+
+        my_playbook = os.path.abspath(my_playbook)
+
         LOGGER.info("Attempting to run ansible-playbook --inventory %s %s",
                     MAININVENTORY, my_playbook)
         ret = subprocess.call(
@@ -357,7 +362,7 @@ if __name__ == '__main__':
         LOGGER.addHandler(SYSLOGHANDLER)
 
     # First inventory is the one that plays run against
-    MAININVENTORY = ARGS.inventories[0]
+    MAININVENTORY = os.path.abspath(ARGS.inventories[0])
 
     # log main arguments used
     LOGGER.info("ssh id: %s", ARGS.ssh_id)

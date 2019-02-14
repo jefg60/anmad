@@ -327,7 +327,7 @@ if __name__ == '__main__':
     # Setup Logging globally
     LOGGER = logging.getLogger('ansible_logpoll')
     # create sysloghandler
-    SYSLOGHANDLER = logging.handlers.SysLogHandler(address=ARGS.syslogdevice)
+    SYSLOGHANDLER = logging.handlers.SysLogHandler(address=ARGS.syslogdevice, facility='local3')
     SYSLOGHANDLER.setLevel(logging.DEBUG)
 
     # create console handler with a higher log level

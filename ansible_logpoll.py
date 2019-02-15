@@ -317,7 +317,7 @@ class Handler(FileSystemEventHandler):
             LOGGER.debug("logdir: %s", ARGS.logdir)
             LOGGER.debug("interval: %s", str(ARGS.interval))
             LOGGER.debug("maininventory: %s", MAININVENTORY)
-            LOGGER.debug("workinginventorylist: %s", ARGS.inventories)
+            LOGGER.debug("inventorylist: %s", ARGS.inventories)
 
             try:
                 verify_files_exist()
@@ -392,6 +392,7 @@ if __name__ == '__main__':
     LOGGER.info("logdir: %s", ARGS.logdir)
     LOGGER.info("inventorylist: %s", " ".join(ARGS.inventories))
     LOGGER.info("maininventory: %s", MAININVENTORY)
+    LOGGER.info("pre_run_playbooks: %s", " ".join(ARGS.pre_run_playbooks))
     LOGGER.info("playbooks: %s", " ".join(ARGS.playbooks))
     LOGGER.info("interval: %s", str(ARGS.interval))
 

@@ -22,7 +22,7 @@ import ssh_agent_setup
 def parse_args():
     """Read arguments from command line."""
 
-    __version__ = "0.8.1"
+    __version__ = "0.9"
 
     home = expanduser("~")
 
@@ -158,43 +158,35 @@ def syntax_check_play_inv(my_playbook, my_inventory):
     """Check a single playbook against a single inventory."""
     my_playbook = os.path.abspath(my_playbook)
     my_inventory = os.path.abspath(my_inventory)
-    bad_syntax = str()
     LOGGER.info("Syntax Checking ansible playbook %s against "
                 "inventory %s", my_playbook, my_inventory)
-
     ret = subprocess.call(
-        [
-            ANSIBLE_PLAYBOOK_CMD,
-            '--inventory', my_inventory,
-            '--vault-password-file', ARGS.vault_password_file,
-            my_playbook,
-            '--syntax-check'
-        ], cwd=ARGS.venv
-    )
+        [ANSIBLE_PLAYBOOK_CMD,
+         '--inventory', my_inventory,
+         '--vault-password-file', ARGS.vault_password_file,
+         my_playbook, '--syntax-check'])
 
     if ret == 0:
         LOGGER.info(
             "ansible-playbook syntax check return code: "
             "%s", ret)
-    else:
-        LOGGER.info(
-            "Playbook %s failed syntax check!!!", my_playbook)
-        LOGGER.debug(
-            "ansible-playbook syntax check return code: "
-            "%s", ret)
-        bad_syntax = ('   playbook: ' + my_playbook +
-                      '\n   inventory: ' + my_inventory)
-    return bad_syntax
+        return str()
+
+    LOGGER.info(
+        "Playbook %s failed syntax check!!!", my_playbook)
+    LOGGER.debug(
+        "ansible-playbook syntax check return code: "
+        "%s", ret)
+    return ('   playbook: ' + my_playbook +
+            '\n   inventory: ' + my_inventory)
 
 
 def syntax_check_play(my_playbook):
     """Check a single playbook against all inventories."""
     my_playbook = os.path.abspath(my_playbook)
     for my_inventory in ARGS.inventories:
-
         my_inventory = os.path.abspath(my_inventory)
         failed = syntax_check_play_inv(my_playbook, my_inventory)
-
     return failed
 
 
@@ -209,42 +201,37 @@ def checkplaybooks(listofplaybooks):
     return bad_playbooks
 
 
-def checkeverything():
+def syntax_check_dir(check_dir):
     """Check all YAML in a directory for ansible syntax."""
-    syntax_check_dir_path = Path(ARGS.syntax_check_dir)
-    if not syntax_check_dir_path.exists():
-        LOGGER.error(
-            "--syntax_check_dir option passed but %s cannot be found",
-            ARGS.syntax_check_dir)
-        return ARGS.syntax_check_dir
+    if not Path(check_dir).exists:
+        LOGGER.error("%s cannot be found", check_dir)
+        return check_dir
+
     yamlfiles = glob.glob(ARGS.syntax_check_dir + '/*.yaml')
     ymlfiles = glob.glob(ARGS.syntax_check_dir + '/*.yml')
     yamlfiles = yamlfiles + ymlfiles
     problemlist = checkplaybooks(yamlfiles)
     return problemlist
 
+
 def run_one_playbook(my_playbook):
     """Run exactly one ansible playbook."""
     my_playbook = os.path.abspath(my_playbook)
-
     LOGGER.info("Attempting to run ansible-playbook --inventory %s %s",
                 MAININVENTORY, my_playbook)
     ret = subprocess.call(
-        [
-            ANSIBLE_PLAYBOOK_CMD,
-            '--inventory', MAININVENTORY,
-            '--vault-password-file', ARGS.vault_password_file,
-            my_playbook
-        ], cwd=ARGS.venv
-    )
+        [ANSIBLE_PLAYBOOK_CMD,
+         '--inventory', MAININVENTORY,
+         '--vault-password-file', ARGS.vault_password_file,
+         my_playbook])
 
     if ret == 0:
         LOGGER.info("ansible-playbook %s return code: %s",
                     my_playbook, ret)
-    else:
-        LOGGER.error("ansible-playbook %s return code: %s",
-                     my_playbook, ret)
+        return ret
 
+    LOGGER.error("ansible-playbook %s return code: %s",
+                 my_playbook, ret)
     return ret
 
 
@@ -269,6 +256,22 @@ def verify_files_exist():
         if not filenamepath.exists():
             LOGGER.error("Unable to find path %s , aborting", filename)
             raise FileNotFoundError
+
+
+def poll_for_updates(my_file):
+    """Func to watch a file."""
+    while True:
+        observer = Observer()
+        observer.schedule(event_handler, my_file, recursive=False)
+        observer.start()
+        try:
+            while True:
+                time.sleep(ARGS.interval)
+                if ARGS.dryrun:
+                    exit()
+        except KeyboardInterrupt:
+            observer.stop()
+        observer.join()
 
 
 class Watcher:
@@ -330,27 +333,22 @@ class Handler(FileSystemEventHandler):
                 for my_playbook in ARGS.pre_run_playbooks:
                     run_one_playbook(my_playbook)
 
-            # Additional syntax check of everything if requested
-            if ARGS.syntax_check_dir is not None:
-                problemlisteverything = checkeverything()
+            #Syntax check playbooks, or all playbooks in syntax_check_dir
+            if ARGS.syntax_check_dir is None:
+                problemlist = checkplaybooks(ARGS.playbooks)
             else:
-                problemlisteverything = []
+                problemlist = syntax_check_dir(ARGS.syntax_check_dir)
 
-            # Now do the syntax check of the playbooks we're about to run.
-            problemlist = checkplaybooks(ARGS.playbooks)
-
-            if not ''.join(problemlist) and not ''.join(problemlisteverything):
-                LOGGER.info("Running playbooks %s", ARGS.playbooks)
-                runplaybooks(ARGS.playbooks)
-            elif ARGS.syntax_check_dir is not None:
-                LOGGER.info("Playbooks/inventories that had failures: %s",
-                            " \n".join(problemlisteverything))
-
-                LOGGER.info("Refusing to run requested playbooks until "
-                            "syntax checks pass")
-            else:
+            if problemlist:
                 LOGGER.info("Playbooks/inventories that failed syntax check: "
                             "%s", " \n".join(problemlist))
+                LOGGER.info("Refusing to run requested playbooks until "
+                            "syntax checks pass")
+                return
+
+            # if we get to here without returning, run the playbooks
+            LOGGER.info("Running playbooks %s", ARGS.playbooks)
+            runplaybooks(ARGS.playbooks)
 
 
 

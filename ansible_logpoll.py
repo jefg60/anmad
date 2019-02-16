@@ -258,12 +258,12 @@ def verify_files_exist():
             raise FileNotFoundError
 
 
-def poll_for_updates(my_file):
+def poll_for_updates(my_path):
     """Func to watch a file."""
     while True:
         event_handler = Handler()
         observer = Observer()
-        observer.schedule(event_handler, my_file, recursive=False)
+        observer.schedule(event_handler, my_path, recursive=False)
         observer.start()
         try:
             while True:

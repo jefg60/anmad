@@ -261,6 +261,7 @@ def verify_files_exist():
 def poll_for_updates(my_file):
     """Func to watch a file."""
     while True:
+        event_handler = Handler()
         observer = Observer()
         observer.schedule(event_handler, my_file, recursive=False)
         observer.start()

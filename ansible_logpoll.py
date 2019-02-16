@@ -315,7 +315,7 @@ class Handler(FileSystemEventHandler):
             else:
                 problemlist = syntax_check_dir(ARGS.syntax_check_dir)
 
-            if problemlist:
+            if  ''.join(problemlist):
                 LOGGER.info("Playbooks/inventories that failed syntax check: "
                             "%s", " \n".join(problemlist))
                 LOGGER.info("Refusing to run requested playbooks until "

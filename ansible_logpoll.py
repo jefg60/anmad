@@ -58,9 +58,9 @@ def parse_args():
         default=home + "/.ssh/id_rsa"
         )
     parser.add_argument(
-        "--logdir",
-        help="log dir to watch",
-        default="/srv/git/log"
+        "--dir_to_watch",
+        help="dir to watch",
+        default="/srv/git/log/configmanagement.log"
         )
     parser.add_argument(
         "--vault_password_file",
@@ -246,7 +246,7 @@ def verify_files_exist():
     fileargs = ARGS.inventories + ARGS.playbooks
 
     fileargs.append(ARGS.ssh_id)
-    fileargs.append(ARGS.logdir)
+    fileargs.append(ARGS.dir_to_watch)
     try:
         fileargs.append(ARGS.vault_password_file)
     except NameError:
@@ -275,31 +275,6 @@ def poll_for_updates(my_file):
         observer.join()
 
 
-class Watcher:
-    """Class to watch ARGS.logdir for changes."""
-    ARGS = parse_args()
-    DIRECTORY_TO_WATCH = ARGS.logdir
-
-    def __init__(self):
-        """Set up event handler to check for changed files."""
-        self.observer = Observer()
-
-    def run(self):
-        """Run event handler to check for changed files."""
-        event_handler = Handler()
-        self.observer.schedule(event_handler, self.DIRECTORY_TO_WATCH, recursive=False)
-        self.observer.start()
-        try:
-            while True:
-                time.sleep(ARGS.interval)
-                if ARGS.dryrun:
-                    exit()
-        except KeyboardInterrupt:
-            self.observer.stop()
-
-        self.observer.join()
-
-
 class Handler(FileSystemEventHandler):
     """Handle file events."""
 
@@ -318,7 +293,7 @@ class Handler(FileSystemEventHandler):
             # actions when a file is modified.
             LOGGER.info("Received modified event - %s.", event.src_path)
             LOGGER.debug("ssh id: %s", ARGS.ssh_id)
-            LOGGER.debug("logdir: %s", ARGS.logdir)
+            LOGGER.debug("dir_to_watch: %s", ARGS.dir_to_watch)
             LOGGER.debug("interval: %s", str(ARGS.interval))
             LOGGER.debug("maininventory: %s", MAININVENTORY)
             LOGGER.debug("inventorylist: %s", ARGS.inventories)
@@ -388,15 +363,15 @@ if __name__ == '__main__':
     LOGGER.info("ssh id: %s", ARGS.ssh_id)
     LOGGER.info("venv: %s", ARGS.venv)
     LOGGER.info("ansible_playbook_cmd: %s", ANSIBLE_PLAYBOOK_CMD)
-    LOGGER.info("logdir: %s", ARGS.logdir)
+    LOGGER.info("dir_to_watch: %s", ARGS.dir_to_watch)
     LOGGER.info("inventorylist: %s", " ".join(ARGS.inventories))
     LOGGER.info("maininventory: %s", MAININVENTORY)
-    LOGGER.info("pre_run_playbooks: %s", " ".join(ARGS.pre_run_playbooks))
+    if ARGS.pre_run_playbooks:
+        LOGGER.info("pre_run_playbooks: %s", " ".join(ARGS.pre_run_playbooks))
     LOGGER.info("playbooks: %s", " ".join(ARGS.playbooks))
     LOGGER.info("interval: %s", str(ARGS.interval))
 
     add_ssh_key_to_agent(ARGS.ssh_id)
     LOGGER.info("Polling %s directory for updated files every %s seconds...",
-                ARGS.logdir, ARGS.interval)
-    W = Watcher()
-    W.run()
+                ARGS.dir_to_watch, ARGS.interval)
+    poll_for_updates(ARGS.dir_to_watch)

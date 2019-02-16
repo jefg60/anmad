@@ -18,7 +18,6 @@ from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 import ssh_agent_setup
 
-# Functions
 def parse_args():
     """Read arguments from command line."""
 

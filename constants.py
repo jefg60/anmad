@@ -47,7 +47,7 @@ def parse_args():
     parser.add_argument(
         "--dir_to_watch",
         help="dir to watch",
-        default="/srv/git/log/configmanagement.log"
+        default="/srv/git/log/"
         )
     parser.add_argument(
         "--vault_password_file",

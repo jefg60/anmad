@@ -66,16 +66,23 @@ class Handler(FileSystemEventHandler):
 
         elif event.event_type == 'created':
             # actions when a file is first created.
-            constants.LOGGER.info("Received created event - %s.", event.src_path)
+            constants.LOGGER.info(
+                "Received created event - %s.", event.src_path)
 
         elif event.event_type == 'modified':
             # actions when a file is modified.
-            constants.LOGGER.info("Received modified event - %s.", event.src_path)
-            constants.LOGGER.debug("ssh id: %s", constants.ARGS.ssh_id)
-            constants.LOGGER.debug("dir_to_watch: %s", constants.ARGS.dir_to_watch)
-            constants.LOGGER.debug("interval: %s", str(constants.ARGS.interval))
-            constants.LOGGER.debug("maininventory: %s", constants.MAININVENTORY)
-            constants.LOGGER.debug("inventorylist: %s", constants.ARGS.inventories)
+            constants.LOGGER.info(
+                "Received modified event - %s.", event.src_path)
+            constants.LOGGER.debug(
+                "ssh id: %s", constants.ARGS.ssh_id)
+            constants.LOGGER.debug(
+                "dir_to_watch: %s", constants.ARGS.dir_to_watch)
+            constants.LOGGER.debug(
+                "interval: %s", str(constants.ARGS.interval))
+            constants.LOGGER.debug(
+                "maininventory: %s", constants.MAININVENTORY)
+            constants.LOGGER.debug(
+                "inventorylist: %s", constants.ARGS.inventories)
 
             try:
                 syntaxchecks.verify_files_exist()
@@ -91,9 +98,11 @@ class Handler(FileSystemEventHandler):
 
             #Syntax check playbooks, or all playbooks in syntax_check_dir
             if constants.ARGS.syntax_check_dir is None:
-                problemlist = syntaxchecks.checkplaybooks(constants.ARGS.playbooks)
+                problemlist = syntaxchecks.checkplaybooks(
+                    constants.ARGS.playbooks)
             else:
-                problemlist = syntaxchecks.syntax_check_dir(constants.ARGS.syntax_check_dir)
+                problemlist = syntaxchecks.syntax_check_dir(
+                    constants.ARGS.syntax_check_dir)
 
             if  ''.join(problemlist):
                 constants.LOGGER.info(
@@ -105,7 +114,8 @@ class Handler(FileSystemEventHandler):
                 return
 
             # if we get to here without returning, run the playbooks
-            constants.LOGGER.info("Running playbooks %s", constants.ARGS.playbooks)
+            constants.LOGGER.info(
+                "Running playbooks %s", constants.ARGS.playbooks)
             ansible_run.runplaybooks(constants.ARGS.playbooks)
 
 

@@ -50,9 +50,8 @@
   [ "$status" -eq 0 ]
 }
 
-# This should work on OSX 10.14
-@test "run without --no-syslog but with --debug" {
-  run ./ansible_logpoll.py -p samples/deploy.yaml samples/deploy2.yaml -i samples/inventory-internal samples/inventory-internal --debug --dir_to_watch /tmp/ --dry-run --interval 1 --syslogdevice /var/run/syslog
+@test "run without --no-syslog but with --debug, using conf file" {
+  run ./ansible_logpoll.py -c configtest.ini
   [[ "$output" != *"error"* ]]
   [ "$status" -eq 0 ]
 }

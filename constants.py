@@ -34,6 +34,12 @@ def parse_args():
         version=__version__
         )
     parser.add_argument(
+        "-c",
+        "--configfile",
+        is_config_file=True,
+        help="override default config file (/etc/ansible-logpoll/conf.d/*.conf)"
+        )
+    parser.add_argument(
         "--venv",
         help="python virtualenv to run ansible from",
         default=ansible_home

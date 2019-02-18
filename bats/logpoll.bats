@@ -56,9 +56,14 @@
   [ "$status" -eq 0 ]
 }
 
-@test "Version is 0.9.1" {
+@test "logpoll Version is 0.9.2" {
   run ./ansible_logpoll.py --version
-  [ "$output" = "0.9.1" ]
+  [ "$output" = "0.9.2" ]
+}
+
+@test "printvault Version is 0.9.2" {
+  run ./print_vault_value.py --version
+  [ "$output" = "0.9.2" ]
 }
 
 @test "able to decrypt testvault" {

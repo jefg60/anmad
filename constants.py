@@ -52,17 +52,17 @@ def parse_args():
         )
     parser.add_argument(
         "--ssh_id",
-        help="ssh id file to use",
+        help="ssh id file to use, default ~/.ssh/id_rsa",
         default=home + "/.ssh/id_rsa"
         )
     parser.add_argument(
         "--dir_to_watch",
         help="dir to watch",
-        default="/srv/git/log/"
+        required=True
         )
     parser.add_argument(
         "--vault_password_file",
-        help="vault password file",
+        help="vault password file, default ~/.vaultpw",
         default=home + "/.vaultpw"
         )
     parser.add_argument(

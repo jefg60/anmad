@@ -22,7 +22,7 @@ def parse_args():
         )
     parser.add_argument(
         "--vault_password_file",
-        help="vault password file",
+        help="vault password file. default ~/.vaultpw",
         default=home + "/.vaultpw"
         )
     parser.add_argument(

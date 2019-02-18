@@ -60,3 +60,8 @@
   run ./ansible_logpoll.py --version
   [ "$output" = "0.9.1" ]
 }
+
+@test "able to decrypt testvault" {
+  run ./print_vault_value.py --vaultfile testvault --yaml_key ssh_passphrase --vault_password_file vaultpassword
+  [[ "$output" == "1234567890abc321" ]]
+}

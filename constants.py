@@ -1,15 +1,15 @@
 """Initialize constants for ansible_logpoll."""
 import logging
 import logging.handlers
-import argparse
 import shutil
 import os
 from os.path import expanduser
+import configargparse
 
 def parse_args():
     """Read arguments from command line."""
 
-    __version__ = "0.9"
+    __version__ = "0.9.1"
 
     home = expanduser("~")
 
@@ -20,7 +20,12 @@ def parse_args():
     except TypeError:
         ansible_home = os.getcwd()
 
-    parser = argparse.ArgumentParser()
+    parser = configargparse.ArgParser(
+        default_config_files=[
+            '/etc/ansible-logpoll/conf.d/*.conf',
+            '~/.ansible-logpoll.conf'
+            ]
+        )
     parser.add_argument(
         "-v",
         "-V",

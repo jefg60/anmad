@@ -131,6 +131,14 @@ def parse_args():
     return myargs
 
 ARGS = parse_args()
+
+# filter list args to remove empty strings that may have been passed from
+# the config file
+ARGS.inventories = list(filter(None, ARGS.inventories))
+ARGS.playbooks = list(filter(None, ARGS.playbooks))
+if ARGS.pre_run_playbooks:
+    ARGS.pre_run_playbooks = list(filter(None, ARGS.pre_run_playbooks))
+
 ANSIBLE_PLAYBOOK_CMD = ARGS.venv + '/bin/ansible-playbook'
 
 # Setup Logging globally

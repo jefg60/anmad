@@ -19,16 +19,13 @@ def add_ssh_key_to_agent(key_file):
     constants.LOGGER.info("Loading ssh key...")
     ssh_agent_setup.setup()
     my_env = os.environ.copy()
-    try:
+    if constants.ARGS.ssh_askpass is not None:
         my_env["SSH_ASKPASS"] = constants.ARGS.ssh_askpass
         my_env["DISPLAY"] = ":0"
-    except TypeError:
-        my_env = os.environ.copy()
 
+    constants.LOGGER.debug("environment: %s", my_env)
     try:
         subprocess.run(['ssh-add', key_file], env=my_env, check=True)
-    except TypeError:
-        subprocess.run(['ssh-add', key_file], check=True)
     except subprocess.CalledProcessError:
         constants.LOGGER.exception("Exception adding ssh key, shutting down")
         raise Exception

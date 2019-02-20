@@ -141,16 +141,16 @@ if ARGS.pre_run_playbooks:
 
 ANSIBLE_PLAYBOOK_CMD = ARGS.venv + '/bin/ansible-playbook'
 
-# Setup Logging globally
+# Setup Logging globally with no handlers to begin with
 logging.basicConfig(
-    level=logging.INFO,
+    level=logging.WARNING,
     format="%(asctime)s [%(levelname)s]  %(message)s",
-    handlers=[logging.StreamHandler()]
+    handlers=[]
     )
 
 LOGGER = logging.getLogger('ansible_logpoll')
 
-# create sysloghandler if needed
+# create sysloghandler if needed (default true)
 if ARGS.syslog:
     SYSLOGHANDLER = logging.handlers.SysLogHandler(
         address=ARGS.syslogdevice,
@@ -159,9 +159,15 @@ if ARGS.syslog:
         '%(name)s - [%(levelname)s] - %(message)s')
     SYSLOGHANDLER.setFormatter(SYSLOGFORMATTER)
     LOGGER.addHandler(SYSLOGHANDLER)
+    LOGGER.level = logging.INFO
 
-# debug logging
+# create consolehandler if debug mode
 if ARGS.debug:
+    CONSOLEHANDLER = logging.StreamHandler()
+    CONSOLEFORMATTER = logging.Formatter(
+        '%(name)s - [%(levelname)s] - %(message)s')
+    CONSOLEHANDLER.setFormatter(CONSOLEFORMATTER)
+    LOGGER.addHandler(CONSOLEHANDLER)
     LOGGER.level = logging.DEBUG
 
 # First inventory is the one that plays run against

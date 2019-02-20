@@ -123,11 +123,15 @@ def parse_args():
         action="store_true",
         help="print debugging info to logs"
         )
+    parser.add_argument(
+        "--concurrency",
+        help="number of simultaneous processes to run,"
+             "defaults to number of cpu reported by OS",
+        default=os.cpu_count()
+        )
 
     parser.set_defaults(debug=False, syslog=True, dryrun=False)
-
     myargs = parser.parse_args()
-
     return myargs
 
 default_configfile = '/etc/ansible-logpoll/conf.d/*.conf'

@@ -67,6 +67,6 @@ version=0.9.4
 }
 
 @test "able to decrypt testvault" {
-  run ./print_vault_value.py --vaultfile testvault --yaml_key ssh_passphrase --vault_password_file vaultpassword
+  run ./print_vault_value.py --vaultfile testvault --yaml_key master_ansible_user_ssh_phrase --vault_password_file vaultpassword
   [[ "$output" == "1234567890abc321" ]]
 }

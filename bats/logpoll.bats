@@ -1,7 +1,7 @@
 #!/usr/bin/env bats
 #
 #This is obviously just a quick control test - if this fails the tests are not reliable!
-
+version=0.9.4
 @test "Check that 1 equals 1" {
   one=1
   [ $one -eq 1 ]
@@ -56,14 +56,14 @@
   [ "$status" -eq 0 ]
 }
 
-@test "logpoll Version is 0.9.3" {
+@test "logpoll Version is $version" {
   run ./ansible_logpoll.py --version
-  [ "$output" = "0.9.3" ]
+  [ "$output" = "$version" ]
 }
 
-@test "printvault Version is 0.9.3" {
+@test "printvault Version is $version" {
   run ./print_vault_value.py --version
-  [ "$output" = "0.9.3" ]
+  [ "$output" = "$version" ]
 }
 
 @test "able to decrypt testvault" {

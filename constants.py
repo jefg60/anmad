@@ -9,7 +9,7 @@ import configargparse
 def parse_args():
     """Read arguments from command line."""
 
-    __version__ = "0.9.3"
+    __version__ = "0.9.4"
 
     home = expanduser("~")
 

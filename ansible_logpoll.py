@@ -25,7 +25,12 @@ def add_ssh_key_to_agent(key_file):
 
     constants.LOGGER.debug("environment: %s", my_env)
     try:
-        subprocess.run(['ssh-add', key_file], env=my_env, check=True)
+        subprocess.run(['ssh-add', key_file],
+            env=my_env,
+            check=True,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL
+            )
     except subprocess.CalledProcessError:
         constants.LOGGER.exception("Exception adding ssh key, shutting down")
         raise Exception

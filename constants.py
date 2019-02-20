@@ -175,7 +175,8 @@ if ARGS.debug:
 MAININVENTORY = os.path.abspath(ARGS.inventories[0])
 
 # log main arguments used
-LOGGER.info("config file: %s", ARGS.configfile or default_configfile)
+LOGGER.info("config file: %s",
+    ARGS.configfile if ARGS.configfile is not None else default_configfile)
 LOGGER.info("vault password file: %s", ARGS.vault_password_file)
 LOGGER.info("ssh id: %s", ARGS.ssh_id)
 LOGGER.info("venv: %s", ARGS.venv)

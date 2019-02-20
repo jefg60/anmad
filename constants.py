@@ -22,7 +22,7 @@ def parse_args():
 
     parser = configargparse.ArgParser(
         default_config_files=[
-            '/etc/ansible-logpoll/conf.d/*.conf',
+            default_configfile,
             '~/.ansible-logpoll.conf'
             ]
         )
@@ -130,6 +130,7 @@ def parse_args():
 
     return myargs
 
+default_configfile = '/etc/ansible-logpoll/conf.d/*.conf'
 ARGS = parse_args()
 
 # filter list args to remove empty strings that may have been passed from
@@ -174,7 +175,7 @@ if ARGS.debug:
 MAININVENTORY = os.path.abspath(ARGS.inventories[0])
 
 # log main arguments used
-LOGGER.info("config file: %s", ARGS.configfile)
+LOGGER.info("config file: %s", ARGS.configfile or default_configfile)
 LOGGER.info("vault password file: %s", ARGS.vault_password_file)
 LOGGER.info("ssh id: %s", ARGS.ssh_id)
 LOGGER.info("venv: %s", ARGS.venv)

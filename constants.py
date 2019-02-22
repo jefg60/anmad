@@ -172,7 +172,7 @@ if ARGS.debug:
     CONSOLEFORMATTER = logging.Formatter(
         '%(name)s - [%(levelname)s] - %(message)s')
     CONSOLEHANDLER.setFormatter(CONSOLEFORMATTER)
-    LOGGER.addHandler(CONSOLEHANDLER)
+    logging.getLogger().addHandler(CONSOLEHANDLER)
     LOGGER.level = logging.DEBUG
 
 # First inventory is the one that plays run against

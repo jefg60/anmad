@@ -31,7 +31,7 @@ def runall():
     """Run all playbooks."""
     thread = threading.Thread(target=ansible_run.runplaybooks, args=([constants.ARGS.playbooks]))
     thread.start()
-    return redirect(redirect_url())
+    return render_template('waiting.html')
 
 #@APP.route(BASEURL + "stop/")
 #def omxstop():

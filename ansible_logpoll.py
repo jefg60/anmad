@@ -132,7 +132,7 @@ if __name__ == '__main__':
         'python3',
         'interface.py',
         '--logdir', constants.ARGS.dir_to_watch,
-        '--playbooks', constants.ARGS.playbooks
+        '--playbooks', *constants.ARGS.playbooks
         ])
 
     constants.LOGGER.info(

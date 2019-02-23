@@ -32,4 +32,4 @@ def run_one_playbook(my_playbook):
 def runplaybooks(listofplaybooks):
     """Run a list of ansible playbooks."""
     pool = Pool(constants.ARGS.concurrency)
-    pool.map(run_one_playbook, listofplaybooks)
+    pool.map_async(run_one_playbook, listofplaybooks)

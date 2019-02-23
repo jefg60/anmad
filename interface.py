@@ -33,8 +33,14 @@ def runall():
     return redirect(constants.ARGS.ara_url)
 
 #@APP.route(BASEURL + "stop/")
-#def omxstop():
+#def stopall():
 #   subprocess.call(['./stop.sh'], shell=True)
+
+@APP.route(BASEURL + 'playbooks/<playbook>')
+def oneplaybook(playbook):
+    """Runs one playbook."""
+    ansible_run.run_one_playbook(playbook)
+    return redirect(constants.ARGS.ara_url)
 
 if __name__ == "__main__":
     APP.run(host='0.0.0.0', port=9999, debug=True)

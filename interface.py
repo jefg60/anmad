@@ -4,25 +4,25 @@ import datetime
 import argparse
 from flask import Flask, render_template
 
-app = Flask(__name__)
-baseurl = "/control/"
+APP = Flask(__name__)
+BASEURL = "/control/"
 
-parser = argparse.ArgumentParser()
-parser.add_argument(
+PARSER = argparse.ArgumentParser()
+PARSER.add_argument(
     "--logdir",
     help="directory to write interface.log in",
     required=True
     )
-parser.add_argument(
+PARSER.add_argument(
     "--playbooks",
     "-p",
     nargs='*',
     required=True,
     help="space separated list of ansible playbooks to run. "
     )
-ARGS = parser.parse_args()
+ARGS = PARSER.parse_args()
 
-@app.route(baseurl)
+@APP.route(BASEURL)
 def mainpage():
     """Render main page."""
     time_string = datetime.datetime.now()
@@ -32,7 +32,7 @@ def mainpage():
         }
     return render_template('main.html', playbooks=ARGS.playbooks, **template_data)
 
-@app.route(baseurl + "runall/")
+@APP.route(BASEURL + "runall/")
 def runall():
     """Run all playbooks."""
     my_logfile = ARGS.logdir + '/interface.log'
@@ -47,9 +47,9 @@ def runall():
     filehandle.close()
     return log_line
 
-#@app.route(baseurl + "stop/")
+#@APP.route(BASEURL + "stop/")
 #def omxstop():
 #   subprocess.call(['./stop.sh'], shell=True)
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=9999, debug=True)
+    APP.run(host='0.0.0.0', port=9999, debug=True)

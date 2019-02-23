@@ -30,7 +30,7 @@ def mainpage(playbooks=None):
        'title' : 'ansible-logpoll controls',
        'time': timeString
        }
-    return render_template('main.html', playbooks=args.playbooks)
+    return render_template('main.html', playbooks=args.playbooks, time=now)
 
 @app.route(baseurl + "run/")
 def omx():

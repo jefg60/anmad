@@ -30,12 +30,12 @@ def mainpage(playbooks=None):
        'title' : 'ansible-logpoll controls',
        'time': timeString
        }
-    return render_template('main.html', playbooks=args.playbooks, time=now)
+    return render_template('main.html', playbooks=args.playbooks, time=datetime.datetime.now())
 
-@app.route(baseurl + "run/")
+@app.route(baseurl + "runall/")
 def omx():
     my_logfile = args.logdir + '/interface.log'
-    log_line = 'run button pushed at '+ str(now) + '\n'
+    log_line = 'run button pushed at '+ str(datetime.datetime.now()) + '\n'
     if os.path.exists(my_logfile):
         append_write = 'a'
     else:

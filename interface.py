@@ -1,20 +1,12 @@
 """Control interface for ansible-logpoll."""
-import os
 import datetime
-import argparse
-from flask import Flask, render_template, request, redirect, abort
-import threading
+from flask import Flask, render_template, redirect, abort
 
 import constants
 import ansible_run
 
 APP = Flask(__name__)
 BASEURL = "/control/"
-
-def redirect_url(default='index'):
-    return request.args.get('next') or \
-           request.referrer or \
-           url_for(default)
 
 @APP.route(BASEURL)
 def mainpage():

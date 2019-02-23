@@ -131,8 +131,9 @@ if __name__ == '__main__':
     subprocess.Popen([
         'python3',
         'interface.py',
-        '--logdir', constants.ARGS.dir_to_watch,
-        '--playbooks', *constants.ARGS.playbooks
+        '--dir_to_watch', constants.ARGS.dir_to_watch,
+        '--playbooks', *constants.ARGS.playbooks,
+        '--inventories', *constants.ARGS.inventories
         ])
 
     constants.LOGGER.info(

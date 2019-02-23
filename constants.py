@@ -129,6 +129,11 @@ def parse_args():
              "defaults to number of cpu reported by OS",
         default=os.cpu_count()
         )
+    parser.add_argument(
+        "--ara_url",
+        help="ARA URL to display after starting jobs",
+        default='http://ara/'
+        )
 
     parser.set_defaults(debug=False, syslog=True, dryrun=False)
     myargs = parser.parse_args()

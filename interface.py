@@ -2,13 +2,19 @@
 import os
 import datetime
 import argparse
-from flask import Flask, render_template
+from flask import Flask, render_template, request, redirect
+import threading
 
 import constants
 import ansible_run
 
 APP = Flask(__name__)
 BASEURL = "/control/"
+
+def redirect_url(default='index'):
+    return request.args.get('next') or \
+           request.referrer or \
+           url_for(default)
 
 @APP.route(BASEURL)
 def mainpage():
@@ -23,17 +29,9 @@ def mainpage():
 @APP.route(BASEURL + "runall/")
 def runall():
     """Run all playbooks."""
-    my_logfile = constants.ARGS.dir_to_watch + '/interface.log'
-    log_line = 'run button pushed at '+ str(datetime.datetime.now()) + '\n'
-    if os.path.exists(my_logfile):
-        append_write = 'a'
-    else:
-        append_write = 'w'
-
-    filehandle = open(my_logfile, append_write)
-    filehandle.write(log_line)
-    filehandle.close()
-    return log_line
+    thread = threading.Thread(target=ansible_run.runplaybooks, args=([constants.ARGS.playbooks]))
+    thread.start()
+    return redirect(redirect_url())
 
 #@APP.route(BASEURL + "stop/")
 #def omxstop():

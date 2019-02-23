@@ -29,9 +29,8 @@ def mainpage():
 @APP.route(BASEURL + "runall/")
 def runall():
     """Run all playbooks."""
-    thread = threading.Thread(target=ansible_run.runplaybooks, args=([constants.ARGS.playbooks]))
-    thread.start()
-    return render_template('waiting.html')
+    ansible_run.runplaybooks(constants.ARGS.playbooks)
+    return redirect(constants.ARGS.ara_url)
 
 #@APP.route(BASEURL + "stop/")
 #def omxstop():

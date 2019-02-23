@@ -14,16 +14,23 @@ parser.add_argument(
     help="directory to write interface.log in",
     required=True
     )
+parser.add_argument(
+    "--playbooks",
+    "-p",
+    nargs='*',
+    required=True,
+    help="space separated list of ansible playbooks to run. "
+    )
 args = parser.parse_args()
 
 @app.route(baseurl)
-def mainpage():
+def mainpage(playbooks=None):
     timeString = now.strftime("%Y-%m-%d %H:%M")
     templateData = {
        'title' : 'ansible-logpoll controls',
        'time': timeString
        }
-    return render_template('main.html', **templateData)
+    return render_template('main.html', playbooks=args.playbooks)
 
 @app.route(baseurl + "run/")
 def omx():

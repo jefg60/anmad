@@ -17,7 +17,7 @@ parser.add_argument(
 args = parser.parse_args()
 
 @app.route(baseurl)
-def hello():
+def mainpage():
     timeString = now.strftime("%Y-%m-%d %H:%M")
     templateData = {
        'title' : 'ansible-logpoll controls',

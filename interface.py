@@ -2,7 +2,7 @@
 import os
 import datetime
 import argparse
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, abort
 import threading
 
 import constants
@@ -38,7 +38,9 @@ def runall():
 
 @APP.route(BASEURL + 'playbooks/<playbook>')
 def oneplaybook(playbook):
-    """Runs one playbook."""
+    """Runs one playbook, if its one of the configured ones."""
+    if playbook not in constants.ARGS.playbooks:
+        abort(403)
     ansible_run.run_one_playbook(playbook)
     return redirect(constants.ARGS.ara_url)
 

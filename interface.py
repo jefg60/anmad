@@ -29,7 +29,7 @@ def mainpage():
 @APP.route(BASEURL + "runall/")
 def runall():
     """Run all playbooks."""
-    ansible_run.runplaybooks(constants.ARGS.playbooks)
+    ansible_run.runplaybooks_async(constants.ARGS.playbooks)
     return redirect(constants.ARGS.ara_url)
 
 #@APP.route(BASEURL + "stop/")
@@ -40,8 +40,8 @@ def runall():
 def oneplaybook(playbook):
     """Runs one playbook, if its one of the configured ones."""
     if playbook not in constants.ARGS.playbooks:
-        abort(403)
-    ansible_run.run_one_playbook(playbook)
+        abort(404)
+    ansible_run.runplaybooks_async([playbook])
     return redirect(constants.ARGS.ara_url)
 
 if __name__ == "__main__":

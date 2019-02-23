@@ -125,8 +125,18 @@ class Handler(FileSystemEventHandler):
 if __name__ == '__main__':
 
     add_ssh_key_to_agent(constants.ARGS.ssh_id)
+
+    constants.LOGGER.info("Starting HTML interface...")
+
+    subprocess.Popen([
+        'python3',
+        'interface.py',
+        '--logdir', constants.ARGS.dir_to_watch,
+        '--playbooks', constants.ARGS.playbooks
+        ])
+
     constants.LOGGER.info(
         "Polling %s directory for updated files every %s seconds...",
         constants.ARGS.dir_to_watch, constants.ARGS.interval)
-    subprocess.Popen(['python3', 'interface.py', '--logdir', constants.ARGS.dir_to_watch])
+
     poll_for_updates(constants.ARGS.dir_to_watch)

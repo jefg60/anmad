@@ -13,24 +13,22 @@ logging.basicConfig(
     )
 
 LOGGER = logging.getLogger(main.__file__)
+FORMATTER = logging.Formatter(
+    '%(name)s - [%(levelname)s] - %(message)s')
 
 # create sysloghandler if needed (default true)
 if anmad_args.ARGS.syslog:
     SYSLOGHANDLER = logging.handlers.SysLogHandler(
         address=anmad_args.ARGS.syslogdevice,
         facility='local3')
-    SYSLOGFORMATTER = logging.Formatter(
-        '%(name)s - [%(levelname)s] - %(message)s')
-    SYSLOGHANDLER.setFormatter(SYSLOGFORMATTER)
+    SYSLOGHANDLER.setFormatter(FORMATTER)
     LOGGER.addHandler(SYSLOGHANDLER)
     LOGGER.level = logging.INFO
 
 # create consolehandler if debug mode
 if anmad_args.ARGS.debug:
     CONSOLEHANDLER = logging.StreamHandler()
-    CONSOLEFORMATTER = logging.Formatter(
-        '%(name)s - [%(levelname)s] - %(message)s')
-    CONSOLEHANDLER.setFormatter(CONSOLEFORMATTER)
+    CONSOLEHANDLER.setFormatter(FORMATTER)
     logging.getLogger().addHandler(CONSOLEHANDLER)
     LOGGER.level = logging.DEBUG
 

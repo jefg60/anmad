@@ -127,16 +127,6 @@ if __name__ == '__main__':
 
     add_ssh_key_to_agent(anmad_args.ARGS.ssh_id)
 
-    anmad_logging.LOGGER.info("Starting HTML interface...")
-
-    subprocess.Popen([
-        'python3',
-        'interface.py',
-        '--dir_to_watch', anmad_args.ARGS.dir_to_watch,
-        '--playbooks', *anmad_args.ARGS.playbooks,
-        '--inventories', *anmad_args.ARGS.inventories
-        ])
-
     anmad_logging.LOGGER.info(
         "Polling %s directory for updated files every %s seconds...",
         anmad_args.ARGS.dir_to_watch, anmad_args.ARGS.interval)

@@ -148,4 +148,7 @@ ARGS.playbooks = list(filter(None, ARGS.playbooks))
 if ARGS.pre_run_playbooks:
     ARGS.pre_run_playbooks = list(filter(None, ARGS.pre_run_playbooks))
 
+# First inventory is the one that plays run against
+MAININVENTORY = os.path.abspath(ARGS.inventories[0])
+
 ANSIBLE_PLAYBOOK_CMD = ARGS.venv + '/bin/ansible-playbook'

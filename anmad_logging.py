@@ -1,7 +1,6 @@
 """Initialize logging for anmad."""
 import logging
 import logging.handlers
-import os
 
 import anmad_args
 
@@ -34,21 +33,18 @@ if anmad_args.ARGS.debug:
     logging.getLogger().addHandler(CONSOLEHANDLER)
     LOGGER.level = logging.DEBUG
 
-# First inventory is the one that plays run against
-MAININVENTORY = os.path.abspath(anmad_args.ARGS.inventories[0])
-
 # log main arguments used
 LOGGER.info("config file: %s",
             anmad_args.ARGS.configfile
             if anmad_args.ARGS.configfile is not None
-            else anmad_args.ARGS.DEFAULT_CONFIGFILE)
+            else anmad_args.DEFAULT_CONFIGFILE)
 LOGGER.info("vault password file: %s", anmad_args.ARGS.vault_password_file)
 LOGGER.info("ssh id: %s", anmad_args.ARGS.ssh_id)
 LOGGER.info("venv: %s", anmad_args.ARGS.venv)
 LOGGER.info("ansible_playbook_cmd: %s", anmad_args.ANSIBLE_PLAYBOOK_CMD)
 LOGGER.info("dir_to_watch: %s", anmad_args.ARGS.dir_to_watch)
 LOGGER.info("inventorylist: %s", " ".join(anmad_args.ARGS.inventories))
-LOGGER.info("maininventory: %s", MAININVENTORY)
+LOGGER.info("maininventory: %s", anmad_args.MAININVENTORY)
 if anmad_args.ARGS.pre_run_playbooks:
     LOGGER.info("pre_run_playbooks: %s",
                 " ".join(anmad_args.ARGS.pre_run_playbooks))

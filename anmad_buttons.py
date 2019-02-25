@@ -3,6 +3,7 @@ import datetime
 from flask import Flask, render_template, redirect, abort
 
 import anmad_args
+import anmad_logging
 import ansible_run
 
 APP = Flask(__name__)

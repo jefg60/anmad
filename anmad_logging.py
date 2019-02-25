@@ -1,6 +1,7 @@
 """Initialize logging for anmad."""
 import logging
 import logging.handlers
+import __main__ as main
 
 import anmad_args
 
@@ -11,7 +12,7 @@ logging.basicConfig(
     handlers=[]
     )
 
-LOGGER = logging.getLogger(__name__)
+LOGGER = logging.getLogger(main.__file__)
 
 # create sysloghandler if needed (default true)
 if anmad_args.ARGS.syslog:

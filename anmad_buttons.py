@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """Control interface for ansible-logpoll."""
 import datetime
 from flask import Flask, render_template, redirect, abort

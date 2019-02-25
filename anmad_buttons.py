@@ -30,7 +30,7 @@ def runall():
 #def stopall():
 #   subprocess.call(['./stop.sh'], shell=True)
 
-@APP.route(BASEURL + 'playbooks/<playbook>')
+@APP.route(BASEURL + 'playbooks/<path:playbook>')
 def oneplaybook(playbook):
     """Runs one playbook, if its one of the configured ones."""
     if playbook not in anmad_args.ARGS.playbooks:

@@ -10,20 +10,21 @@ from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 import ssh_agent_setup
 
-import constants
-import syntaxchecks
+import anmad_args
+import anmad_logging
+import anmad_syntaxchecks
 import ansible_run
 
 def add_ssh_key_to_agent(key_file):
     """Adds ssh key, with ssh_askpass if possible"""
-    constants.LOGGER.info("Loading ssh key...")
+    anmad_logging.LOGGER.info("Loading ssh key...")
     ssh_agent_setup.setup()
     my_env = os.environ.copy()
-    if constants.ARGS.ssh_askpass is not None:
-        my_env["SSH_ASKPASS"] = constants.ARGS.ssh_askpass
+    if anmad_args.ARGS.ssh_askpass is not None:
+        my_env["SSH_ASKPASS"] = anmad_args.ARGS.ssh_askpass
         my_env["DISPLAY"] = ":0"
 
-    constants.LOGGER.debug("environment: %s", my_env)
+    anmad_logging.LOGGER.debug("environment: %s", my_env)
     try:
         subprocess.run(['ssh-add', key_file],
                        env=my_env,
@@ -32,10 +33,10 @@ def add_ssh_key_to_agent(key_file):
                        stderr=subprocess.DEVNULL
                        )
     except subprocess.CalledProcessError:
-        constants.LOGGER.exception("Exception adding ssh key, shutting down")
+        anmad_logging.LOGGER.exception("Exception adding ssh key, shutting down")
         raise Exception
     else:
-        constants.LOGGER.info("SSH key loaded")
+        anmad_logging.LOGGER.info("SSH key loaded")
 
 
 def poll_for_updates(my_path):
@@ -47,8 +48,8 @@ def poll_for_updates(my_path):
         observer.start()
         try:
             while True:
-                time.sleep(constants.ARGS.interval)
-                if constants.ARGS.dryrun:
+                time.sleep(anmad_args.ARGS.interval)
+                if anmad_args.ARGS.dryrun:
                     exit()
         except KeyboardInterrupt:
             observer.stop()
@@ -62,82 +63,82 @@ class Handler(FileSystemEventHandler):
     def on_any_event(event):
         """Tasks to perform if any events are received."""
         if event.is_directory:
-            constants.LOGGER.debug(
+            anmad_logging.LOGGER.debug(
                 "Received directory event for %s, ignoring",
                 event.src_path)
 
         elif event.event_type == 'created':
             # actions when a file is first created.
-            constants.LOGGER.info(
+            anmad_logging.LOGGER.info(
                 "Received created event - %s.", event.src_path)
 
         elif event.event_type == 'modified':
             # actions when a file is modified.
-            constants.LOGGER.info(
+            anmad_logging.LOGGER.info(
                 "Received modified event - %s.", event.src_path)
-            constants.LOGGER.debug(
-                "ssh id: %s", constants.ARGS.ssh_id)
-            constants.LOGGER.debug(
-                "dir_to_watch: %s", constants.ARGS.dir_to_watch)
-            constants.LOGGER.debug(
-                "interval: %s", str(constants.ARGS.interval))
-            constants.LOGGER.debug(
-                "maininventory: %s", constants.MAININVENTORY)
-            constants.LOGGER.debug(
-                "inventorylist: %s", constants.ARGS.inventories)
+            anmad_logging.LOGGER.debug(
+                "ssh id: %s", anmad_args.ARGS.ssh_id)
+            anmad_logging.LOGGER.debug(
+                "dir_to_watch: %s", anmad_args.ARGS.dir_to_watch)
+            anmad_logging.LOGGER.debug(
+                "interval: %s", str(anmad_args.ARGS.interval))
+            anmad_logging.LOGGER.debug(
+                "maininventory: %s", anmad_args.ARGS.MAININVENTORY)
+            anmad_logging.LOGGER.debug(
+                "inventorylist: %s", anmad_args.ARGS.inventories)
 
             try:
-                syntaxchecks.verify_files_exist()
+                anmad_syntaxchecks.verify_files_exist()
             except FileNotFoundError:
                 return
 
-            if constants.ARGS.pre_run_playbooks is not None:
-                constants.LOGGER.info(
+            if anmad_args.ARGS.pre_run_playbooks is not None:
+                anmad_logging.LOGGER.info(
                     "Pre-Running playbooks %s",
-                    constants.ARGS.pre_run_playbooks)
-                for my_playbook in constants.ARGS.pre_run_playbooks:
+                    anmad_args.ARGS.pre_run_playbooks)
+                for my_playbook in anmad_args.ARGS.pre_run_playbooks:
                     ansible_run.run_one_playbook(my_playbook)
 
             #Syntax check playbooks, or all playbooks in syntax_check_dir
-            if constants.ARGS.syntax_check_dir is None:
-                problemlist = syntaxchecks.checkplaybooks(
-                    constants.ARGS.playbooks)
+            if anmad_args.ARGS.syntax_check_dir is None:
+                problemlist = anmad_syntaxchecks.checkplaybooks(
+                    anmad_args.ARGS.playbooks)
             else:
-                problemlist = syntaxchecks.syntax_check_dir(
-                    constants.ARGS.syntax_check_dir)
+                problemlist = anmad_syntaxchecks.syntax_check_dir(
+                    anmad_args.ARGS.syntax_check_dir)
 
             if  ''.join(problemlist):
-                constants.LOGGER.info(
+                anmad_logging.LOGGER.info(
                     "Playbooks/inventories that failed syntax check: "
                     "%s", " \n".join(problemlist))
-                constants.LOGGER.info(
+                anmad_logging.LOGGER.info(
                     "Refusing to run requested playbooks until "
                     "syntax checks pass")
                 return
 
             # if we get to here without returning, run the playbooks
-            constants.LOGGER.info(
-                "Running playbooks %s", constants.ARGS.playbooks)
-            ansible_run.runplaybooks(constants.ARGS.playbooks)
+            anmad_logging.LOGGER.info(
+                "Running playbooks %s", anmad_args.ARGS.playbooks)
+            ansible_run.runplaybooks(anmad_args.ARGS.playbooks)
 
 
 
 if __name__ == '__main__':
 
-    add_ssh_key_to_agent(constants.ARGS.ssh_id)
+    add_ssh_key_to_agent(anmad_args.ARGS.ssh_id)
 
-    constants.LOGGER.info("Starting HTML interface...")
+    anmad_logging.LOGGER.info("Starting HTML interface...")
 
     subprocess.Popen([
         'python3',
         'interface.py',
-        '--dir_to_watch', constants.ARGS.dir_to_watch,
-        '--playbooks', *constants.ARGS.playbooks,
-        '--inventories', *constants.ARGS.inventories
+        '--dir_to_watch', anmad_args.ARGS.dir_to_watch,
+        '--playbooks', *anmad_args.ARGS.playbooks,
+        '--inventories', *anmad_args.ARGS.inventories
         ])
 
-    constants.LOGGER.info(
+    anmad_logging.LOGGER.info(
         "Polling %s directory for updated files every %s seconds...",
-        constants.ARGS.dir_to_watch, constants.ARGS.interval)
+        anmad_args.ARGS.dir_to_watch, anmad_args.ARGS.interval)
 
-    poll_for_updates(constants.ARGS.dir_to_watch)
+    poll_for_updates(anmad_args.ARGS.dir_to_watch)

@@ -2,7 +2,7 @@
 import datetime
 from flask import Flask, render_template, redirect, abort
 
-import constants
+import anmad_args
 import ansible_run
 
 APP = Flask(__name__)
@@ -16,13 +16,13 @@ def mainpage():
         'title' : 'ansible-logpoll controls',
         'time': time_string
         }
-    return render_template('main.html', playbooks=constants.ARGS.playbooks, **template_data)
+    return render_template('main.html', playbooks=anmad_args.ARGS.playbooks, **template_data)
 
 @APP.route(BASEURL + "runall/")
 def runall():
     """Run all playbooks."""
-    ansible_run.runplaybooks_async(constants.ARGS.playbooks)
-    return redirect(constants.ARGS.ara_url)
+    ansible_run.runplaybooks_async(anmad_args.ARGS.playbooks)
+    return redirect(anmad_args.ARGS.ara_url)
 
 #@APP.route(BASEURL + "stop/")
 #def stopall():
@@ -31,10 +31,10 @@ def runall():
 @APP.route(BASEURL + 'playbooks/<playbook>')
 def oneplaybook(playbook):
     """Runs one playbook, if its one of the configured ones."""
-    if playbook not in constants.ARGS.playbooks:
+    if playbook not in anmad_args.ARGS.playbooks:
         abort(404)
     ansible_run.runplaybooks_async([playbook])
-    return redirect(constants.ARGS.ara_url)
+    return redirect(anmad_args.ARGS.ara_url)
 
 if __name__ == "__main__":
     APP.run(host='0.0.0.0', port=9999, debug=True)

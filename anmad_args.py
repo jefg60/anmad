@@ -1,10 +1,10 @@
-"""Initialize constants for ansible_logpoll."""
-import logging
-import logging.handlers
+"""Initialize arguments for anmad."""
 import shutil
 import os
 from os.path import expanduser
 import configargparse
+
+DEFAULT_CONFIGFILE = '/etc/ansible-logpoll/conf.d/*.conf'
 
 def parse_args():
     """Read arguments from command line."""
@@ -22,7 +22,7 @@ def parse_args():
 
     parser = configargparse.ArgParser(
         default_config_files=[
-            default_configfile,
+            DEFAULT_CONFIGFILE,
             '~/.ansible-logpoll.conf'
             ]
         )
@@ -139,7 +139,6 @@ def parse_args():
     myargs = parser.parse_args()
     return myargs
 
-default_configfile = '/etc/ansible-logpoll/conf.d/*.conf'
 ARGS = parse_args()
 
 # filter list args to remove empty strings that may have been passed from
@@ -150,50 +149,3 @@ if ARGS.pre_run_playbooks:
     ARGS.pre_run_playbooks = list(filter(None, ARGS.pre_run_playbooks))
 
 ANSIBLE_PLAYBOOK_CMD = ARGS.venv + '/bin/ansible-playbook'
-
-# Setup Logging globally with no handlers to begin with
-logging.basicConfig(
-    level=logging.WARNING,
-    format="%(asctime)s [%(levelname)s]  %(message)s",
-    handlers=[]
-    )
-
-LOGGER = logging.getLogger('ansible_logpoll')
-
-# create sysloghandler if needed (default true)
-if ARGS.syslog:
-    SYSLOGHANDLER = logging.handlers.SysLogHandler(
-        address=ARGS.syslogdevice,
-        facility='local3')
-    SYSLOGFORMATTER = logging.Formatter(
-        '%(name)s - [%(levelname)s] - %(message)s')
-    SYSLOGHANDLER.setFormatter(SYSLOGFORMATTER)
-    LOGGER.addHandler(SYSLOGHANDLER)
-    LOGGER.level = logging.INFO
-
-# create consolehandler if debug mode
-if ARGS.debug:
-    CONSOLEHANDLER = logging.StreamHandler()
-    CONSOLEFORMATTER = logging.Formatter(
-        '%(name)s - [%(levelname)s] - %(message)s')
-    CONSOLEHANDLER.setFormatter(CONSOLEFORMATTER)
-    logging.getLogger().addHandler(CONSOLEHANDLER)
-    LOGGER.level = logging.DEBUG
-
-# First inventory is the one that plays run against
-MAININVENTORY = os.path.abspath(ARGS.inventories[0])
-
-# log main arguments used
-LOGGER.info("config file: %s",
-    ARGS.configfile if ARGS.configfile is not None else default_configfile)
-LOGGER.info("vault password file: %s", ARGS.vault_password_file)
-LOGGER.info("ssh id: %s", ARGS.ssh_id)
-LOGGER.info("venv: %s", ARGS.venv)
-LOGGER.info("ansible_playbook_cmd: %s", ANSIBLE_PLAYBOOK_CMD)
-LOGGER.info("dir_to_watch: %s", ARGS.dir_to_watch)
-LOGGER.info("inventorylist: %s", " ".join(ARGS.inventories))
-LOGGER.info("maininventory: %s", MAININVENTORY)
-if ARGS.pre_run_playbooks:
-    LOGGER.info("pre_run_playbooks: %s", " ".join(ARGS.pre_run_playbooks))
-LOGGER.info("playbooks: %s", " ".join(ARGS.playbooks))
-LOGGER.info("interval: %s", str(ARGS.interval))

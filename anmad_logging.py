@@ -12,7 +12,7 @@ logging.basicConfig(
     handlers=[]
     )
 
-LOGGER = logging.getLogger(main.__file__)
+LOGGER = logging.getLogger(os.path.basename(main.__file__))
 FORMATTER = logging.Formatter(
     '%(name)s - [%(levelname)s] - %(message)s')
 

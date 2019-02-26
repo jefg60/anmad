@@ -1,6 +1,7 @@
 """Initialize logging for anmad."""
 import logging
 import logging.handlers
+import os
 import __main__ as main
 
 import anmad_args

@@ -31,7 +31,7 @@ def run_one_playbook(my_playbook):
 
 
 def runplaybooks(listofplaybooks):
-    """Run a list of ansible playbooks."""
+    """Run a list of ansible playbooks and wait for them to finish."""
     pool = Pool(anmad_args.ARGS.concurrency)
     pool.map(run_one_playbook, listofplaybooks)
 

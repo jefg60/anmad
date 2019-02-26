@@ -1,4 +1,4 @@
-"""Ansible_logpoll syntax check module."""
+"""anmad syntax check module."""
 
 import os
 import glob

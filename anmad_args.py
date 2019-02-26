@@ -24,7 +24,7 @@ def parse_args():
     parser = configargparse.ArgParser(
         default_config_files=[
             DEFAULT_CONFIGFILE,
-            '~/.ansible-logpoll.conf'
+            '~/.' + main.__file__ + '.conf'
             ]
         )
     parser.add_argument(
@@ -38,7 +38,7 @@ def parse_args():
         "-c",
         "--configfile",
         is_config_file=True,
-        help="override default config file (/etc/ansible-logpoll/conf.d/*.conf)"
+        help="override default config file " + DEFAULT_CONFIGFILE
         )
     parser.add_argument(
         "--venv",

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Control interface for ansible-logpoll."""
+"""Control interface for anmad."""
 import datetime
 from flask import Flask, render_template, redirect, abort
 
@@ -14,7 +14,7 @@ def mainpage():
     """Render main page."""
     time_string = datetime.datetime.now()
     template_data = {
-        'title' : 'ansible-logpoll controls',
+        'title' : 'anmad controls',
         'time': time_string
         }
     return render_template('main.html', playbooks=anmad_args.ARGS.playbooks, **template_data)

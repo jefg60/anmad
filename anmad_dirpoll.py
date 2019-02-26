@@ -83,7 +83,7 @@ class Handler(FileSystemEventHandler):
             anmad_logging.LOGGER.debug(
                 "interval: %s", str(anmad_args.ARGS.interval))
             anmad_logging.LOGGER.debug(
-                "maininventory: %s", anmad_args.ARGS.MAININVENTORY)
+                "maininventory: %s", anmad_args.MAININVENTORY)
             anmad_logging.LOGGER.debug(
                 "inventorylist: %s", anmad_args.ARGS.inventories)
 

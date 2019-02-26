@@ -1,6 +1,6 @@
 #!/usr/bin/env bats
 #
-version=0.9.4
+version=0.10.1
 dirpoll=./anmad_dirpoll.py
 printvault=./print_vault_value.py
 pylint="python3 $(which pylint)"

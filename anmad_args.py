@@ -5,7 +5,7 @@ from os.path import expanduser
 import configargparse
 import __main__ as main
 
-DEFAULT_CONFIGFILE = '/etc/anmad/conf.d/' + main.__file__
+DEFAULT_CONFIGFILE = '/etc/anmad/conf.d/' + os.path.basename(main.__file__)
 
 def parse_args():
     """Read arguments from command line."""

@@ -34,8 +34,10 @@ def runplaybooks(listofplaybooks):
     """Run a list of ansible playbooks and wait for them to finish."""
     pool = Pool(anmad_args.ARGS.concurrency)
     pool.map(run_one_playbook, listofplaybooks)
+    pool.close()
 
 def runplaybooks_async(listofplaybooks):
     """Run a list of ansible playbooks asyncronously."""
     pool = Pool(anmad_args.ARGS.concurrency)
     pool.map_async(run_one_playbook, listofplaybooks)
+    pool.close()

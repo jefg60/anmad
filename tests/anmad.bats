@@ -3,6 +3,7 @@
 version=0.9.4
 dirpoll=./anmad_dirpoll.py
 printvault=./print_vault_value.py
+pylint="python3 $(which pylint)"
 
 @test "test --help option" {
   run "$dirpoll" --help
@@ -66,4 +67,14 @@ printvault=./print_vault_value.py
 @test "able to decrypt testvault" {
   run "$printvault" --vaultfile testvault --yaml_key master_ansible_user_ssh_phrase --vault_password_file vaultpassword
   [[ "$output" == "1234567890abc321" ]]
+}
+
+@test "pylint a*.py" {
+  run $pylint ./a*.py
+  [ "$status" -eq 0 ]
+}
+
+@test "pylint $printvault" {
+  run $pylint "$printvault"
+  [ "$status" -eq 0 ]
 }

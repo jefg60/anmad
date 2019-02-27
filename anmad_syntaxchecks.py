@@ -73,7 +73,7 @@ def syntax_check_dir(check_dir):
 
 def verify_files_exist():
     """ Check that files exist before continuing."""
-    fileargs = anmad_args.ARGS.inventories + anmad_args.ARGS.playbooks
+    fileargs = anmad_args.ARGS.inventories + anmad_args.RUN_LIST
 
     fileargs.append(anmad_args.ARGS.ssh_id)
     fileargs.append(anmad_args.ARGS.dir_to_watch)
@@ -82,11 +82,7 @@ def verify_files_exist():
     except NameError:
         pass
     for filename in fileargs:
-        filename_full_path = (anmad_args.ARGS.playbook_root_dir +
-                              '/' + filename)
-        if not (os.path.exists(filename) or
-                os.path.exists(filename_full_path)):
-            anmad_logging.LOGGER.error(
-                "Unable to find path %s or %s , aborting",
-                filename, filename_full_path)
+        if not os.path.exists(filename):
+            anmad_logging.LOGGER.error("Unable to find path %s , aborting",
+                                       filename)
             raise FileNotFoundError

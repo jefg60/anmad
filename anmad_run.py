@@ -52,7 +52,7 @@ for playbookjob in PLAYQ.consume():
         anmad_logging.LOGGER.info(
             "Refusing to queue requested playbooks until "
             "syntax checks pass")
-        break
+        continue
 
     # if we get to here syntax checks passed. Run the playbooks
     anmad_logging.LOGGER.info(

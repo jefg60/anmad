@@ -9,7 +9,8 @@ import anmad_args
 import anmad_logging
 
 def syntax_check_play_inv(my_playbook, my_inventory):
-    """Check a single playbook against a single inventory."""
+    """Check a single playbook against a single inventory.
+    Plays should be absolute paths here."""
     my_playbook = os.path.abspath(my_playbook)
     my_inventory = os.path.abspath(my_inventory)
     anmad_logging.LOGGER.info(
@@ -51,6 +52,8 @@ def checkplaybooks(listofplaybooks):
 
     pool = Pool()
     bad_playbooks = pool.map(syntax_check_play, listofplaybooks)
+    pool.close()
+    pool.join()
 
     return bad_playbooks
 

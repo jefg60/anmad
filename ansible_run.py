@@ -45,8 +45,8 @@ def runplaybooks(listofplaybooks):
 
     pool = Pool(anmad_args.ARGS.concurrency)
     ret = pool.map(run_one_playbook, listofplaybooks)
-    pool.join()
     pool.close()
+    pool.join()
 
     PLAYBOOK_LOCK.release()
     anmad_logging.LOGGER.debug("Lock released")
@@ -61,8 +61,8 @@ def runplaybooks_async(listofplaybooks):
 
     pool = Pool(anmad_args.ARGS.concurrency)
     ret = pool.map_async(run_one_playbook, listofplaybooks)
-    pool.join()
     pool.close()
+    pool.join()
 
     PLAYBOOK_LOCK.release()
     anmad_logging.LOGGER.debug("Lock released")

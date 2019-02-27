@@ -3,7 +3,6 @@
 import os
 import glob
 from multiprocessing import Pool
-from pathlib import Path
 import subprocess
 
 import anmad_args
@@ -58,7 +57,7 @@ def checkplaybooks(listofplaybooks):
 
 def syntax_check_dir(check_dir):
     """Check all YAML in a directory for ansible syntax."""
-    if not Path(check_dir).exists:
+    if not os.path.exists(check_dir):
         anmad_logging.LOGGER.error("%s cannot be found", check_dir)
         return check_dir
 
@@ -79,7 +78,11 @@ def verify_files_exist():
     except NameError:
         pass
     for filename in fileargs:
-        filenamepath = Path(filename)
-        if not filenamepath.exists():
-            anmad_logging.LOGGER.error("Unable to find path %s , aborting", filename)
+        filename_full_path = (anmad_args.ARGS.playbook_root_dir +
+                              '/' + filename)
+        if not (os.path.exists(filename) and
+                os.path.exists(filename_full_path)):
+            anmad_logging.LOGGER.error(
+                "Unable to find path %s or %s , aborting",
+                filename, filename_full_path)
             raise FileNotFoundError

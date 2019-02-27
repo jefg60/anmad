@@ -71,11 +71,13 @@ class Handler(FileSystemEventHandler):
             if anmad_args.ARGS.pre_run_playbooks is not None:
                 anmad_logging.LOGGER.info(
                     "Queuing playbooks for pre-run: %s",
-                    anmad_args.ARGS.pre_run_playbooks)
-                for my_playbook in anmad_args.ARGS.pre_run_playbooks:
+                    anmad_args.PRERUN_LIST)
+                for my_playbook in anmad_args.PRERUN_LIST:
                     PREQ.put([my_playbook])
 
-            PLAYQ.put(anmad_args.ARGS.playbooks)
+            anmad_logging.LOGGER.info( 
+                "Queuing playbooks: %s", anmad_args.RUN_LIST)
+            PLAYQ.put(anmad_args.RUN_LIST)
 
 
 

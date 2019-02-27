@@ -39,7 +39,7 @@ def oneplaybook(playbook):
     """Runs one playbook, if its one of the configured ones."""
     if playbook not in anmad_args.ARGS.playbooks:
         abort(404)
-    Q.put(playbook)
+    Q.put([playbook])
     return redirect(BASEURL)
 
 if __name__ == "__main__":

@@ -2,12 +2,13 @@
 """Control interface for anmad."""
 import datetime
 from flask import Flask, render_template, redirect, abort
+from hotqueue import HotQueue
 
 import anmad_args
-import ansible_run
 
 APP = Flask(__name__)
 BASEURL = "/control/"
+Q = HotQueue('playbooks')
 
 @APP.route(BASEURL)
 def mainpage():
@@ -22,7 +23,7 @@ def mainpage():
 @APP.route(BASEURL + "runall/")
 def runall():
     """Run all playbooks."""
-    ansible_run.runplaybooks_async(anmad_args.ARGS.playbooks)
+    Q.put(anmad_args.ARGS.playbooks)
     return redirect(anmad_args.ARGS.ara_url)
 
 #@APP.route(BASEURL + "stop/")
@@ -34,7 +35,7 @@ def oneplaybook(playbook):
     """Runs one playbook, if its one of the configured ones."""
     if playbook not in anmad_args.ARGS.playbooks:
         abort(404)
-    ansible_run.runplaybooks_async([playbook])
+    Q.put(playbook)
     return redirect(anmad_args.ARGS.ara_url)
 
 if __name__ == "__main__":

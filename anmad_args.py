@@ -79,6 +79,10 @@ def parse_args():
         help="space separated list of ansible playbooks to run. "
         )
     parser.add_argument(
+        "--playbook_root_dir",
+        help="base directory to run playbooks from"
+        )
+    parser.add_argument(
         "--pre_run_playbooks",
         nargs='*',
         help="space separated list of ansible playbooks to run "

@@ -97,7 +97,7 @@ class Handler(FileSystemEventHandler):
                     "Pre-Running playbooks %s",
                     anmad_args.ARGS.pre_run_playbooks)
                 for my_playbook in anmad_args.ARGS.pre_run_playbooks:
-                    ansible_run.run_one_playbook(my_playbook)
+                    ansible_run.runplaybooks([my_playbook])
 
             #Syntax check playbooks, or all playbooks in syntax_check_dir
             if anmad_args.ARGS.syntax_check_dir is None:

@@ -44,6 +44,7 @@ def runall():
 def oneplaybook(playbook):
     """Runs one playbook, if its one of the configured ones."""
     if playbook not in anmad_args.ARGS.playbooks:
+        anmad_logging.LOGGER.warning("API request for %s DENIED", playbook)
         abort(404)
     anmad_logging.LOGGER.info("Queuing %s", [playbook])
     Q.put([playbook])

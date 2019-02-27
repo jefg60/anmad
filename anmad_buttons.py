@@ -33,8 +33,8 @@ def ara_redirect():
 @APP.route(BASEURL + "runall/")
 def runall():
     """Run all playbooks."""
-    anmad_logging.LOGGER.info("Queuing %s", anmad_args.ARGS.playbooks)
-    Q.put(anmad_args.ARGS.playbooks)
+    anmad_logging.LOGGER.info("Queuing %s", anmad_args.RUN_LIST)
+    Q.put(anmad_args.RUN_LIST)
     anmad_logging.LOGGER.debug("Redirecting to control page")
     return redirect(BASEURL)
 
@@ -48,8 +48,9 @@ def oneplaybook(playbook):
     if playbook not in anmad_args.ARGS.playbooks:
         anmad_logging.LOGGER.warning("API request for %s DENIED", playbook)
         abort(404)
-    anmad_logging.LOGGER.info("Queuing %s", [playbook])
-    Q.put([playbook])
+    my_runlist = [anmad_args.ARGS.playbook_root_dir + '/' + playbook]
+    anmad_logging.LOGGER.info("Queuing %s", my_runlist)
+    Q.put(my_runlist)
     anmad_logging.LOGGER.debug("Redirecting to control page")
     return redirect(BASEURL)
 

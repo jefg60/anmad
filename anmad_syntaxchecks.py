@@ -80,7 +80,7 @@ def verify_files_exist():
     for filename in fileargs:
         filename_full_path = (anmad_args.ARGS.playbook_root_dir +
                               '/' + filename)
-        if not (os.path.exists(filename) and
+        if not (os.path.exists(filename) or
                 os.path.exists(filename_full_path)):
             anmad_logging.LOGGER.error(
                 "Unable to find path %s or %s , aborting",

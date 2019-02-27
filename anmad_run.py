@@ -28,12 +28,12 @@ for playbookjob in PLAYQ.consume():
 
         # if it wasnt a list, but something is there, something is wrong
         elif preQ_job is not None:
-            anmad_logging.LOGGER.info(
-                "WARNING: non list item found in pre-run queue")
+            anmad_logging.LOGGER.warning(
+                "non list item found in pre-run queue")
             break
         else:
             anmad_logging.LOGGER.info(
-                "INFO: processed all items in pre-run queue")
+                "processed all items in pre-run queue")
             break #stop processing pre-Q if its empty
 
     anmad_logging.LOGGER.info('Running job from playqueue: %s', playbookjob)
@@ -46,10 +46,10 @@ for playbookjob in PLAYQ.consume():
             anmad_args.ARGS.syntax_check_dir)
 
     if  ''.join(problemlist):
-        anmad_logging.LOGGER.info(
+        anmad_logging.LOGGER.warning(
             "Playbooks/inventories that failed syntax check: "
             "%s", " \n".join(problemlist))
-        anmad_logging.LOGGER.info(
+        anmad_logging.LOGGER.warning(
             "Refusing to queue requested playbooks until "
             "syntax checks pass")
         continue

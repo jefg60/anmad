@@ -14,9 +14,11 @@ PREQ = HotQueue('prerun')
 
 anmad_ssh.add_ssh_key_to_agent(anmad_args.ARGS.ssh_id)
 
+anmad_logging.LOGGER.info("Starting to consume playbooks queue...")
 for playbookjob in PLAYQ.consume():
 
     # when an item is found in the PLAYQ, first process all jobs in preQ!
+    anmad_logging.LOGGER.info("Starting to consume prerun queue...")
     while True:
         # get first item in preQ and check if its a list, if so run it
         preQ_job = PREQ.get()
@@ -58,3 +60,5 @@ for playbookjob in PLAYQ.consume():
     anmad_logging.LOGGER.info(
         "Running playbooks %s", anmad_args.ARGS.playbooks)
     ansible_run.runplaybooks(anmad_args.ARGS.playbooks)
+
+anmad_logging.LOGGER.warning("Stopped processing playbooks queue!")

@@ -75,28 +75,8 @@ class Handler(FileSystemEventHandler):
                     "Pre-Running playbooks %s",
                     anmad_args.ARGS.pre_run_playbooks)
                 for my_playbook in anmad_args.ARGS.pre_run_playbooks:
-                    ansible_run.runplaybooks([my_playbook])
+                    PREQ.put([my_playbook])
 
-            #Syntax check playbooks, or all playbooks in syntax_check_dir
-            if anmad_args.ARGS.syntax_check_dir is None:
-                problemlist = anmad_syntaxchecks.checkplaybooks(
-                    anmad_args.ARGS.playbooks)
-            else:
-                problemlist = anmad_syntaxchecks.syntax_check_dir(
-                    anmad_args.ARGS.syntax_check_dir)
-
-            if  ''.join(problemlist):
-                anmad_logging.LOGGER.info(
-                    "Playbooks/inventories that failed syntax check: "
-                    "%s", " \n".join(problemlist))
-                anmad_logging.LOGGER.info(
-                    "Refusing to queue requested playbooks until "
-                    "syntax checks pass")
-                return
-
-            # if we get to here without returning, run the playbooks
-            anmad_logging.LOGGER.info(
-                "Queuing playbooks %s", anmad_args.ARGS.playbooks)
             PLAYQ.put(anmad_args.ARGS.playbooks)
 
 

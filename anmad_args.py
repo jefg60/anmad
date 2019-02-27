@@ -80,7 +80,7 @@ def parse_args():
         )
     parser.add_argument(
         "--playbook_root_dir",
-        help="base directory to run playbooks from"
+        help="base directory to run playbooks from",
         required=True,
         )
     parser.add_argument(

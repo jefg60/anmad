@@ -144,6 +144,11 @@ def parse_args():
     myargs = parser.parse_args()
     return myargs
 
+def prepend_rootdir(myrootdir, mylist):
+    """Prepends a path to each item in a list."""
+    ret = [myrootdir + '/' + str(x) for x in mylist]
+    return ret
+
 ARGS = parse_args()
 
 # filter list args to remove empty strings that may have been passed from
@@ -152,6 +157,10 @@ ARGS.inventories = list(filter(None, ARGS.inventories))
 ARGS.playbooks = list(filter(None, ARGS.playbooks))
 if ARGS.pre_run_playbooks:
     ARGS.pre_run_playbooks = list(filter(None, ARGS.pre_run_playbooks))
+
+# Generate playbook lists with prepended rootdir
+PRERUN_LIST = prepend_rootdir(ARGS.playbook_root_dir, ARGS.pre_run_playbooks)
+RUN_LIST = prepend_rootdir(ARGS.playbook_root_dir, ARGS.playbooks)
 
 # First inventory is the one that plays run against
 MAININVENTORY = os.path.abspath(ARGS.inventories[0])

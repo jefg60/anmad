@@ -2,42 +2,16 @@
 """This daemon polls a directory for changed files and runs ansible
  playbooks when changes are detected."""
 
-import subprocess
 import time
-import os
 
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
-import ssh_agent_setup
 
 import anmad_args
 import anmad_logging
 import anmad_syntaxchecks
 import ansible_run
-
-def add_ssh_key_to_agent(key_file):
-    """Adds ssh key, with ssh_askpass if possible"""
-    anmad_logging.LOGGER.info("Loading ssh key...")
-    ssh_agent_setup.setup()
-    my_env = os.environ.copy()
-    if anmad_args.ARGS.ssh_askpass is not None:
-        my_env["SSH_ASKPASS"] = anmad_args.ARGS.ssh_askpass
-        my_env["DISPLAY"] = ":0"
-
-    anmad_logging.LOGGER.debug("environment: %s", my_env)
-    try:
-        subprocess.run(['ssh-add', key_file],
-                       env=my_env,
-                       check=True,
-                       stdout=subprocess.DEVNULL,
-                       stderr=subprocess.DEVNULL
-                       )
-    except subprocess.CalledProcessError:
-        anmad_logging.LOGGER.exception("Exception adding ssh key, shutting down")
-        raise Exception
-    else:
-        anmad_logging.LOGGER.info("SSH key loaded")
-
+import anmad_ssh
 
 def poll_for_updates(my_path):
     """Func to watch a file."""
@@ -125,7 +99,7 @@ class Handler(FileSystemEventHandler):
 
 if __name__ == '__main__':
 
-    add_ssh_key_to_agent(anmad_args.ARGS.ssh_id)
+    anmad_ssh.add_ssh_key_to_agent(anmad_args.ARGS.ssh_id)
 
     anmad_logging.LOGGER.info(
         "Polling %s directory for updated files every %s seconds...",

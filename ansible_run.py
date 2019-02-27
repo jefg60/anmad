@@ -6,7 +6,7 @@ from multiprocessing import Pool, Lock
 import anmad_args
 import anmad_logging
 
-playbook_lock = multiprocessing.Lock()
+PLAYBOOK_LOCK = Lock()
 
 def run_one_playbook(my_playbook):
     """Run exactly one ansible playbook. Due to locking, don't call this
@@ -40,14 +40,14 @@ def runplaybooks(listofplaybooks):
     """Run a list of ansible playbooks and wait for them to finish."""
 
     anmad_logging.LOGGER.debug("Waiting for playbook lock")
-    playbook_lock.acquire()
+    PLAYBOOK_LOCK.acquire()
     anmad_logging.LOGGER.debug("Lock acquired")
 
     pool = Pool(anmad_args.ARGS.concurrency)
     ret = pool.map(run_one_playbook, listofplaybooks)
     pool.close()
 
-    playbook_lock.release()
+    PLAYBOOK_LOCK.release()
     anmad_logging.LOGGER.debug("Lock released")
     return ret
 
@@ -55,13 +55,13 @@ def runplaybooks_async(listofplaybooks):
     """Run a list of ansible playbooks asyncronously."""
 
     anmad_logging.LOGGER.debug("Waiting for playbook lock")
-    playbook_lock.acquire()
+    PLAYBOOK_LOCK.acquire()
     anmad_logging.LOGGER.debug("Lock acquired")
 
     pool = Pool(anmad_args.ARGS.concurrency)
     ret = pool.map_async(run_one_playbook, listofplaybooks)
     pool.close()
 
-    playbook_lock.release()
+    PLAYBOOK_LOCK.release()
     anmad_logging.LOGGER.debug("Lock released")
     return ret

@@ -11,7 +11,6 @@ from hotqueue import HotQueue
 import anmad_args
 import anmad_logging
 import anmad_syntaxchecks
-import ansible_run
 import anmad_ssh
 
 PLAYQ = HotQueue('playbooks')

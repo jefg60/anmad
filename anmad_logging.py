@@ -48,6 +48,9 @@ LOGGER.info("maininventory: %s", anmad_args.MAININVENTORY)
 if anmad_args.ARGS.pre_run_playbooks:
     LOGGER.info("pre_run_playbooks: %s",
                 " ".join(anmad_args.ARGS.pre_run_playbooks))
+    LOGGER.info("PRERUN_LIST: %s",
+                " ".join(anmad_args.PRERUN_LIST))
 LOGGER.info("playbooks: %s", " ".join(anmad_args.ARGS.playbooks))
+LOGGER.info("RUN_LIST: %s", " ".join(anmad_args.RUN_LIST))
 LOGGER.info("playbook_root_dir: %s", anmad_args.ARGS.playbook_root_dir)
 LOGGER.info("interval: %s", str(anmad_args.ARGS.interval))

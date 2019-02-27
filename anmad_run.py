@@ -6,10 +6,13 @@ from hotqueue import HotQueue
 import anmad_args
 import anmad_logging
 import anmad_syntaxchecks
+import anmad_ssh
 import ansible_run
 
 PLAYQ = HotQueue('playbooks')
 PREQ = HotQueue('prerun')
+
+anmad_ssh.add_ssh_key_to_agent(anmad_args.ARGS.ssh_id)
 
 for playbookjob in PLAYQ.consume():
 

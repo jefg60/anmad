@@ -11,7 +11,6 @@ from hotqueue import HotQueue
 import anmad_args
 import anmad_logging
 import anmad_syntaxchecks
-import anmad_ssh
 
 PLAYQ = HotQueue('playbooks')
 PREQ = HotQueue('prerun')
@@ -81,8 +80,6 @@ class Handler(FileSystemEventHandler):
 
 
 if __name__ == '__main__':
-
-    anmad_ssh.add_ssh_key_to_agent(anmad_args.ARGS.ssh_id)
 
     anmad_logging.LOGGER.info(
         "Polling %s directory for updated files every %s seconds...",

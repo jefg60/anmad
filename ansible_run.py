@@ -51,19 +51,3 @@ def runplaybooks(listofplaybooks):
     PLAYBOOK_LOCK.release()
     anmad_logging.LOGGER.debug("Lock released")
     return ret
-
-def runplaybooks_async(listofplaybooks):
-    """Run a list of ansible playbooks asyncronously."""
-
-    anmad_logging.LOGGER.debug("%s Waiting for playbook lock", __name__)
-    PLAYBOOK_LOCK.acquire()
-    anmad_logging.LOGGER.debug("Lock acquired")
-
-    pool = Pool(anmad_args.ARGS.concurrency)
-    ret = pool.map_async(run_one_playbook, listofplaybooks)
-    pool.close()
-    pool.join()
-
-    PLAYBOOK_LOCK.release()
-    anmad_logging.LOGGER.debug("Lock released")
-    return ret

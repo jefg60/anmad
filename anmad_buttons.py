@@ -20,11 +20,15 @@ def mainpage():
         }
     return render_template('main.html', playbooks=anmad_args.ARGS.playbooks, **template_data)
 
+@APP.route(BASEURL + "ara/")
+def ara_redirect():
+    return redirect(anmad_args.ARGS.ara_url)
+
 @APP.route(BASEURL + "runall/")
 def runall():
     """Run all playbooks."""
     Q.put(anmad_args.ARGS.playbooks)
-    return redirect(anmad_args.ARGS.ara_url)
+    return redirect(BASEURL)
 
 #@APP.route(BASEURL + "stop/")
 #def stopall():
@@ -36,7 +40,7 @@ def oneplaybook(playbook):
     if playbook not in anmad_args.ARGS.playbooks:
         abort(404)
     Q.put(playbook)
-    return redirect(anmad_args.ARGS.ara_url)
+    return redirect(BASEURL)
 
 if __name__ == "__main__":
     APP.run(host='0.0.0.0', port=9999, debug=True)

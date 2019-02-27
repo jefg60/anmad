@@ -22,28 +22,28 @@ pylint="python3 $(which pylint)"
 }
 
 @test "run with 1 playbook and 1 inventory" {
-  run "$dirpoll" -p samples/deploy.yaml -i samples/inventory-internal --debug --no-syslog --dir_to_watch /tmp/ --dry-run --interval 1
+  run "$dirpoll" -p deploy.yaml -i samples/inventory-internal --debug --no-syslog --dir_to_watch /tmp/ --dry-run --interval 1 --playbook_root_dir samples
   [[ "$output" = *"Polling for updates"* ]]
   [[ "$output" != *"error"* ]]
   [ "$status" -eq 0 ]
 }
 
 @test "run with 1 playbook and 2 inventories" {
-  run "$dirpoll" -p samples/deploy.yaml -i samples/inventory-internal samples/inventory-internal --debug --no-syslog --dir_to_watch /tmp/ --dry-run --interval 1
+  run "$dirpoll" -p deploy.yaml -i samples/inventory-internal samples/inventory-internal --debug --no-syslog --dir_to_watch /tmp/ --dry-run --interval 1 --playbook_root_dir samples
   [[ "$output" = *"Polling for updates"* ]]
   [[ "$output" != *"error"* ]]
   [ "$status" -eq 0 ]
 }
 
 @test "run with 2 inventories and 2 playbooks" {
-  run "$dirpoll" -p samples/deploy.yaml samples/deploy2.yaml -i samples/inventory-internal samples/inventory-internal --debug --no-syslog --dir_to_watch /tmp/ --dry-run --interval 1
+  run "$dirpoll" -p deploy.yaml deploy2.yaml -i samples/inventory-internal samples/inventory-internal --debug --no-syslog --dir_to_watch /tmp/ --dry-run --interval 1 --playbook_root_dir samples
   [[ "$output" = *"Polling for updates"* ]]
   [[ "$output" != *"error"* ]]
   [ "$status" -eq 0 ]
 }
 
 @test "run without --debug" {
-  run "$dirpoll" -p samples/deploy.yaml samples/deploy2.yaml -i samples/inventory-internal samples/inventory-internal --no-syslog --dir_to_watch /tmp/ --dry-run --interval 1
+  run "$dirpoll" -p deploy.yaml deploy2.yaml -i samples/inventory-internal samples/inventory-internal --no-syslog --dir_to_watch /tmp/ --dry-run --interval 1 --playbook_root_dir samples
   [[ "$output" != *"error"* ]]
   [ "$status" -eq 0 ]
 }

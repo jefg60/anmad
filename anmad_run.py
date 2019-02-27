@@ -5,4 +5,7 @@ from hotqueue import HotQueue
 queue = HotQueue('playbooks')
 
 for item in queue.consume():
-    print(item)
+    if type(item) is not list:
+        print('WARNING: %s from playbook queue is not a list, ignoring it', item)
+    else:
+        print(item)

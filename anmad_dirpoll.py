@@ -13,6 +13,8 @@ import anmad_syntaxchecks
 import ansible_run
 import anmad_ssh
 
+Q = HotQueue('playbooks')
+
 def poll_for_updates(my_path):
     """Func to watch a file."""
     while True:
@@ -86,14 +88,14 @@ class Handler(FileSystemEventHandler):
                     "Playbooks/inventories that failed syntax check: "
                     "%s", " \n".join(problemlist))
                 anmad_logging.LOGGER.info(
-                    "Refusing to run requested playbooks until "
+                    "Refusing to queue requested playbooks until "
                     "syntax checks pass")
                 return
 
             # if we get to here without returning, run the playbooks
             anmad_logging.LOGGER.info(
-                "Running playbooks %s", anmad_args.ARGS.playbooks)
-            ansible_run.runplaybooks(anmad_args.ARGS.playbooks)
+                "Queuing playbooks %s", anmad_args.ARGS.playbooks)
+            Q.put(anmad_args.ARGS.playbooks)
 
 
 

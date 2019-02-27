@@ -6,6 +6,7 @@ import time
 
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
+from hotqueue import HotQueue
 
 import anmad_args
 import anmad_logging
@@ -13,7 +14,8 @@ import anmad_syntaxchecks
 import ansible_run
 import anmad_ssh
 
-Q = HotQueue('playbooks')
+PLAYQ = HotQueue('playbooks')
+PREQ = HotQueue('prerun')
 
 def poll_for_updates(my_path):
     """Func to watch a file."""
@@ -95,7 +97,7 @@ class Handler(FileSystemEventHandler):
             # if we get to here without returning, run the playbooks
             anmad_logging.LOGGER.info(
                 "Queuing playbooks %s", anmad_args.ARGS.playbooks)
-            Q.put(anmad_args.ARGS.playbooks)
+            PLAYQ.put(anmad_args.ARGS.playbooks)
 
 
 

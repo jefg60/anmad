@@ -19,13 +19,15 @@ def mainpage():
         'title' : 'anmad controls',
         'time': time_string
         }
-    anmad_logging.LOGGER.info("Rendering control page")
-    return render_template('main.html', playbooks=anmad_args.ARGS.playbooks, **template_data)
+    anmad_logging.LOGGER.debug("Rendering control page")
+    return render_template('main.html',
+                           playbooks=anmad_args.ARGS.playbooks,
+                           **template_data)
 
 @APP.route(BASEURL + "ara/")
 def ara_redirect():
     """Redirect to ARA reports page."""
-    anmad_logging.LOGGER.info("Redirecting to ARA reports page")
+    anmad_logging.LOGGER.debug("Redirecting to ARA reports page")
     return redirect(anmad_args.ARGS.ara_url)
 
 @APP.route(BASEURL + "runall/")
@@ -33,7 +35,7 @@ def runall():
     """Run all playbooks."""
     anmad_logging.LOGGER.info("Queuing %s", anmad_args.ARGS.playbooks)
     Q.put(anmad_args.ARGS.playbooks)
-    anmad_logging.LOGGER.info("Redirecting to control page")
+    anmad_logging.LOGGER.debug("Redirecting to control page")
     return redirect(BASEURL)
 
 #@APP.route(BASEURL + "stop/")
@@ -48,7 +50,7 @@ def oneplaybook(playbook):
         abort(404)
     anmad_logging.LOGGER.info("Queuing %s", [playbook])
     Q.put([playbook])
-    anmad_logging.LOGGER.info("Redirecting to control page")
+    anmad_logging.LOGGER.debug("Redirecting to control page")
     return redirect(BASEURL)
 
 if __name__ == "__main__":

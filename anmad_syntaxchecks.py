@@ -70,6 +70,7 @@ def syntax_check_dir(check_dir):
     problemlist = checkplaybooks(yamlfiles)
     return problemlist
 
+
 def verify_files_exist():
     """ Check that files exist before continuing."""
     fileargs = anmad_args.ARGS.inventories + anmad_args.ARGS.playbooks

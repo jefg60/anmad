@@ -39,12 +39,13 @@ def run_one_playbook(my_playbook):
 def runplaybooks(listofplaybooks):
     """Run a list of ansible playbooks and wait for them to finish."""
 
-    anmad_logging.LOGGER.debug("Waiting for playbook lock")
+    anmad_logging.LOGGER.debug("%s Waiting for playbook lock", __name__)
     PLAYBOOK_LOCK.acquire()
     anmad_logging.LOGGER.debug("Lock acquired")
 
     pool = Pool(anmad_args.ARGS.concurrency)
     ret = pool.map(run_one_playbook, listofplaybooks)
+    pool.join()
     pool.close()
 
     PLAYBOOK_LOCK.release()
@@ -54,12 +55,13 @@ def runplaybooks(listofplaybooks):
 def runplaybooks_async(listofplaybooks):
     """Run a list of ansible playbooks asyncronously."""
 
-    anmad_logging.LOGGER.debug("Waiting for playbook lock")
+    anmad_logging.LOGGER.debug("%s Waiting for playbook lock", __name__)
     PLAYBOOK_LOCK.acquire()
     anmad_logging.LOGGER.debug("Lock acquired")
 
     pool = Pool(anmad_args.ARGS.concurrency)
     ret = pool.map_async(run_one_playbook, listofplaybooks)
+    pool.join()
     pool.close()
 
     PLAYBOOK_LOCK.release()

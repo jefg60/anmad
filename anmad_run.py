@@ -58,7 +58,7 @@ for playbookjob in PLAYQ.consume():
 
     # if we get to here syntax checks passed. Run the playbooks
     anmad_logging.LOGGER.info(
-        "Running playbooks %s", anmad_args.ARGS.playbooks)
-    ansible_run.runplaybooks(anmad_args.ARGS.playbooks)
+        "Running playbooks %s", anmad_args.RUN_LIST)
+    ansible_run.runplaybooks(anmad_args.RUN_LIST)
 
 anmad_logging.LOGGER.warning("Stopped processing playbooks queue!")

@@ -22,6 +22,7 @@ def mainpage():
 
 @APP.route(BASEURL + "ara/")
 def ara_redirect():
+    """Redirect to ARA reports page."""
     return redirect(anmad_args.ARGS.ara_url)
 
 @APP.route(BASEURL + "runall/")

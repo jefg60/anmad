@@ -1,1 +1,1 @@
-from anamd_buttons import APP as application
+from anmad_buttons import APP as application

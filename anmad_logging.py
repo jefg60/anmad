@@ -2,9 +2,15 @@
 import logging
 import logging.handlers
 import os
+import mod_wsgi
 import __main__ as main
 
 import anmad_args
+
+try:
+    PROCESS_NAME = mod_wsgi.process_group
+except AttributeError:
+    PROCESS_NAME = os.path.basename(main.__file__)
 
 # Setup Logging globally with no handlers to begin with
 logging.basicConfig(
@@ -13,7 +19,7 @@ logging.basicConfig(
     handlers=[]
     )
 
-LOGGER = logging.getLogger(os.path.basename(main.__file__))
+LOGGER = logging.getLogger(PROCESS_NAME)
 FORMATTER = logging.Formatter(
     '%(name)s - [%(levelname)s] - %(message)s')
 

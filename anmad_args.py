@@ -3,12 +3,12 @@ import shutil
 import os
 from os.path import expanduser
 import configargparse
-import __main__ as main
 import mod_wsgi
+import __main__ as main
 
 try:
-    process_group = mod_wsgi.process_group
-    DEFAULT_CONFIGFILE = '/etc/anmad/conf.d/' + process_group
+    PROCESS_GROUP = mod_wsgi.process_group
+    DEFAULT_CONFIGFILE = '/etc/anmad/conf.d/' + PROCESS_GROUP
 except AttributeError:
     DEFAULT_CONFIGFILE = '/etc/anmad/conf.d/' + os.path.basename(main.__file__)
 

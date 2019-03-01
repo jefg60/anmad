@@ -4,8 +4,13 @@ import os
 from os.path import expanduser
 import configargparse
 import __main__ as main
+import mod_wsgi
 
-DEFAULT_CONFIGFILE = '/etc/anmad/conf.d/' + os.path.basename(main.__file__)
+try:
+    process_group = mod_wsgi.process_group
+    DEFAULT_CONFIGFILE = '/etc/anmad/conf.d/' + process_group
+except AttributeError:
+    DEFAULT_CONFIGFILE = '/etc/anmad/conf.d/' + os.path.basename(main.__file__)
 
 def parse_args():
     """Read arguments from command line."""

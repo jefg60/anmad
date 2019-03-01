@@ -8,7 +8,7 @@ import anmad_args
 import anmad_logging
 
 APP = Flask(__name__)
-BASEURL = "/control/"
+BASEURL = "/"
 Q = HotQueue('playbooks')
 
 @APP.route(BASEURL)

@@ -52,16 +52,6 @@ class Handler(FileSystemEventHandler):
             # actions when a file is modified.
             anmad_logging.LOGGER.info(
                 "Received modified event - %s.", event.src_path)
-            anmad_logging.LOGGER.debug(
-                "ssh id: %s", anmad_args.ARGS.ssh_id)
-            anmad_logging.LOGGER.debug(
-                "dir_to_watch: %s", anmad_args.ARGS.dir_to_watch)
-            anmad_logging.LOGGER.debug(
-                "interval: %s", str(anmad_args.ARGS.interval))
-            anmad_logging.LOGGER.debug(
-                "maininventory: %s", anmad_args.MAININVENTORY)
-            anmad_logging.LOGGER.debug(
-                "inventorylist: %s", anmad_args.ARGS.inventories)
 
             try:
                 anmad_syntaxchecks.verify_files_exist()

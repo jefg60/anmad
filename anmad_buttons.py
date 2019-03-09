@@ -12,7 +12,7 @@ BASEURL = "/"
 Q = HotQueue('playbooks')
 PREQ = HotQueue('prerun')
 BUTTONLIST = (anmad_args.ARGS.pre_run_playbooks +
-    anmad_args.ARGS.playbooks)
+              anmad_args.ARGS.playbooks)
 
 @APP.route(BASEURL)
 def mainpage():

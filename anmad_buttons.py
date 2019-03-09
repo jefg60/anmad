@@ -10,6 +10,9 @@ import anmad_logging
 APP = Flask(__name__)
 BASEURL = "/"
 Q = HotQueue('playbooks')
+PREQ = HotQueue('prerun')
+BUTTONLIST = (anmad_args.ARGS.pre_run_playbooks +
+    anmad_args.ARGS.playbooks)
 
 @APP.route(BASEURL)
 def mainpage():
@@ -21,7 +24,7 @@ def mainpage():
         }
     anmad_logging.LOGGER.debug("Rendering control page")
     return render_template('main.html',
-                           playbooks=anmad_args.ARGS.playbooks,
+                           playbooks=BUTTONLIST,
                            **template_data)
 
 @APP.route(BASEURL + "ara/")
@@ -33,6 +36,8 @@ def ara_redirect():
 @APP.route(BASEURL + "runall/")
 def runall():
     """Run all playbooks."""
+    anmad_logging.LOGGER.info("Pre-Queuing %s", anmad_args.PRERUN_LIST)
+    PREQ.put(anmad_args.PRERUN_LIST)
     anmad_logging.LOGGER.info("Queuing %s", anmad_args.RUN_LIST)
     Q.put(anmad_args.RUN_LIST)
     anmad_logging.LOGGER.debug("Redirecting to control page")
@@ -45,7 +50,7 @@ def runall():
 @APP.route(BASEURL + 'playbooks/<path:playbook>')
 def oneplaybook(playbook):
     """Runs one playbook, if its one of the configured ones."""
-    if playbook not in anmad_args.ARGS.playbooks:
+    if playbook not in BUTTONLIST:
         anmad_logging.LOGGER.warning("API request for %s DENIED", playbook)
         abort(404)
     my_runlist = [anmad_args.ARGS.playbook_root_dir + '/' + playbook]

@@ -16,7 +16,7 @@ DEFAULT_CONFIGFILE = '/etc/anmad/conf.d/' + PROCESS_NAME
 def parse_args():
     """Read arguments from command line."""
 
-    __version__ = "0.10.1"
+    __version__ = "0.10.2"
 
     home = expanduser("~")
 

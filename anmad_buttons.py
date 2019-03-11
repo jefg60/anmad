@@ -20,7 +20,8 @@ def mainpage():
     time_string = datetime.datetime.now()
     template_data = {
         'title' : 'anmad controls',
-        'time': time_string
+        'time': time_string,
+        'version': anmad_args.VERSION
         }
     anmad_logging.LOGGER.debug("Rendering control page")
     return render_template('main.html',

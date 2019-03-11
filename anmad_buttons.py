@@ -37,8 +37,9 @@ def ara_redirect():
 @APP.route(BASEURL + "runall/")
 def runall():
     """Run all playbooks."""
-    anmad_logging.LOGGER.info("Pre-Queuing %s", anmad_args.PRERUN_LIST)
-    PREQ.put(anmad_args.PRERUN_LIST)
+    for play in anmad_args.PRERUN_LIST:
+        anmad_logging.LOGGER.info("Pre-Queuing %s", [play])
+        PREQ.put([play])
     anmad_logging.LOGGER.info("Queuing %s", anmad_args.RUN_LIST)
     Q.put(anmad_args.RUN_LIST)
     anmad_logging.LOGGER.debug("Redirecting to control page")

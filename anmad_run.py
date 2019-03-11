@@ -20,9 +20,10 @@ for playbookjob in PLAYQ.consume():
     # when an item is found in the PLAYQ, first process all jobs in preQ!
     anmad_logging.LOGGER.info("Starting to consume prerun queue...")
     while True:
-        # get first item in preQ and check if its a list, if so run it
+        # get first item in preQ and check if its a list of 1 item,
+        # if so run it
         preQ_job = PREQ.get()
-        if isinstance(preQ_job, list):
+        if isinstance(preQ_job, list) and len(preQ_job) == 1:
             anmad_logging.LOGGER.info(
                 "Found a pre-run queue item: %s", preQ_job)
             # statements to process pre-Q job
@@ -31,7 +32,7 @@ for playbookjob in PLAYQ.consume():
         # if it wasnt a list, but something is there, something is wrong
         elif preQ_job is not None:
             anmad_logging.LOGGER.warning(
-                "non list item found in pre-run queue")
+                "item found in pre-run queue but its not a single item list")
             break
         else:
             anmad_logging.LOGGER.info(

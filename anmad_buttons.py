@@ -36,7 +36,7 @@ def ara_redirect():
 
 @APP.route(BASEURL + "runall/")
 def runall():
-    """Run all playbooks."""
+    """Run all playbooks after verifying that files exist."""
     if anmad_args.ARGS.pre_run_playbooks is not None:
         for play in anmad_args.PRERUN_LIST:
             anmad_logging.LOGGER.info("Pre-Queuing %s", [play])

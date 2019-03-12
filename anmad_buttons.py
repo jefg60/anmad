@@ -6,6 +6,7 @@ from hotqueue import HotQueue
 
 import anmad_args
 import anmad_logging
+import anmad_syntaxchecks
 
 APP = Flask(__name__)
 BASEURL = "/"
@@ -28,15 +29,22 @@ def mainpage():
                            playbooks=BUTTONLIST,
                            **template_data)
 
+
 @APP.route(BASEURL + "ara/")
 def ara_redirect():
     """Redirect to ARA reports page."""
     anmad_logging.LOGGER.debug("Redirecting to ARA reports page")
     return redirect(anmad_args.ARGS.ara_url)
 
+
 @APP.route(BASEURL + "runall/")
 def runall():
     """Run all playbooks after verifying that files exist."""
+    try:
+        anmad_syntaxchecks.verify_files_exist()
+    except FileNotFoundError:
+        return redirect(BASEURL)
+
     if anmad_args.ARGS.pre_run_playbooks is not None:
         for play in anmad_args.PRERUN_LIST:
             anmad_logging.LOGGER.info("Pre-Queuing %s", [play])
@@ -46,9 +54,11 @@ def runall():
     anmad_logging.LOGGER.debug("Redirecting to control page")
     return redirect(BASEURL)
 
+
 #@APP.route(BASEURL + "stop/")
 #def stopall():
 #   subprocess.call(['./stop.sh'], shell=True)
+
 
 @APP.route(BASEURL + 'playbooks/<path:playbook>')
 def oneplaybook(playbook):
@@ -61,6 +71,7 @@ def oneplaybook(playbook):
     Q.put(my_runlist)
     anmad_logging.LOGGER.debug("Redirecting to control page")
     return redirect(BASEURL)
+
 
 if __name__ == "__main__":
     APP.run(host='0.0.0.0', port=9999, debug=True)

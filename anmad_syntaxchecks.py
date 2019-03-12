@@ -50,7 +50,7 @@ def checkplaybooks(listofplaybooks):
 
     bad_playbooks = []
 
-    pool = Pool()
+    pool = Pool(anmad_args.ARGS.concurrency)
     bad_playbooks = pool.map(syntax_check_play, listofplaybooks)
     pool.close()
     pool.join()

@@ -138,6 +138,7 @@ def parse_args():
         )
     parser.add_argument(
         "--concurrency",
+        type=int,
         help="number of simultaneous processes to run,"
              "defaults to number of cpu reported by OS",
         default=os.cpu_count()

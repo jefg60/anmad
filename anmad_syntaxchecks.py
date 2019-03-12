@@ -2,15 +2,62 @@
 
 import os
 import glob
+import yaml
 from multiprocessing import Pool
 import subprocess
 
 import anmad_args
 import anmad_logging
 
+
+def verify_yaml_file(filename):
+    """Try to read yaml safely, return False if not valid"""
+    try:
+        with open(filename, 'r') as f:
+            yamldata = yaml.safe_load(f)
+    except FileNotFoundError:
+        anmad_logging.LOGGER.error(
+            "YAML File %s cannot be found", filename)
+        yamldata = False
+    except IsADirectoryError:
+        anmad_logging.LOGGER.error(
+            "Expected YAML File at %s but it is a directory", filename)
+        yamldata = False
+    except yaml.scanner.ScannerError:
+        anmad_logging.LOGGER.error(
+            "Bad YAML syntax in %s", filename)
+        yamldata = False
+    return yamldata
+
+
+def verify_files_exist():
+    """ Check that files exist before continuing."""
+    fileargs1 = (anmad_args.ARGS.inventories +
+                anmad_args.RUN_LIST +
+                anmad_args.PRERUN_LIST )
+    for filename in fileargs1:
+        yamldata = verify_yaml_file(filename)
+        if not yamldata:
+            raise FileNotFoundError
+
+    fileargs2 = anmad_args.ARGS.ssh_id + anmad_args.ARGS.dir_to_watch
+    try:
+        fileargs2.append(anmad_args.ARGS.vault_password_file)
+    except NameError:
+        pass
+    for filename in fileargs2:
+        if not os.path.exists(filename):
+            anmad_logging.LOGGER.error("Unable to find path %s , aborting",
+                                       filename)
+            raise FileNotFoundError
+
+
 def syntax_check_play_inv(my_playbook, my_inventory):
     """Check a single playbook against a single inventory.
-    Plays should be absolute paths here."""
+    Plays should be absolute paths here.
+    Returns a list of failed playbooks or inventories or 
+    an empty string if all were ok"""
+
     my_playbook = os.path.abspath(my_playbook)
     my_inventory = os.path.abspath(my_inventory)
     anmad_logging.LOGGER.info(
@@ -21,7 +68,6 @@ def syntax_check_play_inv(my_playbook, my_inventory):
          '--inventory', my_inventory,
          '--vault-password-file', anmad_args.ARGS.vault_password_file,
          my_playbook, '--syntax-check'])
-
     if ret == 0:
         anmad_logging.LOGGER.info(
             "ansible-playbook syntax check return code: "
@@ -30,9 +76,14 @@ def syntax_check_play_inv(my_playbook, my_inventory):
 
     anmad_logging.LOGGER.info(
         "Playbook %s failed syntax check!!!", my_playbook)
-    anmad_logging.LOGGER.debug(
-        "ansible-playbook syntax check return code: "
-        "%s", ret)
+    try:
+        anmad_logging.LOGGER.debug(
+            "ansible-playbook syntax check return code: "
+            "%s", ret)
+    except NameError:
+        anmad_logging.LOGGER.error(
+            "playbooks / inventories must be valid YAML, %s or %s is not",
+            my_playbook, my_inventory)
     return ('   playbook: ' + my_playbook +
             '\n   inventory: ' + my_inventory)
 
@@ -41,6 +92,13 @@ def syntax_check_play(my_playbook):
     my_playbook = os.path.abspath(my_playbook)
     for my_inventory in anmad_args.ARGS.inventories:
         my_inventory = os.path.abspath(my_inventory)
+        if not verify_yaml_file(my_playbook):
+            failed = ('failed playbook: ' + my_playbook)
+            return failed
+        if not verify_yaml_file(my_inventory):
+            failed = ('failed inventory: ' + my_inventory)
+            return failed
+
         failed = syntax_check_play_inv(my_playbook, my_inventory)
     return failed
 
@@ -69,20 +127,3 @@ def syntax_check_dir(check_dir):
     yamlfiles = yamlfiles + ymlfiles
     problemlist = checkplaybooks(yamlfiles)
     return problemlist
-
-
-def verify_files_exist():
-    """ Check that files exist before continuing."""
-    fileargs = anmad_args.ARGS.inventories + anmad_args.RUN_LIST
-
-    fileargs.append(anmad_args.ARGS.ssh_id)
-    fileargs.append(anmad_args.ARGS.dir_to_watch)
-    try:
-        fileargs.append(anmad_args.ARGS.vault_password_file)
-    except NameError:
-        pass
-    for filename in fileargs:
-        if not os.path.exists(filename):
-            anmad_logging.LOGGER.error("Unable to find path %s , aborting",
-                                       filename)
-            raise FileNotFoundError

@@ -40,7 +40,7 @@ def verify_files_exist():
     for filename in fileargs1:
         yamldata = verify_yaml_file(filename)
         if not yamldata:
-            raise FileNotFoundError
+            return filename
 
     fileargs2 = anmad_args.ARGS.ssh_id + anmad_args.ARGS.dir_to_watch
     try:
@@ -51,7 +51,8 @@ def verify_files_exist():
         if not os.path.exists(filename):
             anmad_logging.LOGGER.error("Unable to find path %s , aborting",
                                        filename)
-            raise FileNotFoundError
+            return filename
+    return str()
 
 
 def syntax_check_play_inv(my_playbook, my_inventory):

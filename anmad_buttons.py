@@ -43,7 +43,7 @@ def ara_redirect():
     return redirect(anmad_args.ARGS.ara_url)
 
 
-@APP.route(BASEURL + "runall/")
+@APP.route(BASEURL + "runall")
 def runall():
     """Run all playbooks after verifying that files exist."""
     try:

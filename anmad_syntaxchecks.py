@@ -21,7 +21,7 @@ def verify_yaml_file(filename):
         yamldata = False
     except IsADirectoryError:
         anmad_logging.LOGGER.error(
-            "Expected YAML File at %s but it is a directory", filename)
+            "Expected YAML File at %s but got a directory", filename)
         yamldata = False
     except yaml.scanner.ScannerError:
         anmad_logging.LOGGER.error(
@@ -33,7 +33,8 @@ def verify_yaml_file(filename):
 
 
 def verify_files_exist():
-    """ Check that files exist before continuing."""
+    """ Check that files exist before continuing.
+    Returns names of files that are missing or fail yaml syntax checks"""
     fileargs1 = (anmad_args.ARGS.inventories +
                  anmad_args.RUN_LIST +
                  anmad_args.PRERUN_LIST)

@@ -36,7 +36,7 @@ def defaultmain():
     return mainpage()
 
 
-@APP.route(BASEURL + "ara/")
+@APP.route(BASEURL + "ara")
 def ara_redirect():
     """Redirect to ARA reports page."""
     anmad_logging.LOGGER.debug("Redirecting to ARA reports page")

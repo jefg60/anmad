@@ -2,9 +2,9 @@
 
 import os
 import glob
-import yaml
 from multiprocessing import Pool
 import subprocess
+import yaml
 
 import anmad_args
 import anmad_logging
@@ -13,8 +13,8 @@ import anmad_logging
 def verify_yaml_file(filename):
     """Try to read yaml safely, return False if not valid"""
     try:
-        with open(filename, 'r') as f:
-            yamldata = yaml.safe_load(f)
+        with open(filename, 'r') as my_filename:
+            yamldata = yaml.safe_load(my_filename)
     except FileNotFoundError:
         anmad_logging.LOGGER.error(
             "YAML File %s cannot be found", filename)
@@ -27,14 +27,16 @@ def verify_yaml_file(filename):
         anmad_logging.LOGGER.error(
             "Bad YAML syntax in %s", filename)
         yamldata = False
+    except yaml.parser.ParserError:
+        yamldata = False
     return yamldata
 
 
 def verify_files_exist():
     """ Check that files exist before continuing."""
     fileargs1 = (anmad_args.ARGS.inventories +
-                anmad_args.RUN_LIST +
-                anmad_args.PRERUN_LIST )
+                 anmad_args.RUN_LIST +
+                 anmad_args.PRERUN_LIST)
     for filename in fileargs1:
         yamldata = verify_yaml_file(filename)
         if not yamldata:
@@ -55,7 +57,7 @@ def verify_files_exist():
 def syntax_check_play_inv(my_playbook, my_inventory):
     """Check a single playbook against a single inventory.
     Plays should be absolute paths here.
-    Returns a list of failed playbooks or inventories or 
+    Returns a list of failed playbooks or inventories or
     an empty string if all were ok"""
 
     my_playbook = os.path.abspath(my_playbook)

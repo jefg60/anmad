@@ -15,19 +15,25 @@ PREQ = HotQueue('prerun')
 BUTTONLIST = (anmad_args.ARGS.pre_run_playbooks +
               anmad_args.ARGS.playbooks)
 
-@APP.route(BASEURL)
-def mainpage():
+
+def mainpage(message='messages will appear here'):
     """Render main page."""
     time_string = datetime.datetime.now()
     template_data = {
         'title' : 'anmad controls',
         'time': time_string,
-        'version': anmad_args.VERSION
+        'version': anmad_args.VERSION,
+        'message': message
         }
     anmad_logging.LOGGER.debug("Rendering control page")
     return render_template('main.html',
                            playbooks=BUTTONLIST,
                            **template_data)
+
+@APP.route(BASEURL)
+def defaultmain():
+    """Render default main page"""
+    return mainpage()
 
 
 @APP.route(BASEURL + "ara/")
@@ -43,7 +49,7 @@ def runall():
     try:
         anmad_syntaxchecks.verify_files_exist()
     except FileNotFoundError:
-        return redirect(BASEURL)
+        return mainpage('YAML error')
 
     if anmad_args.ARGS.pre_run_playbooks is not None:
         for play in anmad_args.PRERUN_LIST:
@@ -52,7 +58,7 @@ def runall():
     anmad_logging.LOGGER.info("Queuing %s", anmad_args.RUN_LIST)
     Q.put(anmad_args.RUN_LIST)
     anmad_logging.LOGGER.debug("Redirecting to control page")
-    return redirect(BASEURL)
+    return mainpage()
 
 
 #@APP.route(BASEURL + "stop/")

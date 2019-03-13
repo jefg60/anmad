@@ -1,61 +1,40 @@
 #!/usr/bin/env bats
 #
-version=0.10.3
-dirpoll=./anmad_dirpoll.py
+version=0.11.0
+program=./anmad_buttons.py
 printvault=./print_vault_value.py
 pylint="python3 $(which pylint)"
 
 @test "test --help option" {
-  run "$dirpoll" --help
+  run "$program" --help
   [ "$status" -eq 0 ]
   [[ "$output" = *"usage"* ]]
 }
 
 @test "run without args, print help" {
-  run "$dirpoll"
+  run "$program"
   [[ "$output" = *"error: the following arguments are required:"* ]]
 }
 
 @test "run with incorrect args, print help" {
-  run "$dirpoll" -i samples/inventory-internal --debug --no-syslog
+  run "$program" -i samples/inventory-internal --debug --no-syslog
   [[ "$output" = *"error: the following arguments are required:"* ]]
 }
 
-@test "run with 1 playbook and 1 inventory" {
-  run "$dirpoll" -p deploy.yaml -i samples/inventory-internal --debug --no-syslog --dir_to_watch /tmp/ --dry-run --interval 1 --playbook_root_dir samples
-  [[ "$output" = *"Polling for updates"* ]]
-  [[ "$output" != *"error"* ]]
-  [ "$status" -eq 0 ]
-}
-
-@test "run with 1 playbook and 2 inventories" {
-  run "$dirpoll" -p deploy.yaml -i samples/inventory-internal samples/inventory-internal --debug --no-syslog --dir_to_watch /tmp/ --dry-run --interval 1 --playbook_root_dir samples
-  [[ "$output" = *"Polling for updates"* ]]
-  [[ "$output" != *"error"* ]]
-  [ "$status" -eq 0 ]
-}
-
-@test "run with 2 inventories and 2 playbooks" {
-  run "$dirpoll" -p deploy.yaml deploy2.yaml -i samples/inventory-internal samples/inventory-internal --debug --no-syslog --dir_to_watch /tmp/ --dry-run --interval 1 --playbook_root_dir samples
-  [[ "$output" = *"Polling for updates"* ]]
-  [[ "$output" != *"error"* ]]
-  [ "$status" -eq 0 ]
-}
-
 @test "run without --debug" {
-  run "$dirpoll" -p deploy.yaml deploy2.yaml -i samples/inventory-internal samples/inventory-internal --no-syslog --dir_to_watch /tmp/ --dry-run --interval 1 --playbook_root_dir samples
+  run "$program" -p deploy.yaml deploy2.yaml -i samples/inventory-internal samples/inventory-internal --no-syslog --dir_to_watch /tmp/ --dry-run --interval 1 --playbook_root_dir samples
   [[ "$output" != *"error"* ]]
   [ "$status" -eq 0 ]
 }
 
 @test "run without --no-syslog but with --debug, using conf file" {
-  run "$dirpoll" -c configtest.ini
+  run "$program" -c configtest.ini
   [[ "$output" != *"error"* ]]
   [ "$status" -eq 0 ]
 }
 
 @test "logpoll Version is $version" {
-  run "$dirpoll" --version
+  run "$program" --version
   [ "$output" = "$version" ]
 }
 

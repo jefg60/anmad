@@ -83,5 +83,5 @@ def oneplaybook(playbook):
     return redirect(BASEURL)
 
 
-if __name__ == "__main__":
+if __name__ == "__main__" and not anmad_args.ARGS.dryrun:
     APP.run(host='0.0.0.0', port=9999, debug=True)

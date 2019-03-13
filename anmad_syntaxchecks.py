@@ -35,13 +35,21 @@ def verify_yaml_file(filename):
 def verify_files_exist():
     """ Check that files exist before continuing.
     Returns names of files that are missing or fail yaml syntax checks"""
-    fileargs1 = (anmad_args.ARGS.inventories +
-                 anmad_args.RUN_LIST +
-                 anmad_args.PRERUN_LIST)
+    try:
+        fileargs1 = (anmad_args.ARGS.inventories +
+                     anmad_args.RUN_LIST +
+                     anmad_args.PRERUN_LIST)
+    except AttributeError:
+        fileargs1 = (anmad_args.ARGS.inventories +
+                     anmad_args.RUN_LIST)
+    badfiles = []
     for filename in fileargs1:
         yamldata = verify_yaml_file(filename)
         if not yamldata:
-            return filename
+            # todo: handle ini inventory files here, which currently fail yaml test.
+            badfiles.append(filename)
+    if badfiles is not None:
+        return badfiles
 
     fileargs2 = anmad_args.ARGS.ssh_id + anmad_args.ARGS.dir_to_watch
     try:

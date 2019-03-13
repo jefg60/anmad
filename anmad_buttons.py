@@ -50,7 +50,7 @@ def ara_redirect():
 def runall():
     """Run all playbooks after verifying that files exist."""
     problemfile = anmad_syntaxchecks.verify_files_exist()
-    verify_msg = ("YAML error with: " + problemfile)
+    verify_msg = ("YAML error with: " + str(problemfile))
     if problemfile:
         return mainpage(verify_msg)
 

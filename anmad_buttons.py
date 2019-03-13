@@ -46,13 +46,9 @@ def ara_redirect():
 @APP.route(BASEURL + "runall")
 def runall():
     """Run all playbooks after verifying that files exist."""
-    try:
-        anmad_syntaxchecks.verify_files_exist()
-    except FileNotFoundError:
-        verify_msg = ("YAML error with one of " +
-                      str(anmad_args.PRERUN_LIST) +
-                      str(anmad_args.RUN_LIST) +
-                      str(anmad_args.ARGS.inventories))
+    problemfile = anmad_syntaxchecks.verify_files_exist()
+    verify_msg = ("YAML error with: " + problemfile)
+    if problemfile:
         return mainpage(verify_msg)
 
     if anmad_args.ARGS.pre_run_playbooks is not None:

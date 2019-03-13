@@ -49,7 +49,11 @@ def runall():
     try:
         anmad_syntaxchecks.verify_files_exist()
     except FileNotFoundError:
-        return mainpage('YAML error')
+        verify_msg = ("YAML error with one of " +
+                      str(anmad_args.PRERUN_LIST) +
+                      str(anmad_args.RUN_LIST) +
+                      str(anmad_args.ARGS.inventories))
+        return mainpage(verify_msg)
 
     if anmad_args.ARGS.pre_run_playbooks is not None:
         for play in anmad_args.PRERUN_LIST:
@@ -58,7 +62,11 @@ def runall():
     anmad_logging.LOGGER.info("Queuing %s", anmad_args.RUN_LIST)
     Q.put(anmad_args.RUN_LIST)
     anmad_logging.LOGGER.debug("Redirecting to control page")
-    return mainpage()
+    success_msg = ("Successfuly pre-queued " +
+                   str(anmad_args.PRERUN_LIST) +
+                   "And Queued " +
+                   str(anmad_args.RUN_LIST))
+    return mainpage(success_msg)
 
 
 #@APP.route(BASEURL + "stop/")

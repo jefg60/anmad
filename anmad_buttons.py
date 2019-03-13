@@ -12,8 +12,11 @@ APP = Flask(__name__)
 BASEURL = "/"
 Q = HotQueue('playbooks')
 PREQ = HotQueue('prerun')
-BUTTONLIST = (anmad_args.ARGS.pre_run_playbooks +
-              anmad_args.ARGS.playbooks)
+try:
+    BUTTONLIST = (anmad_args.ARGS.pre_run_playbooks +
+                  anmad_args.ARGS.playbooks)
+except TypeError:
+    BUTTONLIST = (anmad_args.ARGS.playbooks)
 
 
 def mainpage(message='messages will appear here'):

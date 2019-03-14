@@ -164,6 +164,7 @@ ARGS = parse_args()
 # the config file
 ARGS.inventories = list(filter(None, ARGS.inventories))
 ARGS.playbooks = list(filter(None, ARGS.playbooks))
+PRERUN_LIST = None
 if ARGS.pre_run_playbooks:
     ARGS.pre_run_playbooks = list(filter(None, ARGS.pre_run_playbooks))
     PRERUN_LIST = prepend_rootdir(ARGS.playbook_root_dir, ARGS.pre_run_playbooks)

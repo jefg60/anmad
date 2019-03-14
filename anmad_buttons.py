@@ -63,7 +63,7 @@ def runall():
     anmad_logging.LOGGER.debug("Redirecting to control page")
     success_msg = ("Successfuly pre-queued " +
                    str(anmad_args.PRERUN_LIST) +
-                   "And Queued " +
+                   " And Queued " +
                    str(anmad_args.RUN_LIST))
     return mainpage(success_msg)
 

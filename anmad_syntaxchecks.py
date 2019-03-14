@@ -3,6 +3,7 @@
 import os
 import glob
 from multiprocessing import Pool
+from configparser import ConfigParser
 import subprocess
 import yaml
 
@@ -28,7 +29,11 @@ def verify_yaml_file(filename):
             "Bad YAML syntax in %s", filename)
         yamldata = False
     except yaml.parser.ParserError:
-        yamldata = False
+        try:
+            config = ConfigParser()
+            yamldata = config.read(filename)
+        except config.Error:
+            yamldata = False
     return yamldata
 
 
@@ -39,14 +44,13 @@ def verify_files_exist():
         fileargs1 = (anmad_args.ARGS.inventories +
                      anmad_args.RUN_LIST +
                      anmad_args.PRERUN_LIST)
-    except AttributeError:
+    except (AttributeError, TypeError):
         fileargs1 = (anmad_args.ARGS.inventories +
                      anmad_args.RUN_LIST)
     badfiles = []
     for filename in fileargs1:
         yamldata = verify_yaml_file(filename)
         if not yamldata:
-            # todo: handle ini inventory files here, which currently fail yaml test.
             badfiles.append(filename)
     if badfiles is not None:
         return badfiles

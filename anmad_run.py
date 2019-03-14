@@ -9,9 +9,11 @@ import anmad_syntaxchecks
 import anmad_ssh
 import ansible_run
 import anmad_buttons
+import anmad_queues
 
 PLAYQ = HotQueue('playbooks')
 PREQ = HotQueue('prerun')
+QUEUES = anmad_queues.AnmadQueues('prerun', 'playbooks')
 
 anmad_ssh.add_ssh_key_to_agent(anmad_args.ARGS.ssh_id)
 

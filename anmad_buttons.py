@@ -10,7 +10,6 @@ import anmad_queues
 
 APP = Flask(__name__)
 BASEURL = "/"
-QUEUES = anmad_queues.AnmadQueues('prerun', 'playbooks')
 
 try:
     BUTTONLIST = (anmad_args.ARGS.pre_run_playbooks +
@@ -34,7 +33,6 @@ def mainpage():
     return render_template('main.html',
                            playbooks=BUTTONLIST,
                            **template_data)
-    return mainpage()
 
 
 @APP.route(BASEURL + "ara")
@@ -48,9 +46,9 @@ def ara_redirect():
 def runall():
     """Run all playbooks after verifying that files exist."""
     problemfile = anmad_syntaxchecks.verify_files_exist()
-    verify_msg = ("YAML error with: " + str(problemfile))
+    #verify_msg = ("YAML error with: " + str(problemfile))
     if problemfile:
-        return mainpage(verify_msg)
+        return redirect(BASEURL)
 
     if anmad_args.ARGS.pre_run_playbooks is not None:
         for play in anmad_args.PRERUN_LIST:
@@ -79,4 +77,6 @@ def oneplaybook(playbook):
 
 
 if __name__ == "__main__" and not anmad_args.ARGS.dryrun:
+    QUEUES = anmad_queues.AnmadQueues('prerun', 'playbooks')
+
     APP.run(host='0.0.0.0', port=9999, debug=True)

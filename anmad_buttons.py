@@ -22,7 +22,6 @@ except TypeError:
     BUTTONLIST = (anmad_args.ARGS.playbooks)
 
 
-
 def prequeue_job(job):
     """Adds an item to the pre-run queue."""
     anmad_logging.LOGGER.info("Pre-Queuing %s", [job])

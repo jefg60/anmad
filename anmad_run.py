@@ -65,5 +65,7 @@ for playbookjob in PLAYQ.consume():
         "Running playbooks %s", playbookjob)
     ansible_run.runplaybooks(playbookjob)
     anmad_buttons.Q_MESSAGE.remove(playbookjob)
+    anmad_logging.LOGGER.info(
+        "Continuing to process items in playbooks queue...")
 
 anmad_logging.LOGGER.warning("Stopped processing playbooks queue!")

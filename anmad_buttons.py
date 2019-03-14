@@ -2,39 +2,21 @@
 """Control interface for anmad."""
 import datetime
 from flask import Flask, render_template, redirect, abort
-from hotqueue import HotQueue
 
 import anmad_args
 import anmad_logging
 import anmad_syntaxchecks
+import anmad_queues
 
 APP = Flask(__name__)
 BASEURL = "/"
-Q = HotQueue('playbooks')
-PREQ = HotQueue('prerun')
-Q_MESSAGE = []
-PREQ_MESSAGE = []
+QUEUES = anmad_queues.AnmadQueues('prerun', 'playbooks')
 
 try:
     BUTTONLIST = (anmad_args.ARGS.pre_run_playbooks +
                   anmad_args.ARGS.playbooks)
 except TypeError:
     BUTTONLIST = (anmad_args.ARGS.playbooks)
-
-
-def prequeue_job(job):
-    """Adds an item to the pre-run queue."""
-    anmad_logging.LOGGER.info("Pre-Queuing %s", [job])
-    PREQ_MESSAGE.append([job])
-    print(PREQ_MESSAGE)
-    PREQ.put([job])
-
-
-def queue_job(job):
-    """Adds an item to the run queue."""
-    anmad_logging.LOGGER.info("Queuing %s", job)
-    Q_MESSAGE.append(job)
-    Q.put(job)
 
 
 @APP.route(BASEURL)
@@ -45,8 +27,8 @@ def mainpage():
         'title' : 'anmad controls',
         'time': time_string,
         'version': anmad_args.VERSION,
-        'preq_message': PREQ_MESSAGE,
-        'queue_message': Q_MESSAGE
+        'preq_message': QUEUES.prequeue_message,
+        'queue_message': QUEUES.queue_message
         }
     anmad_logging.LOGGER.debug("Rendering control page")
     return render_template('main.html',
@@ -72,8 +54,8 @@ def runall():
 
     if anmad_args.ARGS.pre_run_playbooks is not None:
         for play in anmad_args.PRERUN_LIST:
-            prequeue_job(play)
-    queue_job(anmad_args.RUN_LIST)
+            QUEUES.prequeue_job(play)
+    QUEUES.queue_job(anmad_args.RUN_LIST)
     anmad_logging.LOGGER.debug("Redirecting to control page")
     return redirect(BASEURL)
 
@@ -91,7 +73,7 @@ def oneplaybook(playbook):
         abort(404)
     my_runlist = [anmad_args.ARGS.playbook_root_dir + '/' + playbook]
     anmad_logging.LOGGER.info("Queuing %s", my_runlist)
-    queue_job(my_runlist)
+    QUEUES.queue_job(my_runlist)
     anmad_logging.LOGGER.debug("Redirecting to control page")
     return redirect(BASEURL)
 

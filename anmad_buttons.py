@@ -10,6 +10,7 @@ import anmad_queues
 
 APP = Flask(__name__)
 BASEURL = "/"
+QUEUES = anmad_queues.AnmadQueues('prerun', 'playbooks')
 
 try:
     BUTTONLIST = (anmad_args.ARGS.pre_run_playbooks +
@@ -21,6 +22,7 @@ except TypeError:
 @APP.route(BASEURL)
 def mainpage():
     """Render main page."""
+    QUEUES.reset()
     time_string = datetime.datetime.now()
     template_data = {
         'title' : 'anmad controls',
@@ -70,13 +72,10 @@ def oneplaybook(playbook):
         anmad_logging.LOGGER.warning("API request for %s DENIED", playbook)
         abort(404)
     my_runlist = [anmad_args.ARGS.playbook_root_dir + '/' + playbook]
-    anmad_logging.LOGGER.info("Queuing %s", my_runlist)
     QUEUES.queue_job(my_runlist)
     anmad_logging.LOGGER.debug("Redirecting to control page")
     return redirect(BASEURL)
 
 
 if __name__ == "__main__" and not anmad_args.ARGS.dryrun:
-    QUEUES = anmad_queues.AnmadQueues('prerun', 'playbooks')
-
     APP.run(host='0.0.0.0', port=9999, debug=True)

@@ -44,7 +44,7 @@ def verify_files_exist():
         fileargs1 = (anmad_args.ARGS.inventories +
                      anmad_args.RUN_LIST +
                      anmad_args.PRERUN_LIST)
-    except (AttributeError, TypeError):
+    except TypeError:
         fileargs1 = (anmad_args.ARGS.inventories +
                      anmad_args.RUN_LIST)
     badfiles = []

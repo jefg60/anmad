@@ -8,6 +8,7 @@ import anmad_logging
 import anmad_syntaxchecks
 import anmad_ssh
 import ansible_run
+import anmad_buttons
 
 PLAYQ = HotQueue('playbooks')
 PREQ = HotQueue('prerun')
@@ -28,6 +29,8 @@ for playbookjob in PLAYQ.consume():
                 "Found a pre-run queue item: %s", preQ_job)
             # statements to process pre-Q job
             ansible_run.runplaybooks(preQ_job)
+            print(anmad_buttons.PREQ_MESSAGE)
+            anmad_buttons.PREQ_MESSAGE.remove(preQ_job)
 
         # if it wasnt a list, but something is there, something is wrong
         elif preQ_job is not None:
@@ -61,5 +64,6 @@ for playbookjob in PLAYQ.consume():
     anmad_logging.LOGGER.info(
         "Running playbooks %s", playbookjob)
     ansible_run.runplaybooks(playbookjob)
+    anmad_buttons.Q_MESSAGE.remove(playbookjob)
 
 anmad_logging.LOGGER.warning("Stopped processing playbooks queue!")

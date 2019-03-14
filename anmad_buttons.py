@@ -12,6 +12,9 @@ APP = Flask(__name__)
 BASEURL = "/"
 Q = HotQueue('playbooks')
 PREQ = HotQueue('prerun')
+Q_MESSAGE = []
+PREQ_MESSAGE = []
+
 try:
     BUTTONLIST = (anmad_args.ARGS.pre_run_playbooks +
                   anmad_args.ARGS.playbooks)
@@ -19,23 +22,37 @@ except TypeError:
     BUTTONLIST = (anmad_args.ARGS.playbooks)
 
 
-def mainpage(message='messages will appear here'):
+
+def prequeue_job(job):
+    """Adds an item to the pre-run queue."""
+    anmad_logging.LOGGER.info("Pre-Queuing %s", [job])
+    PREQ_MESSAGE.append([job])
+    print(PREQ_MESSAGE)
+    PREQ.put([job])
+
+
+def queue_job(job):
+    """Adds an item to the run queue."""
+    anmad_logging.LOGGER.info("Queuing %s", job)
+    Q_MESSAGE.append(job)
+    Q.put(job)
+
+
+@APP.route(BASEURL)
+def mainpage():
     """Render main page."""
     time_string = datetime.datetime.now()
     template_data = {
         'title' : 'anmad controls',
         'time': time_string,
         'version': anmad_args.VERSION,
-        'message': message
+        'preq_message': PREQ_MESSAGE,
+        'queue_message': Q_MESSAGE
         }
     anmad_logging.LOGGER.debug("Rendering control page")
     return render_template('main.html',
                            playbooks=BUTTONLIST,
                            **template_data)
-
-@APP.route(BASEURL)
-def defaultmain():
-    """Render default main page"""
     return mainpage()
 
 
@@ -56,16 +73,10 @@ def runall():
 
     if anmad_args.ARGS.pre_run_playbooks is not None:
         for play in anmad_args.PRERUN_LIST:
-            anmad_logging.LOGGER.info("Pre-Queuing %s", [play])
-            PREQ.put([play])
-    anmad_logging.LOGGER.info("Queuing %s", anmad_args.RUN_LIST)
-    Q.put(anmad_args.RUN_LIST)
+            prequeue_job(play)
+    queue_job(anmad_args.RUN_LIST)
     anmad_logging.LOGGER.debug("Redirecting to control page")
-    success_msg = ("Successfuly pre-queued " +
-                   str(anmad_args.PRERUN_LIST) +
-                   " And Queued " +
-                   str(anmad_args.RUN_LIST))
-    return mainpage(success_msg)
+    return redirect(BASEURL)
 
 
 #@APP.route(BASEURL + "stop/")
@@ -81,7 +92,7 @@ def oneplaybook(playbook):
         abort(404)
     my_runlist = [anmad_args.ARGS.playbook_root_dir + '/' + playbook]
     anmad_logging.LOGGER.info("Queuing %s", my_runlist)
-    Q.put(my_runlist)
+    queue_job(my_runlist)
     anmad_logging.LOGGER.debug("Redirecting to control page")
     return redirect(BASEURL)
 

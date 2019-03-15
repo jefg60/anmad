@@ -41,3 +41,8 @@ class AnmadQueues:
         """Adds an item to the run queue."""
         anmad_logging.LOGGER.info("Queuing %s", job)
         self.queue.put(job)
+
+    def clear(self):
+        """Clears all job queues."""
+        self.queue.clear()
+        self.prequeue.clear()

@@ -48,7 +48,6 @@ LOGGER.info("vault password file: %s", anmad_args.ARGS.vault_password_file)
 LOGGER.info("ssh id: %s", anmad_args.ARGS.ssh_id)
 LOGGER.info("venv: %s", anmad_args.ARGS.venv)
 LOGGER.info("ansible_playbook_cmd: %s", anmad_args.ANSIBLE_PLAYBOOK_CMD)
-LOGGER.info("dir_to_watch: %s", anmad_args.ARGS.dir_to_watch)
 LOGGER.info("inventorylist: %s", " ".join(anmad_args.ARGS.inventories))
 LOGGER.info("maininventory: %s", anmad_args.MAININVENTORY)
 if anmad_args.ARGS.pre_run_playbooks:
@@ -59,4 +58,3 @@ if anmad_args.ARGS.pre_run_playbooks:
 LOGGER.info("playbooks: %s", " ".join(anmad_args.ARGS.playbooks))
 LOGGER.info("RUN_LIST: %s", " ".join(anmad_args.RUN_LIST))
 LOGGER.info("playbook_root_dir: %s", anmad_args.ARGS.playbook_root_dir)
-LOGGER.info("interval: %s", str(anmad_args.ARGS.interval))

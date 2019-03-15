@@ -12,7 +12,7 @@ except AttributeError:
     PROCESS_NAME = os.path.basename(main.__file__)
 
 DEFAULT_CONFIGFILE = '/etc/anmad/conf.d/' + PROCESS_NAME
-VERSION = "0.11.0"
+VERSION = "0.11.1"
 
 def parse_args():
     """Read arguments from command line."""
@@ -53,20 +53,9 @@ def parse_args():
         default=ansible_home
         )
     parser.add_argument(
-        "--interval",
-        type=int,
-        help="interval in seconds at which to check for new code",
-        default=15
-        )
-    parser.add_argument(
         "--ssh_id",
         help="ssh id file to use, default ~/.ssh/id_rsa",
         default=home + "/.ssh/id_rsa"
-        )
-    parser.add_argument(
-        "--dir_to_watch",
-        help="dir to watch",
-        required=True
         )
     parser.add_argument(
         "--vault_password_file",

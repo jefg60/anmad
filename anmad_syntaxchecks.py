@@ -55,7 +55,7 @@ def verify_files_exist():
     if badfiles is not None:
         return badfiles
 
-    fileargs2 = anmad_args.ARGS.ssh_id + anmad_args.ARGS.dir_to_watch
+    fileargs2 = [anmad_args.ARGS.ssh_id]
     try:
         fileargs2.append(anmad_args.ARGS.vault_password_file)
     except NameError:

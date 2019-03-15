@@ -12,8 +12,8 @@ QUEUES = anmad_queues.AnmadQueues('prerun', 'playbooks')
 
 anmad_ssh.add_ssh_key_to_agent(anmad_args.ARGS.ssh_id)
 
-anmad_logging.LOGGER.info("Starting to consume playbooks queue...")
 for playbookjob in QUEUES.queue.consume():
+    anmad_logging.LOGGER.info("Starting to consume playbooks queue...")
 
     # when an item is found in the PLAYQ, first process all jobs in preQ!
     anmad_logging.LOGGER.info("Starting to consume prerun queue...")

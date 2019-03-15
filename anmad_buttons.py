@@ -84,7 +84,7 @@ def runall():
     """Run all playbooks after verifying that files exist."""
     problemfile = anmad_syntaxchecks.verify_files_exist()
     if problemfile:
-        QUEUES.info.put(["Invalid files: " + str(problemfile)])
+        QUEUES.info.put([datetime.datetime.now(), "Invalid files: " + str(problemfile)])
         return redirect(BASEURL)
 
     if anmad_args.ARGS.pre_run_playbooks is not None:

@@ -14,6 +14,9 @@
     h3 {
       font-family: Arial, Helvetica, sans-serif;
     }
+    h4 {
+      font-family: Arial, Helvetica, sans-serif;
+    }
     .button {
       background-color: #4CAF50; /* Green */
       border: none;
@@ -84,16 +87,14 @@
   Clear messages
   </button>
   <br />
-  <h2>Messages:</h2>
-
-{% if messages %}
-{% for message in messages %}
-  <h3>{{ message }}</h3>
-{% endfor %}
-{% else %}
-  <h3>None</h3>
-{% endif %}
-
+  <h2>Last 3 messages (newest first):</h2>
+  {% if messages %}
+  {% for message in messages[-3:] %}
+    <h4>{{ ''.join(message) }}</h4>
+  {% endfor %}
+  {% else %}
+    <h3>None</h3>
+  {% endif %}
   <table style="width:100%">
     <tr>
       <td valign="top", width=20%, text-align="center">
@@ -168,6 +169,17 @@
       </td>
 
     </tr>
+    </table>
+
+    <h2>Last 20 messages (newest first):</h2>
+
+    {% if messages %}
+    {% for message in messages %}
+      <h4>{{ ''.join(message) }}</h4>
+    {% endfor %}
+    {% else %}
+      <h3>None</h3>
+    {% endif %}
 
    </body>
 </html>

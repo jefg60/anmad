@@ -1,6 +1,6 @@
 #!/usr/bin/env bats
 #
-version=0.11.0
+version=0.11.1
 program=./anmad_buttons.py
 printvault=./print_vault_value.py
 pylint="python3 $(which pylint)"
@@ -22,7 +22,7 @@ pylint="python3 $(which pylint)"
 }
 
 @test "run without --debug" {
-  run "$program" -p deploy.yaml deploy2.yaml -i samples/inventory-internal samples/inventory-internal --no-syslog --dir_to_watch /tmp/ --dry-run --interval 1 --playbook_root_dir samples
+  run "$program" -p deploy.yaml deploy2.yaml -i samples/inventory-internal samples/inventory-internal --no-syslog --dry-run --playbook_root_dir samples
   [[ "$output" != *"error"* ]]
   [ "$status" -eq 0 ]
 }

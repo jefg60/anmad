@@ -20,6 +20,7 @@ class AnmadQueues:
     def __init__(self, prequeue, queue):
         self.prequeue = HotQueue(prequeue)
         self.queue = HotQueue(queue)
+        self.messages = []
         self.reset()
 
     def reset(self):

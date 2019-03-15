@@ -29,7 +29,8 @@ def mainpage():
         'time': time_string,
         'version': anmad_args.VERSION,
         'preq_message': QUEUES.prequeue_message,
-        'queue_message': QUEUES.queue_message
+        'queue_message': QUEUES.queue_message,
+        'messages': QUEUES.messages
         }
     anmad_logging.LOGGER.debug("Rendering control page")
     return render_template('main.html',
@@ -48,8 +49,8 @@ def ara_redirect():
 def runall():
     """Run all playbooks after verifying that files exist."""
     problemfile = anmad_syntaxchecks.verify_files_exist()
-    #verify_msg = ("YAML error with: " + str(problemfile))
     if problemfile:
+        QUEUES.messages = ("Invalid files: " + str(problemfile))
         return redirect(BASEURL)
 
     if anmad_args.ARGS.pre_run_playbooks is not None:

@@ -8,12 +8,13 @@ import anmad_ssh
 import ansible_run
 import anmad_queues
 
-QUEUES = anmad_queues.AnmadQueues('prerun', 'playbooks')
+QUEUES = anmad_queues.AnmadQueues('prerun', 'playbooks', 'info')
 
 anmad_ssh.add_ssh_key_to_agent(anmad_args.ARGS.ssh_id)
 
 for playbookjob in QUEUES.queue.consume():
     anmad_logging.LOGGER.info("Starting to consume playbooks queue...")
+    QUEUES.info.put(["Running job: " + str(playbookjob)])
 
     # when an item is found in the PLAYQ, first process all jobs in preQ!
     anmad_logging.LOGGER.info("Starting to consume prerun queue...")
@@ -21,6 +22,7 @@ for playbookjob in QUEUES.queue.consume():
         # get first item in preQ and check if its a list of 1 item,
         # if so run it
         preQ_job = QUEUES.prequeue.get()
+        QUEUES.info.put(["Running job: " + str(preQ_job)])
         if isinstance(preQ_job, list) and len(preQ_job) == 1:
             anmad_logging.LOGGER.info(
                 "Found a pre-run queue item: %s", preQ_job)

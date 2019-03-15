@@ -17,10 +17,10 @@ def read_queue(queue):
 
 class AnmadQueues:
     """Queues used by anmad."""
-    def __init__(self, prequeue, queue):
+    def __init__(self, prequeue, queue, info):
         self.prequeue = HotQueue(prequeue)
         self.queue = HotQueue(queue)
-        self.messages = []
+        self.info = HotQueue(info)
         self.update_job_lists()
 
     def update_job_lists(self):
@@ -29,6 +29,8 @@ class AnmadQueues:
         self.prequeue_list = read_queue(self.prequeue)
         self.queue_list = []
         self.queue_list = read_queue(self.queue)
+        self.info_list = []
+        self.info_list = read_queue(self.info)
 
 
     def prequeue_job(self, job):
@@ -41,6 +43,7 @@ class AnmadQueues:
         """Adds an item to the run queue."""
         anmad_logging.LOGGER.info("Queuing %s", job)
         self.queue.put(job)
+
 
     def clear(self):
         """Clears all job queues."""

@@ -12,7 +12,7 @@ import anmad_queues
 
 APP = Flask(__name__)
 BASEURL = "/"
-QUEUES = anmad_queues.AnmadQueues('prerun', 'playbooks')
+QUEUES = anmad_queues.AnmadQueues('prerun', 'playbooks', 'info')
 
 def buttonlist():
     """Get a list of allowed playbook buttons."""
@@ -46,7 +46,7 @@ def mainpage():
         'version': anmad_args.VERSION,
         'preq_message': QUEUES.prequeue_list,
         'queue_message': QUEUES.queue_list,
-        'messages': QUEUES.messages,
+        'messages': QUEUES.info_list,
         'playbooks': anmad_args.ARGS.playbooks,
         'prerun': anmad_args.ARGS.pre_run_playbooks,
         'extras': extraplays()
@@ -76,7 +76,7 @@ def runall():
     """Run all playbooks after verifying that files exist."""
     problemfile = anmad_syntaxchecks.verify_files_exist()
     if problemfile:
-        QUEUES.messages = (["Invalid files: " + str(problemfile)])
+        QUEUES.info.put(["Invalid files: " + str(problemfile)])
         return redirect(BASEURL)
 
     if anmad_args.ARGS.pre_run_playbooks is not None:

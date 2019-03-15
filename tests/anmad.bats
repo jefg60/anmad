@@ -1,6 +1,6 @@
 #!/usr/bin/env bats
 #
-version=0.11.1
+version=0.11.2
 program=./anmad_buttons.py
 printvault=./print_vault_value.py
 pylint="python3 $(which pylint)"
@@ -33,7 +33,7 @@ pylint="python3 $(which pylint)"
   [ "$status" -eq 0 ]
 }
 
-@test "logpoll Version is $version" {
+@test "$program Version is $version" {
   run "$program" --version
   [ "$output" = "$version" ]
 }

@@ -36,7 +36,7 @@ class AnmadQueues:
         self.queue_list = []
         self.queue_list = read_queue(self.queue)
         self.info_list = []
-        trim_queue(self.info, 20)
+        trim_queue(self.info, 100)
         self.info_list = read_queue(self.info)
         self.info_list.reverse()
 

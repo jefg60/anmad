@@ -10,7 +10,7 @@ def read_queue(queue):
     """Reads jobs from queue, returns list of jobs."""
     redis_conn = redis.Redis()
     output = []
-    for msg in redis_conn.lrange('hotqueue:'+queue.name, 0, -1):
+    for msg in redis_conn.lrange(queue.key, 0, -1):
         output.append(pickle.loads(msg))
     return output
 

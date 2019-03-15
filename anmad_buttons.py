@@ -20,19 +20,21 @@ try:
 except TypeError:
     BUTTONLIST = (anmad_args.ARGS.playbooks)
 
-
-@APP.route(BASEURL)
-def mainpage():
-    """Render main page."""
-    QUEUES.update_job_lists()
-    time_string = datetime.datetime.now()
+def extraplays():
     yamlfiles = glob.glob(anmad_args.ARGS.playbook_root_dir + '/*.yaml')
     ymlfiles = glob.glob(anmad_args.ARGS.playbook_root_dir + '/*.yml')
     yamlfiles = yamlfiles + ymlfiles
     yamlbasenames = []
     for yml in yamlfiles:
         yamlbasenames.append(os.path.basename(yml))
-    extraplays = list(set(yamlbasenames) - set(BUTTONLIST))
+    extraplaybooks = list(set(yamlbasenames) - set(BUTTONLIST))
+    return extraplaybooks
+
+@APP.route(BASEURL)
+def mainpage():
+    """Render main page."""
+    QUEUES.update_job_lists()
+    time_string = datetime.datetime.now()
 
     template_data = {
         'title' : 'anmad controls',
@@ -43,7 +45,7 @@ def mainpage():
         'messages': QUEUES.messages,
         'playbooks': anmad_args.ARGS.playbooks,
         'prerun': anmad_args.ARGS.pre_run_playbooks,
-        'extras': extraplays
+        'extras': extraplays()
         }
     anmad_logging.LOGGER.debug("Rendering control page")
     return render_template('main.html',
@@ -90,7 +92,7 @@ def runall():
 @APP.route(BASEURL + 'playbooks/<path:playbook>')
 def oneplaybook(playbook):
     """Runs one playbook, if its one of the configured ones."""
-    if playbook not in BUTTONLIST:
+    if playbook not in (BUTTONLIST + extraplays()):
         anmad_logging.LOGGER.warning("API request for %s DENIED", playbook)
         abort(404)
     my_runlist = [anmad_args.ARGS.playbook_root_dir + '/' + playbook]

@@ -90,14 +90,25 @@
 
   <table style="width:100%">
     <tr>
-      <td valign="top", width=20%>
-	<button class="button greenbutton" onclick="window.open('/ara','_blank')"/>
+      <td valign="top", width=20%, text-align="center">
+	<button class="button bluebutton" onclick="window.open('/ara','_blank')"/>
 	ARA Reports page
 	</button>
 	<br />
 	<br />
 
+	<h3>Pre-run playbooks</h3>
+
 	{% for play in prerun %}
+	<button class="button greenbutton" onclick="self.location.href='/playbooks/{{ play }}'">
+	run {{ play }}
+	</button>
+	<br />
+	{% endfor %}
+
+	<h3>Other playbooks in root dir</h3>
+
+	{% for play in extras %}
 	<button class="button orangebutton" onclick="self.location.href='/playbooks/{{ play }}'">
 	run {{ play }}
 	</button>
@@ -105,12 +116,14 @@
 	{% endfor %}
       </td>
 
-      <td valign="top", width=20%>
+      <td valign="top", width=20%, text-align="center">
 	<button class="button bluebutton" onclick="self.location.href='/runall'">
 	run all (green) playbooks
 	</button>
 	<br />
 	<br />
+
+	<h3>Configured playbooks</h3>
 
 	{% for play in playbooks %}
 	<button class="button greenbutton" onclick="self.location.href='/playbooks/{{ play }}'">
@@ -119,12 +132,6 @@
 	<br />
 	{% endfor %}
 
-	{% for play in extras %}
-	<button class="button orangebutton" onclick="self.location.href='/playbooks/{{ play }}'">
-	run {{ play }}
-	</button>
-	<br />
-	{% endfor %}
       </td>
 
       <td valign="top", width=60%>

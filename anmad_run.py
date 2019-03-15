@@ -17,7 +17,7 @@ for playbookjob in QUEUES.queue.consume():
     anmad_logging.LOGGER.info("Starting to consume playbooks queue...")
     if playbookjob is not None:
         QUEUES.info.put([str(datetime.datetime.now()),
-            " Running job: " + str(playbookjob)])
+                         " Running job: " + str(playbookjob)])
 
         # when an item is found in the PLAYQ, first process all jobs in preQ!
         anmad_logging.LOGGER.info("Starting to consume prerun queue...")
@@ -27,7 +27,7 @@ for playbookjob in QUEUES.queue.consume():
             preQ_job = QUEUES.prequeue.get()
             if isinstance(preQ_job, list) and len(preQ_job) == 1:
                 QUEUES.info.put([str(datetime.datetime.now()),
-                    " Pre-Running job: " + str(preQ_job)])
+                                 " Pre-Running job: " + str(preQ_job)])
                 anmad_logging.LOGGER.info(
                     " Found a pre-run queue item: %s", preQ_job)
                 # statements to process pre-Q job

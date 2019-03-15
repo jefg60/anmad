@@ -44,14 +44,14 @@ class AnmadQueues:
         """Adds an item to the pre-run queue."""
         anmad_logging.LOGGER.info("Pre-Queuing %s", [job])
         self.info.put([str(datetime.datetime.now()),
-            " Pre-Queuing ", str([job])])
+                       " Pre-Queuing ", str([job])])
         self.prequeue.put([job])
 
     def queue_job(self, job):
         """Adds an item to the run queue."""
         anmad_logging.LOGGER.info("Queuing %s", str(job))
         self.info.put([str(datetime.datetime.now()),
-            " Queuing ", str(job)])
+                       " Queuing ", str(job)])
         self.queue.put(job)
 
     def clear(self):

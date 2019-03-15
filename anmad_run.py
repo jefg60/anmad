@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Daemon to watch redis queues for ansible jobs."""
+import datetime
 
 import anmad_args
 import anmad_logging
@@ -15,8 +16,8 @@ anmad_ssh.add_ssh_key_to_agent(anmad_args.ARGS.ssh_id)
 for playbookjob in QUEUES.queue.consume():
     anmad_logging.LOGGER.info("Starting to consume playbooks queue...")
     if playbookjob is not None:
-        QUEUES.info.put([datetime.datetime.now(),
-            "Running job: " + str(playbookjob)])
+        QUEUES.info.put([str(datetime.datetime.now()),
+            " Running job: " + str(playbookjob)])
 
         # when an item is found in the PLAYQ, first process all jobs in preQ!
         anmad_logging.LOGGER.info("Starting to consume prerun queue...")
@@ -25,10 +26,10 @@ for playbookjob in QUEUES.queue.consume():
             # if so run it
             preQ_job = QUEUES.prequeue.get()
             if isinstance(preQ_job, list) and len(preQ_job) == 1:
-                QUEUES.info.put([datetime.datetime.now(),
-                    "Pre-Running job: " + str(preQ_job)])
+                QUEUES.info.put([str(datetime.datetime.now()),
+                    " Pre-Running job: " + str(preQ_job)])
                 anmad_logging.LOGGER.info(
-                    "Found a pre-run queue item: %s", preQ_job)
+                    " Found a pre-run queue item: %s", preQ_job)
                 # statements to process pre-Q job
                 ansible_run.runplaybooks(preQ_job)
 

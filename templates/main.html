@@ -89,7 +89,7 @@
   <br />
   <h2>Last 3 messages (newest first):</h2>
   {% if messages %}
-  {% for message in messages[-3:] %}
+  {% for message in messages[0:3] %}
     <h4>{{ ''.join(message) }}</h4>
   {% endfor %}
   {% else %}

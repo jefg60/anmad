@@ -49,3 +49,7 @@ class AnmadQueues:
         """Clears all job queues."""
         self.queue.clear()
         self.prequeue.clear()
+
+    def clearinfo(self):
+        """Clears info queue."""
+        self.info.clear()

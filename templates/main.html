@@ -79,7 +79,13 @@
 <body>
   <h1>anmad {{ version }} control page</h1>
   <h2>The date and time on the server is: {{ time }}</h2>
+
+  <button class="button greenbutton" onclick="self.location.href='/clearinfo'">
+  Clear messages
+  </button>
+  <br />
   <h2>Messages:</h2>
+
 {% if messages %}
 {% for message in messages %}
   <h3>{{ message }}</h3>

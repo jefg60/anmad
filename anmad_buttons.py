@@ -63,6 +63,14 @@ def ara_redirect():
     return redirect(anmad_args.ARGS.ara_url)
 
 
+@APP.route(BASEURL + "clearinfo")
+def clearinfo():
+    """Clear info queues."""
+    anmad_logging.LOGGER.info("Clear info queues requested.""")
+    QUEUES.clearinfo()
+    return redirect(BASEURL)
+
+
 @APP.route(BASEURL + "clearqueues")
 def clearqueues():
     """Clear redis queues."""

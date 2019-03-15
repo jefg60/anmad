@@ -90,21 +90,26 @@
 
   <table style="width:100%">
     <tr>
-      <td valign="top">
-
+      <td valign="top", width=20%>
 	<button class="button greenbutton" onclick="window.open('/ara','_blank')"/>
 	ARA Reports page
 	</button>
 	<br />
-
-	<button class="button redbutton" onclick="self.location.href='/clearqueues'">
-	Clear all queued jobs
-	</button>
 	<br />
 
+	{% for play in prerun %}
+	<button class="button orangebutton" onclick="self.location.href='/playbooks/{{ play }}'">
+	run {{ play }}
+	</button>
+	<br />
+	{% endfor %}
+      </td>
+
+      <td valign="top", width=20%>
 	<button class="button bluebutton" onclick="self.location.href='/runall'">
 	run ALL listed playbooks
 	</button>
+	<br />
 	<br />
 
 	{% for play in playbooks %}
@@ -113,10 +118,14 @@
 	</button>
 	<br />
 	{% endfor %}
-
       </td>
 
-      <td valign="top">
+      <td valign="top", width=60%>
+	<button class="button redbutton" onclick="self.location.href='/clearqueues'">
+	Clear all queued jobs
+	</button>
+	<br />
+	<br />
 
 	<h2>Pre-Queued Jobs:</h2>
 	{% if preq_message %}
@@ -127,7 +136,8 @@
 	<h3>None</h3>
 	{% endif %}
 
-	<h2>Queued Jobs (multiples will be concurrent):</h2>
+	<h2>Queued Jobs</h2>
+	<h3>(multiples will be concurrent):</h3>
 	{% if queue_message %}
 	{% for message in queue_message %}
 	<h3>{{ message }}</h3>
@@ -135,7 +145,6 @@
 	{% else %}
 	<h3>None</h3>
 	{% endif %}
-
       </td>
 
     </tr>

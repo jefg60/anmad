@@ -21,9 +21,17 @@ def verify_yaml_file(filename):
             "YAML File %s cannot be found", filename)
         yamldata = False
     except IsADirectoryError:
-        anmad_logging.LOGGER.error(
+        anmad_logging.LOGGER.warning(
             "Expected YAML File at %s but got a directory", filename)
-        yamldata = False
+        anmad_logging.LOGGER.warning(
+            "Might just be because you're using directory style inventories")
+        anmad_logging.LOGGER.warning(
+            "Searching in %s for yaml files", filename)
+        yamlfiles = glob.glob(filename + '/*.yaml')
+        ymlfiles = glob.glob(filename + '/*.yml')
+        yamlfiles = yamlfiles + ymlfiles
+        for yml in yamlfiles:
+            yamldata = verify_yaml_file(yml)
     except yaml.scanner.ScannerError:
         anmad_logging.LOGGER.error(
             "Bad YAML syntax in %s", filename)

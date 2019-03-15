@@ -14,20 +14,24 @@ APP = Flask(__name__)
 BASEURL = "/"
 QUEUES = anmad_queues.AnmadQueues('prerun', 'playbooks')
 
-try:
-    BUTTONLIST = (anmad_args.ARGS.pre_run_playbooks +
-                  anmad_args.ARGS.playbooks)
-except TypeError:
-    BUTTONLIST = (anmad_args.ARGS.playbooks)
+def buttonlist():
+    """Get a list of allowed playbook buttons."""
+    try:
+        my_buttonlist = (anmad_args.ARGS.pre_run_playbooks +
+                         anmad_args.ARGS.playbooks)
+    except TypeError:
+        my_buttonlist = (anmad_args.ARGS.playbooks)
+    return my_buttonlist
 
 def extraplays():
+    """Get a list of yaml files in root dir that arent in buttonlist()."""
     yamlfiles = glob.glob(anmad_args.ARGS.playbook_root_dir + '/*.yaml')
     ymlfiles = glob.glob(anmad_args.ARGS.playbook_root_dir + '/*.yml')
     yamlfiles = yamlfiles + ymlfiles
     yamlbasenames = []
     for yml in yamlfiles:
         yamlbasenames.append(os.path.basename(yml))
-    extraplaybooks = list(set(yamlbasenames) - set(BUTTONLIST))
+    extraplaybooks = list(set(yamlbasenames) - set(buttonlist()))
     return extraplaybooks
 
 @APP.route(BASEURL)
@@ -92,7 +96,7 @@ def runall():
 @APP.route(BASEURL + 'playbooks/<path:playbook>')
 def oneplaybook(playbook):
     """Runs one playbook, if its one of the configured ones."""
-    if playbook not in (BUTTONLIST + extraplays()):
+    if playbook not in buttonlist() + extraplays():
         anmad_logging.LOGGER.warning("API request for %s DENIED", playbook)
         abort(404)
     my_runlist = [anmad_args.ARGS.playbook_root_dir + '/' + playbook]

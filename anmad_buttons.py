@@ -22,14 +22,14 @@ except TypeError:
 @APP.route(BASEURL)
 def mainpage():
     """Render main page."""
-    QUEUES.reset()
+    QUEUES.update_job_lists()
     time_string = datetime.datetime.now()
     template_data = {
         'title' : 'anmad controls',
         'time': time_string,
         'version': anmad_args.VERSION,
-        'preq_message': QUEUES.prequeue_message,
-        'queue_message': QUEUES.queue_message,
+        'preq_message': QUEUES.prequeue_list,
+        'queue_message': QUEUES.queue_list,
         'messages': QUEUES.messages
         }
     anmad_logging.LOGGER.debug("Rendering control page")

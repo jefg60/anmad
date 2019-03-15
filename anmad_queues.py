@@ -21,14 +21,14 @@ class AnmadQueues:
         self.prequeue = HotQueue(prequeue)
         self.queue = HotQueue(queue)
         self.messages = []
-        self.reset()
+        self.update_job_lists()
 
-    def reset(self):
+    def update_job_lists(self):
         """Reset queue_message vars."""
-        self.prequeue_message = []
-        self.prequeue_message = read_queue(self.prequeue)
-        self.queue_message = []
-        self.queue_message = read_queue(self.queue)
+        self.prequeue_list = []
+        self.prequeue_list = read_queue(self.prequeue)
+        self.queue_list = []
+        self.queue_list = read_queue(self.queue)
 
 
     def prequeue_job(self, job):

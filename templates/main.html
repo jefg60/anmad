@@ -88,45 +88,57 @@
   <h3>None</h3>
 {% endif %}
 
-  <h2>Pre-Queued Jobs:</h2>
-{% if preq_message %}
-{% for message in preq_message %}
-  <h3>{{ message }}</h3>
-{% endfor %}
-{% else %}
-  <h3>None</h3>
-{% endif %}
+  <table style="width:100%">
+    <tr>
+      <td valign="top">
 
-  <h2>Queued Jobs (multiples will be concurrent):</h2>
-{% if queue_message %}
-{% for message in queue_message %}
-  <h3>{{ message }}</h3>
-{% endfor %}
-{% else %}
-  <h3>None</h3>
-{% endif %}
+	<button class="button greenbutton" onclick="window.open('/ara','_blank')"/>
+	ARA Reports page
+	</button>
+	<br />
 
-  <button class="button greenbutton" onclick="window.open('/ara','_blank')"/>
-  ARA Reports page
-  </button>
-  <br />
+	<button class="button redbutton" onclick="self.location.href='/clearqueues'">
+	Clear all queued jobs
+	</button>
+	<br />
 
-  <button class="button redbutton" onclick="self.location.href='/clearqueues'">
-  Clear all queued jobs
-  </button>
-  <br />
+	<button class="button bluebutton" onclick="self.location.href='/runall'">
+	run ALL listed playbooks
+	</button>
+	<br />
 
-  <button class="button bluebutton" onclick="self.location.href='/runall'">
-  run ALL listed playbooks
-  </button>
-  <br />
+	{% for play in playbooks %}
+	<button class="button orangebutton" onclick="self.location.href='/playbooks/{{ play }}'">
+	run {{ play }}
+	</button>
+	<br />
+	{% endfor %}
 
-{% for play in playbooks %}
-  <button class="button orangebutton" onclick="self.location.href='/playbooks/{{ play }}'">
-  run {{ play }}
-  </button>
-  <br />
-{% endfor %}
+      </td>
+
+      <td valign="top">
+
+	<h2>Pre-Queued Jobs:</h2>
+	{% if preq_message %}
+	{% for message in preq_message %}
+	<h3>{{ message }}</h3>
+	{% endfor %}
+	{% else %}
+	<h3>None</h3>
+	{% endif %}
+
+	<h2>Queued Jobs (multiples will be concurrent):</h2>
+	{% if queue_message %}
+	{% for message in queue_message %}
+	<h3>{{ message }}</h3>
+	{% endfor %}
+	{% else %}
+	<h3>None</h3>
+	{% endif %}
+
+      </td>
+
+    </tr>
 
    </body>
 </html>

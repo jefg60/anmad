@@ -63,7 +63,7 @@ def runall():
 
     if anmad_args.ARGS.pre_run_playbooks is not None:
         for play in anmad_args.PRERUN_LIST:
-            if play not in QUEUES.prequeue_list:
+            if [play] not in QUEUES.prequeue_list:
                 QUEUES.prequeue_job(play)
     QUEUES.queue_job(anmad_args.RUN_LIST)
     anmad_logging.LOGGER.debug("Redirecting to control page")

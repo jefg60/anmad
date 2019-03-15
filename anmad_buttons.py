@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Control interface for anmad."""
 import datetime
+import os
+import glob
 from flask import Flask, render_template, redirect, abort
 
 import anmad_args
@@ -24,18 +26,27 @@ def mainpage():
     """Render main page."""
     QUEUES.update_job_lists()
     time_string = datetime.datetime.now()
+    yamlfiles = glob.glob(anmad_args.ARGS.playbook_root_dir + '/*.yaml')
+    ymlfiles = glob.glob(anmad_args.ARGS.playbook_root_dir + '/*.yml')
+    yamlfiles = yamlfiles + ymlfiles
+    yamlbasenames = []
+    for yml in yamlfiles:
+        yamlbasenames.append(os.path.basename(yml))
+    extraplays = list(set(yamlbasenames) - set(BUTTONLIST))
+
     template_data = {
         'title' : 'anmad controls',
         'time': time_string,
         'version': anmad_args.VERSION,
         'preq_message': QUEUES.prequeue_list,
         'queue_message': QUEUES.queue_list,
-        'messages': QUEUES.messages
+        'messages': QUEUES.messages,
+        'playbooks': anmad_args.ARGS.playbooks,
+        'prerun': anmad_args.ARGS.pre_run_playbooks,
+        'extras': extraplays
         }
     anmad_logging.LOGGER.debug("Rendering control page")
     return render_template('main.html',
-                           playbooks=anmad_args.ARGS.playbooks,
-                           prerun=anmad_args.ARGS.pre_run_playbooks,
                            **template_data)
 
 

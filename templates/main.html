@@ -107,12 +107,19 @@
 
       <td valign="top", width=20%>
 	<button class="button bluebutton" onclick="self.location.href='/runall'">
-	run ALL listed playbooks
+	run all (green) playbooks
 	</button>
 	<br />
 	<br />
 
 	{% for play in playbooks %}
+	<button class="button greenbutton" onclick="self.location.href='/playbooks/{{ play }}'">
+	run {{ play }}
+	</button>
+	<br />
+	{% endfor %}
+
+	{% for play in extras %}
 	<button class="button orangebutton" onclick="self.location.href='/playbooks/{{ play }}'">
 	run {{ play }}
 	</button>
@@ -136,8 +143,8 @@
 	<h3>None</h3>
 	{% endif %}
 
-	<h2>Queued Jobs</h2>
-	<h3>(multiples will be concurrent):</h3>
+	<h2>Queued Jobs:</h2>
+	<h3>(multiples will be concurrent)</h3>
 	{% if queue_message %}
 	{% for message in queue_message %}
 	<h3>{{ message }}</h3>

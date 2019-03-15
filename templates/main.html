@@ -104,8 +104,13 @@
   <h3>None</h3>
 {% endif %}
 
-  <button class="button orangebutton" onclick="window.open('/ara','_blank')"/>
+  <button class="button greenbutton" onclick="window.open('/ara','_blank')"/>
   ARA Reports page
+  </button>
+  <br />
+
+  <button class="button redbutton" onclick="self.location.href='/clearqueues'">
+  Clear all queued jobs
   </button>
   <br />
 
@@ -115,7 +120,7 @@
   <br />
 
 {% for play in playbooks %}
-  <button class="button greenbutton" onclick="self.location.href='/playbooks/{{ play }}'">
+  <button class="button orangebutton" onclick="self.location.href='/playbooks/{{ play }}'">
   run {{ play }}
   </button>
   <br />

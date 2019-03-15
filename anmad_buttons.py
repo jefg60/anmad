@@ -45,6 +45,14 @@ def ara_redirect():
     return redirect(anmad_args.ARGS.ara_url)
 
 
+@APP.route(BASEURL + "clearqueues")
+def clearqueues():
+    """Clear redis queues."""
+    anmad_logging.LOGGER.info("Clear redis queues requested.""")
+    QUEUES.clear()
+    return redirect(BASEURL)
+
+
 @APP.route(BASEURL + "runall")
 def runall():
     """Run all playbooks after verifying that files exist."""
@@ -55,7 +63,8 @@ def runall():
 
     if anmad_args.ARGS.pre_run_playbooks is not None:
         for play in anmad_args.PRERUN_LIST:
-            QUEUES.prequeue_job(play)
+            if play not in QUEUES.prequeue_list:
+                QUEUES.prequeue_job(play)
     QUEUES.queue_job(anmad_args.RUN_LIST)
     anmad_logging.LOGGER.debug("Redirecting to control page")
     return redirect(BASEURL)

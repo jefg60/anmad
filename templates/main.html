@@ -42,14 +42,6 @@
 	<br />
 	{% endfor %}
 
-	<h2>Other playbooks in root dir</h2>
-
-	{% for play in extras %}
-	<button class="button orangebutton" onclick="self.location.href='/playbooks/{{ play }}'">
-	run {{ play }}
-	</button>
-	<br />
-	{% endfor %}
       </td>
 
       <td valign="top", width=20%, text-align="center">
@@ -92,16 +84,6 @@
   {% if messages %}
   {% for message in messages[0:3] %}
     <h4>{{ ''.join(message) }}</h4>
-  {% endfor %}
-  {% else %}
-    <h3>None</h3>
-  {% endif %}
-
-  <h2>Last 20 messages (newest first):</h2>
-
-  {% if messages %}
-  {% for message in messages %}
-    <h3>{{ ''.join(message) }}</h3>
   {% endfor %}
   {% else %}
     <h3>None</h3>

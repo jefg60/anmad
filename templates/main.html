@@ -3,13 +3,12 @@
 <head>
   <title>{{ title }}</title>
   <link href="data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAFLSURBVEhL7ZW9LgVRFEavRKPTUinUCg+A2n/vDTyBViLhBTwByS1UesELeAIFjQKFREQjwVpjH5lx3Wt+TulLVmaffU6+vefMzJnev3JoHj4C4+w6hFTAOKsm4AleA2Nz2bQFdn4UGJvLpkvQdDEwNpdFs/AO1zAWGJtzrrP2wY53itGXjM0510njcAdvMGUiZGzOOde01jrY6Wkxqsqcc65prWSyVoyqMjeseC1Ng9ugySj60ErpQY7iBHyr1CZcwEtgPHT7mr6KB/BbA7IHA0ofk138pQ34aSrexWPEA8/wGJyocxzYhGs10zSZL8AcPMA5fGsSmhxommmimab3cVUzcAvPxSi0DXZR90i2gCaaqdSU4xvQq1LgCkzW/al4+67XLBUpm0tli5oqfXCpyFJcU05WoJN8FcuGZXYhi1bBrXC/5QyWAfV6n30mgnbPfEwxAAAAAElFTkSuQmCC" rel="icon" type="image/x-icon" />
-
-</head>
 <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" type="text/css">
 
+</head>
+
 <body>
-  <h1>anmad {{ version }}</h1>
-  <h2>Page was last refreshed at: {{ time }}</h2>
+  <h1>anmad {{ version }} last refresh at {{ time }}</h1>
 
   <table style="width:60%">
     <tr>

@@ -4,80 +4,8 @@
   <title>{{ title }}</title>
   <link href="data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAFLSURBVEhL7ZW9LgVRFEavRKPTUinUCg+A2n/vDTyBViLhBTwByS1UesELeAIFjQKFREQjwVpjH5lx3Wt+TulLVmaffU6+vefMzJnev3JoHj4C4+w6hFTAOKsm4AleA2Nz2bQFdn4UGJvLpkvQdDEwNpdFs/AO1zAWGJtzrrP2wY53itGXjM0510njcAdvMGUiZGzOOde01jrY6Wkxqsqcc65prWSyVoyqMjeseC1Ng9ugySj60ErpQY7iBHyr1CZcwEtgPHT7mr6KB/BbA7IHA0ofk138pQ34aSrexWPEA8/wGJyocxzYhGs10zSZL8AcPMA5fGsSmhxommmimab3cVUzcAvPxSi0DXZR90i2gCaaqdSU4xvQq1LgCkzW/al4+67XLBUpm0tli5oqfXCpyFJcU05WoJN8FcuGZXYhi1bBrXC/5QyWAfV6n30mgnbPfEwxAAAAAElFTkSuQmCC" rel="icon" type="image/x-icon" />
 
-  <style>
-    h1 {
-      font-family: Arial, Helvetica, sans-serif;
-    }
-    h2 {
-      font-family: Arial, Helvetica, sans-serif;
-    }
-    h3 {
-      font-family: Arial, Helvetica, sans-serif;
-    }
-    h4 {
-      font-family: Arial, Helvetica, sans-serif;
-    }
-    .button {
-      background-color: #4CAF50; /* Green */
-      border: none;
-      color: white;
-      padding: 16px 32px;
-      text-align: center;
-      text-decoration: none;
-      display: inline-block;
-      font-size: 16px;
-      margin: 4px 2px;
-      -webkit-transition-duration: 0.4s; /* Safari */
-      transition-duration: 0.4s;
-      cursor: pointer;
-    }
-
-    .greenbutton {
-      background-color: white;
-      color: black;
-      border: 2px solid #4CAF50;
-    }
-
-    .greenbutton:hover {
-      background-color: #4CAF50;
-      color: white;
-    }
-
-    .bluebutton {
-      background-color: white;
-      color: black;
-      border: 2px solid #008CBA;
-    }
-
-    .bluebutton:hover {
-      background-color: #008CBA;
-      color: white;
-    }
-
-    .redbutton {
-      background-color: white;
-      color: black;
-      border: 2px solid #FF0000;
-    }
-
-    .redbutton:hover {
-      background-color: #FF0000;
-      color: white;
-    }
-
-    .orangebutton {
-      background-color: white;
-      color: black;
-      border: 2px solid #FFA500;
-    }
-
-    .orangebutton:hover {
-      background-color: #FFA500;
-      color: white;
-    }
-
-    </style>
 </head>
+<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 
 <body>
   <h1>anmad {{ version }} control page</h1>

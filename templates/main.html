@@ -34,7 +34,7 @@
     <tr>
       <td valign="top", width=20%, text-align="center">
 
-	<h3>Pre-run playbooks</h3>
+	<h2>Pre-run playbooks</h2>
 
 	{% for play in prerun %}
 	<button class="button greenbutton" onclick="self.location.href='/playbooks/{{ play }}'">
@@ -43,7 +43,7 @@
 	<br />
 	{% endfor %}
 
-	<h3>Other playbooks in root dir</h3>
+	<h2>Other playbooks in root dir</h2>
 
 	{% for play in extras %}
 	<button class="button orangebutton" onclick="self.location.href='/playbooks/{{ play }}'">
@@ -54,7 +54,7 @@
       </td>
 
       <td valign="top", width=20%, text-align="center">
-	<h3>Configured playbooks</h3>
+	<h2>Configured playbooks</h2>
 
 	{% for play in playbooks %}
 	<button class="button greenbutton" onclick="self.location.href='/playbooks/{{ play }}'">

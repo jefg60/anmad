@@ -1,24 +1,28 @@
 h1 {
   font-family: Arial, Helvetica, sans-serif;
+  font-size: 100%;
 }
 h2 {
   font-family: Arial, Helvetica, sans-serif;
+  font-size: 80%;
 }
 h3 {
   font-family: Arial, Helvetica, sans-serif;
+  font-size: 60%;
 }
 h4 {
   font-family: Arial, Helvetica, sans-serif;
+  font-size: 40%;
 }
 .button {
   background-color: white;
   color: black;
   border: 2px solid #4CAF50;
-  padding: 16px 32px;
+  padding: 5% 10%;
   text-align: center;
   text-decoration: none;
   display: inline-block;
-  font-size: 16px;
+  font-size: 67%;
   margin: 4px 2px;
   transition: unset;
   cursor: pointer;

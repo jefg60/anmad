@@ -41,7 +41,7 @@ def mainpage():
     time_string = datetime.datetime.now()
 
     template_data = {
-        'title' : 'anmad controls',
+        'title' : 'anmad',
         'time': time_string,
         'version': anmad_args.VERSION,
         'preq_message': QUEUES.prequeue_list,

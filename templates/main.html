@@ -11,26 +11,29 @@
   <h1>anmad {{ version }} control page</h1>
   <h2>The date and time on the server is: {{ time }}</h2>
 
-  <button class="button greenbutton" onclick="self.location.href='/clearinfo'">
-  Clear messages
-  </button>
-  <br />
-  <h2>Last 3 messages (newest first):</h2>
-  {% if messages %}
-  {% for message in messages[0:3] %}
-    <h4>{{ ''.join(message) }}</h4>
-  {% endfor %}
-  {% else %}
-    <h3>None</h3>
-  {% endif %}
-  <table style="width:100%">
+  <table style="width:60%">
     <tr>
       <td valign="top", width=20%, text-align="center">
 	<button class="button bluebutton" onclick="window.open('/ara','_blank')"/>
 	ARA Reports page
 	</button>
-	<br />
-	<br />
+      </td>
+      <td valign="top", width=20%, text-align="center">
+	<button class="button bluebutton" onclick="self.location.href='/runall'">
+	run all (green) playbooks
+	</button>
+      </td>
+      <td valign="top", width=20%>
+	<button class="button redbutton" onclick="self.location.href='/clearqueues'">
+	Clear all queued jobs
+	</button>
+      </td>
+  </table>
+
+  <br />
+  <table style="width:100%">
+    <tr>
+      <td valign="top", width=20%, text-align="center">
 
 	<h3>Pre-run playbooks</h3>
 
@@ -52,12 +55,6 @@
       </td>
 
       <td valign="top", width=20%, text-align="center">
-	<button class="button bluebutton" onclick="self.location.href='/runall'">
-	run all (green) playbooks
-	</button>
-	<br />
-	<br />
-
 	<h3>Configured playbooks</h3>
 
 	{% for play in playbooks %}
@@ -70,12 +67,6 @@
       </td>
 
       <td valign="top", width=60%>
-	<button class="button redbutton" onclick="self.location.href='/clearqueues'">
-	Clear all queued jobs
-	</button>
-	<br />
-	<br />
-
 	<h2>Pre-Queued Jobs:</h2>
 	{% if preq_message %}
 	{% for message in preq_message %}
@@ -97,17 +88,26 @@
       </td>
 
     </tr>
-    </table>
+  </table>
 
-    <h2>Last 20 messages (newest first):</h2>
+  <h2>Last 3 messages (newest first):</h2>
+  {% if messages %}
+  {% for message in messages[0:3] %}
+    <h4>{{ ''.join(message) }}</h4>
+  {% endfor %}
+  {% else %}
+    <h3>None</h3>
+  {% endif %}
 
-    {% if messages %}
-    {% for message in messages %}
-      <h4>{{ ''.join(message) }}</h4>
-    {% endfor %}
-    {% else %}
-      <h3>None</h3>
-    {% endif %}
+  <h2>Last 20 messages (newest first):</h2>
+
+  {% if messages %}
+  {% for message in messages %}
+    <h4>{{ ''.join(message) }}</h4>
+  {% endfor %}
+  {% else %}
+    <h3>None</h3>
+  {% endif %}
 
    </body>
 </html>

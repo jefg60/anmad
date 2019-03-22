@@ -77,7 +77,7 @@ def log():
                            **template_data)
 
 @APP.route(BASEURL + "otherplays")
-def otherplays():
+def otherplaybooks():
     """Display other playbooks."""
     time_string = datetime.datetime.now()
     template_data = {
@@ -142,7 +142,7 @@ def otherplaybook(playbook):
     my_runlist = [anmad_args.ARGS.playbook_root_dir + '/' + playbook]
     QUEUES.queue_job(my_runlist)
     anmad_logging.LOGGER.debug("Redirecting to control page")
-    return redirect(BASEURL + otherplays)
+    return redirect(BASEURL + 'otherplays')
 
 
 if __name__ == "__main__" and not anmad_args.ARGS.dryrun:

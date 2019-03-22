@@ -23,6 +23,7 @@ def buttonlist():
         my_buttonlist = (anmad_args.ARGS.playbooks)
     return my_buttonlist
 
+
 def extraplays():
     """Get a list of yaml files in root dir that arent in buttonlist()."""
     yamlfiles = glob.glob(anmad_args.ARGS.playbook_root_dir + '/*.yaml')
@@ -35,6 +36,7 @@ def extraplays():
     extraplaybooks.sort()
     return extraplaybooks
 
+
 def oneplaybook(playbook, playbooklist):
     """Queues one playbook, only if its in the playbooklist."""
     if playbook not in playbooklist:
@@ -42,6 +44,7 @@ def oneplaybook(playbook, playbooklist):
         abort(404)
     my_runlist = [anmad_args.ARGS.playbook_root_dir + '/' + playbook]
     QUEUES.queue_job(my_runlist)
+
 
 @APP.route(BASEURL)
 def mainpage():
@@ -77,6 +80,7 @@ def log():
     anmad_logging.LOGGER.info("Rendering log page")
     return render_template('log.html',
                            **template_data)
+
 
 @APP.route(BASEURL + "otherplays")
 def otherplaybooks():

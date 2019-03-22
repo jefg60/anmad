@@ -80,7 +80,7 @@ def log():
 @APP.route(BASEURL + "clearqueues")
 def clearqueues():
     """Clear redis queues."""
-    anmad_logging.LOGGER.info("Clear redis queues requested.""")
+    anmad_logging.LOGGER.info("Clear redis queues requested.")
     QUEUES.clear()
     return redirect(BASEURL)
 

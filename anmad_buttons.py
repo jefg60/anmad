@@ -43,20 +43,6 @@ def oneplaybook(playbook, playbooklist):
     my_runlist = [anmad_args.ARGS.playbook_root_dir + '/' + playbook]
     QUEUES.queue_job(my_runlist)
 
-@APP.route(BASEURL + 'playbooks/<path:playbook>')
-def configuredplaybook(playbook):
-    """Runs one playbook, if its one of the configured ones."""
-    oneplaybook(playbook, buttonlist())
-    anmad_logging.LOGGER.debug("Redirecting to control page")
-    return redirect(BASEURL)
-
-@APP.route(BASEURL + 'otherplaybooks/<path:playbook>')
-def otherplaybook(playbook):
-    """Runs one playbook, if its one of the other ones found by extraplays."""
-    oneplaybook(playbook, extraplays())
-    anmad_logging.LOGGER.debug("Redirecting to others page")
-    return redirect(BASEURL + 'otherplays')
-
 @APP.route(BASEURL)
 def mainpage():
     """Render main page."""
@@ -75,13 +61,6 @@ def mainpage():
     anmad_logging.LOGGER.debug("Rendering control page")
     return render_template('main.html',
                            **template_data)
-
-
-@APP.route(BASEURL + "ara")
-def ara_redirect():
-    """Redirect to ARA reports page."""
-    anmad_logging.LOGGER.debug("Redirecting to ARA reports page")
-    return redirect(anmad_args.ARGS.ara_url)
 
 
 @APP.route(BASEURL + "log")
@@ -138,6 +117,29 @@ def runall():
     QUEUES.queue_job(anmad_args.RUN_LIST)
     anmad_logging.LOGGER.debug("Redirecting to control page")
     return redirect(BASEURL)
+
+
+@APP.route(BASEURL + 'playbooks/<path:playbook>')
+def configuredplaybook(playbook):
+    """Runs one playbook, if its one of the configured ones."""
+    oneplaybook(playbook, buttonlist())
+    anmad_logging.LOGGER.debug("Redirecting to control page")
+    return redirect(BASEURL)
+
+
+@APP.route(BASEURL + 'otherplaybooks/<path:playbook>')
+def otherplaybook(playbook):
+    """Runs one playbook, if its one of the other ones found by extraplays."""
+    oneplaybook(playbook, extraplays())
+    anmad_logging.LOGGER.debug("Redirecting to others page")
+    return redirect(BASEURL + 'otherplays')
+
+
+@APP.route(BASEURL + "ara")
+def ara_redirect():
+    """Redirect to ARA reports page."""
+    anmad_logging.LOGGER.debug("Redirecting to ARA reports page")
+    return redirect(anmad_args.ARGS.ara_url)
 
 
 if __name__ == "__main__" and not anmad_args.ARGS.dryrun:

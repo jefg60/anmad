@@ -66,6 +66,7 @@ def ara_redirect():
 def log():
     """Clear info queues."""
     anmad_logging.LOGGER.info("Rendering log page")
+    time_string = datetime.datetime.now()
     template_data = {
         'title' : 'anmad',
         'time': time_string,

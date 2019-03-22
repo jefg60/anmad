@@ -19,6 +19,8 @@ def run_one_playbook(my_playbook):
     anmad_logging.LOGGER.info(
         "Attempting to run ansible-playbook --inventory %s %s",
         anmad_args.MAININVENTORY, my_playbook)
+    QUEUES.info.put([str(datetime.datetime.now()),
+                     my_playbook + " Starting ansible-playbook..."])
     ret = subprocess.call(
         [anmad_args.ANSIBLE_PLAYBOOK_CMD,
          '--inventory', anmad_args.MAININVENTORY,

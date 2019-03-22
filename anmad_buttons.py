@@ -63,7 +63,7 @@ def ara_redirect():
 
 @APP.route(BASEURL + "log")
 def log():
-    """Clear info queues."""
+    """Display info queues."""
     QUEUES.update_job_lists()
     time_string = datetime.datetime.now()
     template_data = {
@@ -74,6 +74,20 @@ def log():
         }
     anmad_logging.LOGGER.info("Rendering log page")
     return render_template('log.html',
+                           **template_data)
+
+@APP.route(BASEURL + "otherplays")
+def otherplays():
+    """Display other playbooks."""
+    time_string = datetime.datetime.now()
+    template_data = {
+        'title' : 'anmad others',
+        'time': time_string,
+        'version': anmad_args.VERSION,
+        'extras': extraplays()
+        }
+    anmad_logging.LOGGER.info("Rendering other playbooks page")
+    return render_template('other.html',
                            **template_data)
 
 

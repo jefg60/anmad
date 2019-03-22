@@ -39,7 +39,6 @@ def mainpage():
     """Render main page."""
     QUEUES.update_job_lists()
     time_string = datetime.datetime.now()
-
     template_data = {
         'title' : 'anmad',
         'time': time_string,
@@ -65,14 +64,15 @@ def ara_redirect():
 @APP.route(BASEURL + "log")
 def log():
     """Clear info queues."""
-    anmad_logging.LOGGER.info("Rendering log page")
+    QUEUES.update_job_lists()
     time_string = datetime.datetime.now()
     template_data = {
-        'title' : 'anmad',
+        'title' : 'anmad log',
         'time': time_string,
         'version': anmad_args.VERSION,
         'messages': QUEUES.info_list,
         }
+    anmad_logging.LOGGER.info("Rendering log page")
     return render_template('log.html',
                            **template_data)
 

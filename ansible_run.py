@@ -34,8 +34,8 @@ def run_one_playbook(my_playbook):
 
     anmad_logging.LOGGER.error(
         "ansible-playbook %s return code: %s",
-        my_playbook, ret)
-    QUEUES.post_to_message_q(my_playbook + " Did not complete, error code: " + ret)
+        my_playbook, str(ret))
+    QUEUES.post_to_message_q(my_playbook + " Did not complete, error code: " + str(ret))
     return ret
 
 

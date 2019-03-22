@@ -40,18 +40,19 @@ class AnmadQueues:
         self.info_list = read_queue(self.info)
         self.info_list.reverse()
 
+    def post_to_message_q(self, message):
+        self.info.put([str(datetime.datetime.now()), " " + message])
+
     def prequeue_job(self, job):
         """Adds an item to the pre-run queue."""
         anmad_logging.LOGGER.info("Pre-Queuing %s", [job])
-        self.info.put([str(datetime.datetime.now()),
-                       " Pre-Queuing ", str([job])])
+        self.post_to_message_q("Pre-Queuing ", str([job]))
         self.prequeue.put([job])
 
     def queue_job(self, job):
         """Adds an item to the run queue."""
         anmad_logging.LOGGER.info("Queuing %s", str(job))
-        self.info.put([str(datetime.datetime.now()),
-                       " Queuing ", str(job)])
+        self.post_to_message_q("Queuing ", str(job))
         self.queue.put(job)
 
     def clear(self):

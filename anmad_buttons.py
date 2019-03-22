@@ -49,7 +49,6 @@ def mainpage():
         'messages': QUEUES.info_list,
         'playbooks': anmad_args.ARGS.playbooks,
         'prerun': anmad_args.ARGS.pre_run_playbooks,
-        'extras': extraplays()
         }
     anmad_logging.LOGGER.debug("Rendering control page")
     return render_template('main.html',

@@ -12,7 +12,7 @@ except AttributeError:
     PROCESS_NAME = os.path.basename(main.__file__)
 
 DEFAULT_CONFIGFILE = '/etc/anmad/conf.d/' + PROCESS_NAME
-VERSION = "0.11.3"
+VERSION = "0.12.0"
 
 def parse_args():
     """Read arguments from command line."""

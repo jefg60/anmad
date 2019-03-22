@@ -32,6 +32,7 @@ def extraplays():
     for yml in yamlfiles:
         yamlbasenames.append(os.path.basename(yml))
     extraplaybooks = list(set(yamlbasenames) - set(buttonlist()))
+    extraplaybooks.sort()
     return extraplaybooks
 
 def oneplaybook(playbook, playbooklist):

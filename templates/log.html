@@ -11,20 +11,20 @@
   <h1>anmad {{ version }} log page</h1>
   <h2>The date and time on the server is: {{ time }}</h2>
 
-  <button class="button greenbutton" onclick="self.location.href='/clearinfo'">
-  Clear messages
+  <button class="button greenbutton" onclick="self.location.href='/'">
+  Go back to main interface
   </button>
   <br />
 
-    <h2>Last 100 messages (newest first):</h2>
+  <h2>Last 100 messages (newest first):</h2>
 
-    {% if messages %}
-    {% for message in messages %}
-      <h4>{{ ''.join(message) }}</h4>
-    {% endfor %}
-    {% else %}
-      <h3>None</h3>
-    {% endif %}
+  {% if messages %}
+  {% for message in messages %}
+    <h4>{{ ''.join(message) }}</h4>
+  {% endfor %}
+  {% else %}
+    <h3>None</h3>
+  {% endif %}
 
    </body>
 </html>

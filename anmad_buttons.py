@@ -35,7 +35,7 @@ def extraplays():
     return extraplaybooks
 
 def oneplaybook(playbook, playbooklist):
-    """Queues one playbook, if its one of the configured ones."""
+    """Queues one playbook, only if its in the playbooklist."""
     if playbook not in playbooklist:
         anmad_logging.LOGGER.warning("API request for %s DENIED", playbook)
         abort(404)

@@ -63,12 +63,18 @@ def ara_redirect():
     return redirect(anmad_args.ARGS.ara_url)
 
 
-@APP.route(BASEURL + "clearinfo")
-def clearinfo():
+@APP.route(BASEURL + "log")
+def log():
     """Clear info queues."""
-    anmad_logging.LOGGER.info("Clear info queues requested.""")
-    QUEUES.clearinfo()
-    return redirect(BASEURL)
+    anmad_logging.LOGGER.info("Rendering log page")
+    template_data = {
+        'title' : 'anmad',
+        'time': time_string,
+        'version': anmad_args.VERSION,
+        'messages': QUEUES.info_list,
+        }
+    return render_template('log.html',
+                           **template_data)
 
 
 @APP.route(BASEURL + "clearqueues")

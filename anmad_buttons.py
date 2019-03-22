@@ -125,13 +125,24 @@ def runall():
 @APP.route(BASEURL + 'playbooks/<path:playbook>')
 def oneplaybook(playbook):
     """Runs one playbook, if its one of the configured ones."""
-    if playbook not in buttonlist() + extraplays():
+    if playbook not in buttonlist():
         anmad_logging.LOGGER.warning("API request for %s DENIED", playbook)
         abort(404)
     my_runlist = [anmad_args.ARGS.playbook_root_dir + '/' + playbook]
     QUEUES.queue_job(my_runlist)
     anmad_logging.LOGGER.debug("Redirecting to control page")
     return redirect(BASEURL)
+
+@APP.route(BASEURL + 'otherplaybooks/<path:playbook>')
+def otherplaybook(playbook):
+    """Runs one playbook, if its one of the configured ones."""
+    if playbook not in extraplays():
+        anmad_logging.LOGGER.warning("API request for %s DENIED", playbook)
+        abort(404)
+    my_runlist = [anmad_args.ARGS.playbook_root_dir + '/' + playbook]
+    QUEUES.queue_job(my_runlist)
+    anmad_logging.LOGGER.debug("Redirecting to control page")
+    return redirect(BASEURL + otherplays)
 
 
 if __name__ == "__main__" and not anmad_args.ARGS.dryrun:

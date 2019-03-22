@@ -1,10 +1,14 @@
 """Functions to run ansible playbooks."""
 import os
 import subprocess
+import datetime
 from multiprocessing import Pool
 
 import anmad_args
 import anmad_logging
+import anmad_queues
+
+QUEUES = anmad_queues.AnmadQueues('prerun', 'playbooks', 'info')
 
 def run_one_playbook(my_playbook):
     """Run exactly one ansible playbook. Don't call this
@@ -25,12 +29,15 @@ def run_one_playbook(my_playbook):
         anmad_logging.LOGGER.info(
             "ansible-playbook %s return code: %s",
             my_playbook, ret)
+        QUEUES.info.put([str(datetime.datetime.now()),
+                         my_playbook + " Completed successfully"])
         return ret
 
     anmad_logging.LOGGER.error(
         "ansible-playbook %s return code: %s",
         my_playbook, ret)
-
+    QUEUES.info.put([str(datetime.datetime.now()),
+                     my_playbook + " Did not complete, error code: " + ret])
     return ret
 
 

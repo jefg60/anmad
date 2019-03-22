@@ -1,7 +1,6 @@
 """Functions to run ansible playbooks."""
 import os
 import subprocess
-import datetime
 from multiprocessing import Pool
 
 import anmad_args
@@ -19,8 +18,7 @@ def run_one_playbook(my_playbook):
     anmad_logging.LOGGER.info(
         "Attempting to run ansible-playbook --inventory %s %s",
         anmad_args.MAININVENTORY, my_playbook)
-    QUEUES.info.put([str(datetime.datetime.now()),
-                     my_playbook + " Starting ansible-playbook..."])
+    QUEUES.post_to_message_q(my_playbook + " Starting ansible-playbook...")
     ret = subprocess.call(
         [anmad_args.ANSIBLE_PLAYBOOK_CMD,
          '--inventory', anmad_args.MAININVENTORY,
@@ -31,15 +29,13 @@ def run_one_playbook(my_playbook):
         anmad_logging.LOGGER.info(
             "ansible-playbook %s return code: %s",
             my_playbook, ret)
-        QUEUES.info.put([str(datetime.datetime.now()),
-                         my_playbook + " Completed successfully"])
+        QUEUES.post_to_message_q(my_playbook + " Completed successfully")
         return ret
 
     anmad_logging.LOGGER.error(
         "ansible-playbook %s return code: %s",
         my_playbook, ret)
-    QUEUES.info.put([str(datetime.datetime.now()),
-                     my_playbook + " Did not complete, error code: " + ret])
+    QUEUES.post_to_message_q(my_playbook + " Did not complete, error code: " + ret)
     return ret
 
 

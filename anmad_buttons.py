@@ -2,7 +2,6 @@
 """Control interface for anmad."""
 import datetime
 import os
-import glob
 from flask import Flask, render_template, redirect, abort
 
 import anmad_args
@@ -26,9 +25,8 @@ def buttonlist():
 
 def extraplays():
     """Get a list of yaml files in root dir that arent in buttonlist()."""
-    yamlfiles = glob.glob(anmad_args.ARGS.playbook_root_dir + '/*.yaml')
-    ymlfiles = glob.glob(anmad_args.ARGS.playbook_root_dir + '/*.yml')
-    yamlfiles = yamlfiles + ymlfiles
+    yamlfiles = anmad_syntaxchecks.find_yaml_files(
+        anmad_args.ARGS.playbook_root_dir)
     yamlbasenames = []
     for yml in yamlfiles:
         yamlbasenames.append(os.path.basename(yml))

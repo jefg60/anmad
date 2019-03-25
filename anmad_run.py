@@ -14,7 +14,7 @@ anmad_ssh.add_ssh_key_to_agent(anmad_args.ARGS.ssh_id)
 for playbookjob in QUEUES.queue.consume():
     anmad_logging.LOGGER.info("Starting to consume playbooks queue...")
     if playbookjob is not None:
-        QUEUES.post_to_message_q("Running job: " + str(playbookjob))
+        QUEUES.post_to_message_q("Found playbook job: " + str(playbookjob))
 
         # when an item is found in the PLAYQ, first process all jobs in preQ!
         anmad_logging.LOGGER.info("Starting to consume prerun queue...")
@@ -39,11 +39,11 @@ for playbookjob in QUEUES.queue.consume():
                     "processed all items in pre-run queue")
                 break #stop processing pre-Q if its empty
 
+        QUEUES.post_to_message_q("Running playbook job: " + str(playbookjob))
         anmad_logging.LOGGER.info('Running job from playqueue: %s', playbookjob)
         #Syntax check playbooks, or all playbooks in syntax_check_dir
         if anmad_args.ARGS.syntax_check_dir is None:
-            problemlist = anmad_syntaxchecks.checkplaybooks(
-                playbookjob)
+            problemlist = anmad_syntaxchecks.checkplaybooks(playbookjob)
         else:
             problemlist = anmad_syntaxchecks.syntax_check_dir(
                 anmad_args.ARGS.syntax_check_dir)

@@ -10,39 +10,42 @@ import yaml
 import anmad_args
 import anmad_logging
 
+def find_yaml_files(directory):
+    """Returns a list of files with yaml or yml extensions in a directory.
+    Does not recurse into subdirectories."""
+    anmad_logging.LOGGER.info("Searching in %s for yaml files", directory)
+    yamlfiles = glob.glob(directory + '/*.yaml')
+    ymlfiles = glob.glob(directory + '/*.yml')
+    return yamlfiles + ymlfiles
+
 
 def verify_yaml_file(filename):
     """Try to read yaml safely, return False if not valid"""
     try:
         with open(filename, 'r') as my_filename:
-            yamldata = yaml.safe_load(my_filename)
+            yaml.safe_load(my_filename)
     except FileNotFoundError:
         anmad_logging.LOGGER.error(
             "YAML File %s cannot be found", filename)
-        yamldata = False
+        return False
     except IsADirectoryError:
-        anmad_logging.LOGGER.warning(
-            "Expected YAML File at %s but got a directory", filename)
-        anmad_logging.LOGGER.warning(
-            "Might just be because you're using directory style inventories")
-        anmad_logging.LOGGER.warning(
-            "Searching in %s for yaml files", filename)
-        yamlfiles = glob.glob(filename + '/*.yaml')
-        ymlfiles = glob.glob(filename + '/*.yml')
-        yamlfiles = yamlfiles + ymlfiles
+        yamlfiles = find_yaml_files(filename)
+        if not yamlfiles:
+            anmad_logging.LOGGER.error("No yaml files found in %s", filename)
+            return False
         for yml in yamlfiles:
-            yamldata = verify_yaml_file(yml)
+            verify_yaml_file(yml)
     except yaml.scanner.ScannerError:
         anmad_logging.LOGGER.error(
             "Bad YAML syntax in %s", filename)
-        yamldata = False
+        return False
     except yaml.parser.ParserError:
         try:
             config = ConfigParser()
-            yamldata = config.read(filename)
+            config.read(filename)
         except config.Error:
-            yamldata = False
-    return yamldata
+            return False
+    return True
 
 
 def verify_files_exist():
@@ -114,15 +117,14 @@ def syntax_check_play_inv(my_playbook, my_inventory):
 def syntax_check_play(my_playbook):
     """Check a single playbook against all inventories."""
     my_playbook = os.path.abspath(my_playbook)
+    if not verify_yaml_file(my_playbook):
+        failed = ('failed playbook: ' + my_playbook)
+        return failed
     for my_inventory in anmad_args.ARGS.inventories:
         my_inventory = os.path.abspath(my_inventory)
-        if not verify_yaml_file(my_playbook):
-            failed = ('failed playbook: ' + my_playbook)
-            return failed
         if not verify_yaml_file(my_inventory):
             failed = ('failed inventory: ' + my_inventory)
             return failed
-
         failed = syntax_check_play_inv(my_playbook, my_inventory)
     return failed
 
@@ -146,8 +148,5 @@ def syntax_check_dir(check_dir):
         anmad_logging.LOGGER.error("%s cannot be found", check_dir)
         return check_dir
 
-    yamlfiles = glob.glob(check_dir + '/*.yaml')
-    ymlfiles = glob.glob(check_dir + '/*.yml')
-    yamlfiles = yamlfiles + ymlfiles
-    problemlist = checkplaybooks(yamlfiles)
+    problemlist = checkplaybooks(find_yaml_files(check_dir))
     return problemlist

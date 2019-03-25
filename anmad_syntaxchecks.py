@@ -29,11 +29,10 @@ def verify_yaml_file(filename):
             "YAML File %s cannot be found", filename)
         return False
     except IsADirectoryError:
-        yamlfiles = find_yaml_files(filename)
-        if not yamlfiles:
+        if not find_yaml_files(filename):
             anmad_logging.LOGGER.error("No yaml files found in %s", filename)
             return False
-        for yml in yamlfiles:
+        for yml in find_yaml_files(filename):
             verify_yaml_file(yml)
     except yaml.scanner.ScannerError:
         anmad_logging.LOGGER.error(

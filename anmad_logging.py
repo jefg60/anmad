@@ -40,21 +40,21 @@ if anmad_args.ARGS.debug:
     LOGGER.level = logging.DEBUG
 
 # log main arguments used
-LOGGER.info("config file: %s",
+LOGGER.debug("config file: %s",
             anmad_args.ARGS.configfile
             if anmad_args.ARGS.configfile is not None
             else anmad_args.DEFAULT_CONFIGFILE)
-LOGGER.info("vault password file: %s", anmad_args.ARGS.vault_password_file)
-LOGGER.info("ssh id: %s", anmad_args.ARGS.ssh_id)
-LOGGER.info("venv: %s", anmad_args.ARGS.venv)
-LOGGER.info("ansible_playbook_cmd: %s", anmad_args.ANSIBLE_PLAYBOOK_CMD)
-LOGGER.info("inventorylist: %s", " ".join(anmad_args.ARGS.inventories))
-LOGGER.info("maininventory: %s", anmad_args.MAININVENTORY)
+LOGGER.debug("vault password file: %s", anmad_args.ARGS.vault_password_file)
+LOGGER.debug("ssh id: %s", anmad_args.ARGS.ssh_id)
+LOGGER.debug("venv: %s", anmad_args.ARGS.venv)
+LOGGER.debug("ansible_playbook_cmd: %s", anmad_args.ANSIBLE_PLAYBOOK_CMD)
+LOGGER.debug("inventorylist: %s", " ".join(anmad_args.ARGS.inventories))
+LOGGER.debug("maininventory: %s", anmad_args.MAININVENTORY)
 if anmad_args.ARGS.pre_run_playbooks:
-    LOGGER.info("pre_run_playbooks: %s",
+    LOGGER.debug("pre_run_playbooks: %s",
                 " ".join(anmad_args.ARGS.pre_run_playbooks))
-    LOGGER.info("PRERUN_LIST: %s",
+    LOGGER.debug("PRERUN_LIST: %s",
                 " ".join(anmad_args.PRERUN_LIST))
-LOGGER.info("playbooks: %s", " ".join(anmad_args.ARGS.playbooks))
-LOGGER.info("RUN_LIST: %s", " ".join(anmad_args.RUN_LIST))
-LOGGER.info("playbook_root_dir: %s", anmad_args.ARGS.playbook_root_dir)
+LOGGER.debug("playbooks: %s", " ".join(anmad_args.ARGS.playbooks))
+LOGGER.debug("RUN_LIST: %s", " ".join(anmad_args.RUN_LIST))
+LOGGER.debug("playbook_root_dir: %s", anmad_args.ARGS.playbook_root_dir)

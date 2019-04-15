@@ -1,6 +1,6 @@
 #!/usr/bin/env bats
 #
-version=0.12.2
+version=0.13.1
 program=./anmad_buttons.py
 printvault=./print_vault_value.py
 pylint="python3 $(which pylint)"

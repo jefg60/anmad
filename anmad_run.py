@@ -44,8 +44,8 @@ for playbookjob in QUEUES.queue.consume():
 
         if playbookjob[0] == 'restart_anmad_run':
             QUEUES.post_to_message_q("Restarting daemon... ")
-            anmad_logging.LOGGER.info('Restarting %s', " ".join(sys.argv))
-            os.execl(sys.executable, 'python', __file__, *sys.argv[1:])
+            anmad_logging.LOGGER.info('Restarting %s %s %s', sys.executable, __file__, " ".join(sys.argv[1:]))
+            os.execl(sys.executable, sys.executable, __file__, *sys.argv[1:])
 
         QUEUES.post_to_message_q("Running playbook job: " + str(playbookjob))
         anmad_logging.LOGGER.info('Running job from playqueue: %s', playbookjob)

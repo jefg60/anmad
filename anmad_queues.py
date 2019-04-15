@@ -42,7 +42,7 @@ class AnmadQueues:
 
     def post_to_message_q(self, message):
         """Method to update redis queue for interface messages."""
-        self.info.put([str(datetime.datetime.now()), " " + message])
+        self.info.put([str(datetime.datetime.utcnow()), " " + message])
 
     def prequeue_job(self, job):
         """Adds an item to the pre-run queue."""

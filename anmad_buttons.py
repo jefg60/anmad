@@ -68,7 +68,7 @@ def mainpage():
 def log():
     """Display info queues."""
     QUEUES.update_job_lists()
-    time_string = datetime.datetime.now()
+    time_string = datetime.datetime.utcnow()
     template_data = {
         'title' : 'anmad log',
         'time': time_string,
@@ -83,7 +83,7 @@ def log():
 @APP.route(BASEURL + "otherplays")
 def otherplaybooks():
     """Display other playbooks."""
-    time_string = datetime.datetime.now()
+    time_string = datetime.datetime.utcnow()
     template_data = {
         'title' : 'anmad others',
         'time': time_string,

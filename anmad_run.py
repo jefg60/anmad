@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
 """Daemon to watch redis queues for ansible jobs."""
+import os
+import sys
+
 import anmad_args
 import anmad_logging
 import anmad_syntaxchecks
@@ -39,7 +42,7 @@ for playbookjob in QUEUES.queue.consume():
                     "processed all items in pre-run queue")
                 break #stop processing pre-Q if its empty
 
-        if playbookjob[0] = 'restart_anmad_run':
+        if playbookjob[0] == 'restart_anmad_run':
             QUEUES.post_to_message_q("Restarting daemon... ")
             anmad_logging.LOGGER.info('Restarting %s', *sys.argv)
             python = sys.executable

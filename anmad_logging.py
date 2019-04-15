@@ -40,7 +40,7 @@ if anmad_args.ARGS.debug:
     LOGGER.level = logging.DEBUG
 
 # log main arguments used
-LOGGER.info("Version: %s", anmad_args.ARGS.VERSION)
+LOGGER.info("Version: %s", anmad_args.VERSION)
 LOGGER.debug("config file: %s",
              anmad_args.ARGS.configfile
              if anmad_args.ARGS.configfile is not None

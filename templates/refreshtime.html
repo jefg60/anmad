@@ -1,4 +1,16 @@
-<h1>last refresh at {{ time }} <button onclick="ReloadFunc()">Refresh now...</button></h1>
+<script src="{{ url_for('static', filename='moment.js') }}"></script>
+<h1>Information current as of</h1>
+<h1>
+<script>
+  document.write(moment("{{ time }} Z").format('LL'), " ", moment("{{ time }} Z").format('LTS'));
+</script>
+(Local Time)<br />
+<script>
+  document.write(moment("{{ time }}").format('LL'), " ", moment("{{ time }}").format('LTS'));
+</script>
+(UTC Time)
+<button onclick="ReloadFunc()">Refresh now...</button>
+</h1>
 <script>
 function ReloadFunc() {
   location.reload();

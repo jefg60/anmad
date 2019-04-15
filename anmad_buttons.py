@@ -48,7 +48,7 @@ def oneplaybook(playbook, playbooklist):
 def mainpage():
     """Render main page."""
     QUEUES.update_job_lists()
-    time_string = datetime.datetime.now()
+    time_string = datetime.datetime.utcnow()
     template_data = {
         'title' : 'anmad',
         'time': time_string,

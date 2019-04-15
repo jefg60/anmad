@@ -1,1 +1,6 @@
-<h1>last refresh at {{ time }}</h1>
+<h1>last refresh at {{ time }} <button onclick="ReloadFunc()">Refresh now...</button></h1>
+<script>
+function ReloadFunc() {
+  location.reload();
+}
+</script>

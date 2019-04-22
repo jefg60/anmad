@@ -75,7 +75,7 @@ def log():
         'version': anmad_args.VERSION,
         'messages': QUEUES.info_list,
         }
-    anmad_logging.LOGGER.info("Rendering log page")
+    anmad_logging.LOGGER.debug("Rendering log page")
     return render_template('log.html',
                            **template_data)
 

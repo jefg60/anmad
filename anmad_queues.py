@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 """Anmad queue module."""
-import datetime
 import pickle
 import redis
 from hotqueue import HotQueue

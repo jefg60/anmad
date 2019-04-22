@@ -5,8 +5,6 @@ import pickle
 import redis
 from hotqueue import HotQueue
 
-import anmad_logging
-
 def read_queue(queue):
     """Reads jobs from queue, returns list of jobs."""
     redis_conn = redis.Redis()
@@ -46,13 +44,11 @@ class AnmadQueues:
 
     def prequeue_job(self, job):
         """Adds an item to the pre-run queue."""
-        anmad_logging.LOGGER.info("Pre-Queuing %s", [job])
         self.post_to_message_q("Pre-Queuing " + str([job]))
         self.prequeue.put([job])
 
     def queue_job(self, job):
         """Adds an item to the run queue."""
-        anmad_logging.LOGGER.info("Queuing %s", str(job))
         self.post_to_message_q("Queuing " + str(job))
         self.queue.put(job)
 

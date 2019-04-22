@@ -38,18 +38,12 @@ class AnmadQueues:
         self.info_list = read_queue(self.info)
         self.info_list.reverse()
 
-    def post_to_message_q(self, message):
-        """Method to update redis queue for interface messages."""
-        self.info.put([str(datetime.datetime.utcnow()), " UTC " + message])
-
     def prequeue_job(self, job):
         """Adds an item to the pre-run queue."""
-        self.post_to_message_q("Pre-Queuing " + str([job]))
         self.prequeue.put([job])
 
     def queue_job(self, job):
         """Adds an item to the run queue."""
-        self.post_to_message_q("Queuing " + str(job))
         self.queue.put(job)
 
     def clear(self):

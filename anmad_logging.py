@@ -17,7 +17,7 @@ class AnmadInfoHandler(logging.handlers.QueueHandler):
     """Override QueueHandler enqueue method to work with hotqueue."""
 
     def enqueue(self, record):
-        self.queue.put([str(record)])
+        self.queue.put(record.message)
 
 # Setup Logging globally with no handlers to begin with
 logging.basicConfig(
@@ -29,9 +29,12 @@ logging.basicConfig(
 LOGGER = logging.getLogger(PROCESS_NAME)
 FORMATTER = logging.Formatter(
     '%(name)s - [%(levelname)s] - %(message)s')
+BUI_FORMATTER = logging.Formatter(
+    '%(asctime)s - %(name)s - [%(levelname)s] - %(message)s')
 
 QUEUES = anmad_queues.AnmadQueues('prerun', 'playbooks', 'info')
 QUEUE_HANDLER = AnmadInfoHandler(QUEUES.info)
+QUEUE_HANDLER.setFormatter(BUI_FORMATTER)
 LOGGER.addHandler(QUEUE_HANDLER)
 
 # create sysloghandler if needed (default true)

@@ -17,7 +17,7 @@ def run_one_playbook(my_playbook):
     my_playbook = os.path.abspath(my_playbook)
     anmad_logging.LOGGER.info(
         "Attempting to run ansible-playbook --inventory %s %s",
-        anmad_args.MAININVENTORY, my_playbook)
+        str(anmad_args.MAININVENTORY), str(my_playbook))
     ret = subprocess.call(
         [anmad_args.ANSIBLE_PLAYBOOK_CMD,
          '--inventory', anmad_args.MAININVENTORY,
@@ -27,12 +27,12 @@ def run_one_playbook(my_playbook):
     if ret == 0:
         anmad_logging.LOGGER.info(
             "ansible-playbook %s return code: %s",
-            my_playbook, ret)
+            str(my_playbook), str(ret))
         return ret
 
     anmad_logging.LOGGER.error(
         "ansible-playbook %s did not complete, return code: %s",
-        my_playbook, str(ret))
+        str(my_playbook), str(ret))
     return ret
 
 

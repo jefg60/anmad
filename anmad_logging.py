@@ -56,17 +56,17 @@ if anmad_args.ARGS.debug:
 # create queuehandler
 
 # log main arguments used
-LOGGER.info("Version: %s", anmad_args.VERSION)
+LOGGER.info("Version: %s", str(anmad_args.VERSION))
 LOGGER.debug("config file: %s",
-             anmad_args.ARGS.configfile
+             str(anmad_args.ARGS.configfile)
              if anmad_args.ARGS.configfile is not None
-             else anmad_args.DEFAULT_CONFIGFILE)
-LOGGER.debug("vault password file: %s", anmad_args.ARGS.vault_password_file)
-LOGGER.debug("ssh id: %s", anmad_args.ARGS.ssh_id)
-LOGGER.debug("venv: %s", anmad_args.ARGS.venv)
-LOGGER.debug("ansible_playbook_cmd: %s", anmad_args.ANSIBLE_PLAYBOOK_CMD)
+             else str(anmad_args.DEFAULT_CONFIGFILE))
+LOGGER.debug("vault password file: %s", str(anmad_args.ARGS.vault_password_file))
+LOGGER.debug("ssh id: %s", str(anmad_args.ARGS.ssh_id))
+LOGGER.debug("venv: %s", str(anmad_args.ARGS.venv))
+LOGGER.debug("ansible_playbook_cmd: %s", str(anmad_args.ANSIBLE_PLAYBOOK_CMD))
 LOGGER.debug("inventorylist: %s", " ".join(anmad_args.ARGS.inventories))
-LOGGER.debug("maininventory: %s", anmad_args.MAININVENTORY)
+LOGGER.debug("maininventory: %s", str(anmad_args.MAININVENTORY))
 if anmad_args.ARGS.pre_run_playbooks:
     LOGGER.debug("pre_run_playbooks: %s",
                  " ".join(anmad_args.ARGS.pre_run_playbooks))
@@ -74,4 +74,4 @@ if anmad_args.ARGS.pre_run_playbooks:
                  " ".join(anmad_args.PRERUN_LIST))
 LOGGER.debug("playbooks: %s", " ".join(anmad_args.ARGS.playbooks))
 LOGGER.debug("RUN_LIST: %s", " ".join(anmad_args.RUN_LIST))
-LOGGER.debug("playbook_root_dir: %s", anmad_args.ARGS.playbook_root_dir)
+LOGGER.debug("playbook_root_dir: %s", str(anmad_args.ARGS.playbook_root_dir))

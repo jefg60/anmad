@@ -13,7 +13,7 @@ import anmad_logging
 def find_yaml_files(directory):
     """Returns a list of files with yaml or yml extensions in a directory.
     Does not recurse into subdirectories."""
-    anmad_logging.LOGGER.info("Searching in %s for yaml files", directory)
+    anmad_logging.LOGGER.info("Searching in %s for yaml files", str(directory))
     yamlfiles = glob.glob(directory + '/*.yaml')
     ymlfiles = glob.glob(directory + '/*.yml')
     return yamlfiles + ymlfiles
@@ -26,17 +26,17 @@ def verify_yaml_file(filename):
             yaml.safe_load(my_filename)
     except FileNotFoundError:
         anmad_logging.LOGGER.error(
-            "YAML File %s cannot be found", filename)
+            "YAML File %s cannot be found", str(filename))
         return False
     except IsADirectoryError:
         if not find_yaml_files(filename):
-            anmad_logging.LOGGER.error("No yaml files found in %s", filename)
+            anmad_logging.LOGGER.error("No yaml files found in %s", str(filename))
             return False
         for yml in find_yaml_files(filename):
             verify_yaml_file(yml)
     except yaml.scanner.ScannerError:
         anmad_logging.LOGGER.error(
-            "Bad YAML syntax in %s", filename)
+            "Bad YAML syntax in %s", str(filename))
         return False
     except yaml.parser.ParserError:
         try:
@@ -73,7 +73,7 @@ def verify_files_exist():
     for filename in fileargs2:
         if not os.path.exists(filename):
             anmad_logging.LOGGER.error("Unable to find path %s , aborting",
-                                       filename)
+                                       str(filename))
             return filename
     return str()
 
@@ -88,7 +88,7 @@ def syntax_check_play_inv(my_playbook, my_inventory):
     my_inventory = os.path.abspath(my_inventory)
     anmad_logging.LOGGER.info(
         "Syntax Checking ansible playbook %s against "
-        "inventory %s", my_playbook, my_inventory)
+        "inventory %s", str(my_playbook), str(my_inventory))
     ret = subprocess.call(
         [anmad_args.ANSIBLE_PLAYBOOK_CMD,
          '--inventory', my_inventory,
@@ -97,19 +97,19 @@ def syntax_check_play_inv(my_playbook, my_inventory):
     if ret == 0:
         anmad_logging.LOGGER.info(
             "ansible-playbook syntax check return code: "
-            "%s", ret)
+            "%s", str(ret))
         return str()
 
     anmad_logging.LOGGER.info(
-        "Playbook %s failed syntax check!!!", my_playbook)
+        "Playbook %s failed syntax check!!!", str(my_playbook))
     try:
         anmad_logging.LOGGER.debug(
             "ansible-playbook syntax check return code: "
-            "%s", ret)
+            "%s", str(ret))
     except NameError:
         anmad_logging.LOGGER.error(
             "playbooks / inventories must be valid YAML, %s or %s is not",
-            my_playbook, my_inventory)
+            str(my_playbook), str(my_inventory))
     return ('   playbook: ' + my_playbook +
             '\n   inventory: ' + my_inventory)
 
@@ -144,7 +144,7 @@ def checkplaybooks(listofplaybooks):
 def syntax_check_dir(check_dir):
     """Check all YAML in a directory for ansible syntax."""
     if not os.path.exists(check_dir):
-        anmad_logging.LOGGER.error("%s cannot be found", check_dir)
+        anmad_logging.LOGGER.error("%s cannot be found", str(check_dir))
         return check_dir
 
     problemlist = checkplaybooks(find_yaml_files(check_dir))

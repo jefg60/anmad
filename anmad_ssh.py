@@ -16,7 +16,7 @@ def add_ssh_key_to_agent(key_file):
         my_env["SSH_ASKPASS"] = anmad_args.ARGS.ssh_askpass
         my_env["DISPLAY"] = ":0"
 
-    anmad_logging.LOGGER.debug("environment: %s", my_env)
+    anmad_logging.LOGGER.debug("environment: %s", str(my_env))
     try:
         subprocess.run(['ssh-add', key_file],
                        env=my_env,

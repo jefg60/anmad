@@ -38,7 +38,7 @@ def extraplays():
 def oneplaybook(playbook, playbooklist):
     """Queues one playbook, only if its in the playbooklist."""
     if playbook not in playbooklist:
-        anmad_logging.LOGGER.warning("API request for %s DENIED", playbook)
+        anmad_logging.LOGGER.warning("API request for %s DENIED", str(playbook))
         abort(404)
     my_runlist = [anmad_args.ARGS.playbook_root_dir + '/' + playbook]
     QUEUES.queue_job(my_runlist)
@@ -114,7 +114,7 @@ def runall():
     if anmad_args.ARGS.pre_run_playbooks is not None:
         for play in anmad_args.PRERUN_LIST:
             if [play] not in QUEUES.prequeue_list:
-                anmad_logging.LOGGER.info("Pre-Queueing %s", play)
+                anmad_logging.LOGGER.info("Pre-Queueing %s", str(play))
                 QUEUES.prequeue_job(play)
 
     anmad_logging.LOGGER.info("Queueing %s", str(anmad_args.RUN_LIST))

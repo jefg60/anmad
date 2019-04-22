@@ -114,8 +114,12 @@ def runall():
     if anmad_args.ARGS.pre_run_playbooks is not None:
         for play in anmad_args.PRERUN_LIST:
             if [play] not in QUEUES.prequeue_list:
+                anmad_logging.LOGGER.info("Pre-Queueing %s", play)
                 QUEUES.prequeue_job(play)
+
+    anmad_logging.LOGGER.info("Queueing %s", str(anmad_args.RUN_LIST))
     QUEUES.queue_job(anmad_args.RUN_LIST)
+
     anmad_logging.LOGGER.debug("Redirecting to control page")
     return redirect(BASEURL)
 

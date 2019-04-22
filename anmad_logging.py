@@ -13,7 +13,11 @@ try:
 except AttributeError:
     PROCESS_NAME = os.path.basename(main.__file__)
 
-QUEUES = anmad_queues.AnmadQueues('prerun', 'playbooks', 'info')
+class AnmadInfoHandler(logging.handlers.QueueHandler):
+    """Override QueueHandler enqueue method to work with hotqueue."""
+
+    def enqueue(self, record):
+        self.queue.put([str(record)])
 
 # Setup Logging globally with no handlers to begin with
 logging.basicConfig(
@@ -25,6 +29,10 @@ logging.basicConfig(
 LOGGER = logging.getLogger(PROCESS_NAME)
 FORMATTER = logging.Formatter(
     '%(name)s - [%(levelname)s] - %(message)s')
+
+QUEUES = anmad_queues.AnmadQueues('prerun', 'playbooks', 'info')
+QUEUE_HANDLER = AnmadInfoHandler(QUEUES.info)
+LOGGER.addHandler(QUEUE_HANDLER)
 
 # create sysloghandler if needed (default true)
 if anmad_args.ARGS.syslog:

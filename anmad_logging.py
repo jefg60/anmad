@@ -6,11 +6,14 @@ import mod_wsgi
 import __main__ as main
 
 import anmad_args
+import anmad_queues
 
 try:
     PROCESS_NAME = mod_wsgi.process_group
 except AttributeError:
     PROCESS_NAME = os.path.basename(main.__file__)
+
+QUEUES = anmad_queues.AnmadQueues('prerun', 'playbooks', 'info')
 
 # Setup Logging globally with no handlers to begin with
 logging.basicConfig(
@@ -38,6 +41,8 @@ if anmad_args.ARGS.debug:
     CONSOLEHANDLER.setFormatter(FORMATTER)
     logging.getLogger().addHandler(CONSOLEHANDLER)
     LOGGER.level = logging.DEBUG
+
+# create queuehandler
 
 # log main arguments used
 LOGGER.info("Version: %s", anmad_args.VERSION)

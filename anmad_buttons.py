@@ -90,7 +90,7 @@ def otherplaybooks():
         'version': VERSION,
         'extras': extraplays()
         }
-    LOGGER.info("Rendering other playbooks page")
+    LOGGER.debug("Rendering other playbooks page")
     return render_template('other.html', **template_data)
 
 

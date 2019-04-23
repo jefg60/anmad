@@ -1,4 +1,4 @@
-"""Functions to run ansible playbooks."""
+"""Functions to check / run ansible playbooks."""
 import os
 import glob
 from multiprocessing import Pool

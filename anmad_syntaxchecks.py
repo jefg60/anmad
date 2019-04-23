@@ -9,9 +9,9 @@ import yaml
 import anmad_logging
 
 QUEUES = anmad_logging.QUEUES
-ARGS = anmad_logging.ARGS
 VERSION = anmad_logging.VERSION
-DEFAULT_CONFIGFILE = anmad_logging.DEFAULT_CONFIGFILE
+
+ARGS = anmad_logging.ARGS
 ANSIBLE_PLAYBOOK_CMD = anmad_logging.ANSIBLE_PLAYBOOK_CMD
 MAININVENTORY = anmad_logging.MAININVENTORY
 PRERUN_LIST = anmad_logging.PRERUN_LIST

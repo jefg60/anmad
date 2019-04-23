@@ -4,16 +4,16 @@ import datetime
 import os
 from flask import Flask, render_template, redirect, abort
 
-import anmad_syntaxchecks
+import anmad_yaml
 
 APP = Flask(__name__)
 BASEURL = "/"
-QUEUES = anmad_syntaxchecks.QUEUES
-ARGS = anmad_syntaxchecks.ARGS
-VERSION = anmad_syntaxchecks.VERSION
-PRERUN_LIST = anmad_syntaxchecks.PRERUN_LIST
-RUN_LIST = anmad_syntaxchecks.RUN_LIST
-LOGGER = anmad_syntaxchecks.LOGGER
+QUEUES = anmad_yaml.QUEUES
+ARGS = anmad_yaml.ARGS
+VERSION = anmad_yaml.VERSION
+PRERUN_LIST = anmad_yaml.PRERUN_LIST
+RUN_LIST = anmad_yaml.RUN_LIST
+LOGGER = anmad_yaml.LOGGER
 
 def buttonlist():
     """Get a list of allowed playbook buttons."""
@@ -27,7 +27,7 @@ def buttonlist():
 
 def extraplays():
     """Get a list of yaml files in root dir that arent in buttonlist()."""
-    yamlfiles = anmad_syntaxchecks.find_yaml_files(
+    yamlfiles = anmad_yaml.find_yaml_files(
         ARGS.playbook_root_dir)
     yamlbasenames = []
     for yml in yamlfiles:
@@ -109,7 +109,7 @@ def clearqueues():
 @APP.route(BASEURL + "runall")
 def runall():
     """Run all playbooks after verifying that files exist."""
-    problemfile = anmad_syntaxchecks.verify_files_exist()
+    problemfile = anmad_yaml.verify_files_exist()
     if problemfile:
         LOGGER.info("Invalid files: %s", str(problemfile))
         return redirect(BASEURL)

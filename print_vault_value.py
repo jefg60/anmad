@@ -10,7 +10,7 @@ from ansible_vault import Vault
 def parse_args():
     """Read arguments from command line."""
     home = expanduser("~")
-    __version__ = "0.13.6"
+    __version__ = "0.14.0"
 
     parser = argparse.ArgumentParser()
     parser.add_argument(

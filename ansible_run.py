@@ -13,6 +13,7 @@ ANSIBLE_PLAYBOOK_CMD = anmad_logging.ANSIBLE_PLAYBOOK_CMD
 MAININVENTORY = anmad_logging.MAININVENTORY
 PRERUN_LIST = anmad_logging.PRERUN_LIST
 RUN_LIST = anmad_logging.RUN_LIST
+LOGGER = anmad_logging.LOGGER
 
 def run_one_playbook(my_playbook):
     """Run exactly one ansible playbook. Don't call this
@@ -20,7 +21,7 @@ def run_one_playbook(my_playbook):
     one playbook eg [playbook]."""
 
     my_playbook = os.path.abspath(my_playbook)
-    anmad_logging.LOGGER.info(
+    LOGGER.info(
         "Attempting to run ansible-playbook --inventory %s %s",
         str(MAININVENTORY), str(my_playbook))
     ret = subprocess.call(
@@ -30,12 +31,12 @@ def run_one_playbook(my_playbook):
          my_playbook])
 
     if ret == 0:
-        anmad_logging.LOGGER.info(
+        LOGGER.info(
             "ansible-playbook %s return code: %s",
             str(my_playbook), str(ret))
         return ret
 
-    anmad_logging.LOGGER.error(
+    LOGGER.error(
         "ansible-playbook %s did not complete, return code: %s",
         str(my_playbook), str(ret))
     return ret

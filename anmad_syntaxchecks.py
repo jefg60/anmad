@@ -82,7 +82,7 @@ def verify_files_exist():
     for filename in fileargs2:
         if not os.path.exists(filename):
             LOGGER.error("Unable to find path %s , aborting",
-                                       str(filename))
+                         str(filename))
             return filename
     return str()
 

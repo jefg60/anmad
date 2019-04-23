@@ -54,5 +54,5 @@ if ARGS.syslog:
 if ARGS.debug:
     CONSOLEHANDLER = logging.StreamHandler()
     CONSOLEHANDLER.setFormatter(TIMED_FORMATTER)
-    logging.getLogger().addHandler(CONSOLEHANDLER)
+    LOGGER.addHandler(CONSOLEHANDLER)
     LOGGER.level = logging.DEBUG

@@ -38,6 +38,7 @@ TIMED_FORMATTER = logging.Formatter(
 
 QUEUE_HANDLER = AnmadInfoHandler(QUEUES.info)
 QUEUE_HANDLER.setFormatter(TIMED_FORMATTER)
+QUEUE_HANDLER.setLevel(logging.INFO)
 
 LOGGER.addHandler(QUEUE_HANDLER)
 LOGGER.level = logging.INFO

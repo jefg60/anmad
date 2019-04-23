@@ -8,12 +8,6 @@ import anmad_ssh
 
 QUEUES = anmad_syntaxchecks.QUEUES
 ARGS = anmad_syntaxchecks.ARGS
-VERSION = anmad_syntaxchecks.VERSION
-DEFAULT_CONFIGFILE = anmad_syntaxchecks.DEFAULT_CONFIGFILE
-ANSIBLE_PLAYBOOK_CMD = anmad_syntaxchecks.ANSIBLE_PLAYBOOK_CMD
-MAININVENTORY = anmad_syntaxchecks.MAININVENTORY
-PRERUN_LIST = anmad_syntaxchecks.PRERUN_LIST
-RUN_LIST = anmad_syntaxchecks.RUN_LIST
 LOGGER = anmad_syntaxchecks.LOGGER
 
 anmad_ssh.add_ssh_key_to_agent(ARGS.ssh_id)

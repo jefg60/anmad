@@ -19,22 +19,15 @@ class AnmadInfoHandler(logging.handlers.QueueHandler):
     def enqueue(self, record):
         self.queue.put(record.message)
 
-# Setup Logging globally with no handlers to begin with
-logging.basicConfig(
-    level=logging.WARNING,
-    format="%(asctime)s [%(levelname)s]  %(message)s",
-    handlers=[]
-    )
-
 LOGGER = logging.getLogger(PROCESS_NAME)
-FORMATTER = logging.Formatter(
+SYSLOG_FORMATTER = logging.Formatter(
     '%(name)s - [%(levelname)s] - %(message)s')
-BUI_FORMATTER = logging.Formatter(
+TIMED_FORMATTER = logging.Formatter(
     '%(asctime)s - %(name)s - [%(levelname)s] - %(message)s')
 
 QUEUES = anmad_queues.AnmadQueues('prerun', 'playbooks', 'info')
 QUEUE_HANDLER = AnmadInfoHandler(QUEUES.info)
-QUEUE_HANDLER.setFormatter(BUI_FORMATTER)
+QUEUE_HANDLER.setFormatter(TIMED_FORMATTER)
 LOGGER.addHandler(QUEUE_HANDLER)
 
 # create sysloghandler if needed (default true)
@@ -42,18 +35,16 @@ if anmad_args.ARGS.syslog:
     SYSLOGHANDLER = logging.handlers.SysLogHandler(
         address=anmad_args.ARGS.syslogdevice,
         facility='local3')
-    SYSLOGHANDLER.setFormatter(FORMATTER)
+    SYSLOGHANDLER.setFormatter(SYSLOG_FORMATTER)
     LOGGER.addHandler(SYSLOGHANDLER)
     LOGGER.level = logging.INFO
 
 # create consolehandler if debug mode
 if anmad_args.ARGS.debug:
     CONSOLEHANDLER = logging.StreamHandler()
-    CONSOLEHANDLER.setFormatter(FORMATTER)
+    CONSOLEHANDLER.setFormatter(TIMED_FORMATTER)
     logging.getLogger().addHandler(CONSOLEHANDLER)
     LOGGER.level = logging.DEBUG
-
-# create queuehandler
 
 # log main arguments used
 LOGGER.info("Version: %s", str(anmad_args.VERSION))

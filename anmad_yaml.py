@@ -57,12 +57,9 @@ def verify_files_exist():
     """ Check that files exist before continuing.
     Returns names of files that are missing or fail yaml syntax checks"""
     try:
-        fileargs1 = (ARGS.inventories +
-                     RUN_LIST +
-                     PRERUN_LIST)
+        fileargs1 = (ARGS.inventories + RUN_LIST + PRERUN_LIST)
     except TypeError:
-        fileargs1 = (ARGS.inventories +
-                     RUN_LIST)
+        fileargs1 = (ARGS.inventories + RUN_LIST)
     badfiles = []
     for filename in fileargs1:
         yamldata = verify_yaml_file(filename)
@@ -78,7 +75,6 @@ def verify_files_exist():
         pass
     for filename in fileargs2:
         if not os.path.exists(filename):
-            LOGGER.error("Unable to find path %s , aborting",
-                         str(filename))
+            LOGGER.error("Unable to find path %s , aborting", str(filename))
             return filename
     return str()

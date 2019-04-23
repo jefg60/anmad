@@ -1,5 +1,4 @@
-"""anmad syntax check module."""
-
+"""Functions to run ansible playbooks."""
 import os
 import glob
 from multiprocessing import Pool
@@ -158,3 +157,41 @@ def syntax_check_dir(check_dir):
 
     problemlist = checkplaybooks(find_yaml_files(check_dir))
     return problemlist
+
+
+def run_one_playbook(my_playbook):
+    """Run exactly one ansible playbook. Don't call this
+    directly. Instead, call one of the multi-playbook funcs with a list of
+    one playbook eg [playbook]."""
+
+    my_playbook = os.path.abspath(my_playbook)
+    LOGGER.info(
+        "Attempting to run ansible-playbook --inventory %s %s",
+        str(MAININVENTORY), str(my_playbook))
+    ret = subprocess.call(
+        [ANSIBLE_PLAYBOOK_CMD,
+         '--inventory', MAININVENTORY,
+         '--vault-password-file', ARGS.vault_password_file,
+         my_playbook])
+
+    if ret == 0:
+        LOGGER.info(
+            "ansible-playbook %s return code: %s",
+            str(my_playbook), str(ret))
+        return ret
+
+    LOGGER.error(
+        "ansible-playbook %s did not complete, return code: %s",
+        str(my_playbook), str(ret))
+    return ret
+
+
+def runplaybooks(listofplaybooks):
+    """Run a list of ansible playbooks and wait for them to finish."""
+
+    pool = Pool(ARGS.concurrency)
+    ret = pool.map(run_one_playbook, listofplaybooks)
+    pool.close()
+    pool.join()
+
+    return ret

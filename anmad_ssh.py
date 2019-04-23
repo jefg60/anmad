@@ -5,15 +5,16 @@ import subprocess
 import ssh_agent_setup
 
 import anmad_logging
-import anmad_args
+
+ARGS = anmad_logging.ARGS
 
 def add_ssh_key_to_agent(key_file):
     """Adds ssh key, with ssh_askpass if possible"""
     anmad_logging.LOGGER.info("Loading ssh key...")
     ssh_agent_setup.setup()
     my_env = os.environ.copy()
-    if anmad_args.ARGS.ssh_askpass is not None:
-        my_env["SSH_ASKPASS"] = anmad_args.ARGS.ssh_askpass
+    if ARGS.ssh_askpass is not None:
+        my_env["SSH_ASKPASS"] = ARGS.ssh_askpass
         my_env["DISPLAY"] = ":0"
 
     anmad_logging.LOGGER.debug("environment: %s", str(my_env))

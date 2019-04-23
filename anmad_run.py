@@ -3,16 +3,21 @@
 import os
 import sys
 
-import anmad_args
 import anmad_logging
 import anmad_syntaxchecks
 import anmad_ssh
 import ansible_run
-import anmad_queues
 
-QUEUES = anmad_queues.AnmadQueues('prerun', 'playbooks', 'info')
+QUEUES = anmad_logging.QUEUES
+ARGS = anmad_logging.ARGS
+VERSION = anmad_logging.VERSION
+DEFAULT_CONFIGFILE = anmad_logging.DEFAULT_CONFIGFILE
+ANSIBLE_PLAYBOOK_CMD = anmad_logging.ANSIBLE_PLAYBOOK_CMD
+MAININVENTORY = anmad_logging.MAININVENTORY
+PRERUN_LIST = anmad_logging.PRERUN_LIST
+RUN_LIST = anmad_logging.RUN_LIST
 
-anmad_ssh.add_ssh_key_to_agent(anmad_args.ARGS.ssh_id)
+anmad_ssh.add_ssh_key_to_agent(ARGS.ssh_id)
 
 for playbookjob in QUEUES.queue.consume():
     anmad_logging.LOGGER.info("Starting to consume playbooks queue...")
@@ -53,11 +58,11 @@ for playbookjob in QUEUES.queue.consume():
 
         anmad_logging.LOGGER.info('Running job from playqueue: %s', str(playbookjob))
         #Syntax check playbooks, or all playbooks in syntax_check_dir
-        if anmad_args.ARGS.syntax_check_dir is None:
+        if ARGS.syntax_check_dir is None:
             problemlist = anmad_syntaxchecks.checkplaybooks(playbookjob)
         else:
             problemlist = anmad_syntaxchecks.syntax_check_dir(
-                anmad_args.ARGS.syntax_check_dir)
+                ARGS.syntax_check_dir)
 
         if  ''.join(problemlist):
             anmad_logging.LOGGER.warning(

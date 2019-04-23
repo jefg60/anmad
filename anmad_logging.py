@@ -57,23 +57,26 @@ if ARGS.debug:
     logging.getLogger().addHandler(CONSOLEHANDLER)
     LOGGER.level = logging.DEBUG
 
-# log main arguments used
-LOGGER.info("Version: %s startup", str(VERSION))
-LOGGER.debug("config file: %s",
-             str(ARGS.configfile)
-             if ARGS.configfile is not None
-             else str(DEFAULT_CONFIGFILE))
-LOGGER.debug("vault password file: %s", str(ARGS.vault_password_file))
-LOGGER.debug("ssh id: %s", str(ARGS.ssh_id))
-LOGGER.debug("venv: %s", str(ARGS.venv))
-LOGGER.debug("ansible_playbook_cmd: %s", str(ANSIBLE_PLAYBOOK_CMD))
-LOGGER.debug("inventorylist: %s", " ".join(ARGS.inventories))
-LOGGER.debug("maininventory: %s", str(MAININVENTORY))
-if ARGS.pre_run_playbooks:
-    LOGGER.debug("pre_run_playbooks: %s",
-                 " ".join(ARGS.pre_run_playbooks))
-    LOGGER.debug("PRERUN_LIST: %s",
-                 " ".join(PRERUN_LIST))
-LOGGER.debug("playbooks: %s", " ".join(ARGS.playbooks))
-LOGGER.debug("RUN_LIST: %s", " ".join(RUN_LIST))
-LOGGER.debug("playbook_root_dir: %s", str(ARGS.playbook_root_dir))
+def startup():
+    LOGGER.info("Version: %s startup", str(VERSION))
+    LOGGER.debug("config file: %s",
+                 str(ARGS.configfile)
+                 if ARGS.configfile is not None
+                 else str(DEFAULT_CONFIGFILE))
+    LOGGER.debug("vault password file: %s", str(ARGS.vault_password_file))
+    LOGGER.debug("ssh id: %s", str(ARGS.ssh_id))
+    LOGGER.debug("venv: %s", str(ARGS.venv))
+    LOGGER.debug("ansible_playbook_cmd: %s", str(ANSIBLE_PLAYBOOK_CMD))
+    LOGGER.debug("inventorylist: %s", " ".join(ARGS.inventories))
+    LOGGER.debug("maininventory: %s", str(MAININVENTORY))
+    if ARGS.pre_run_playbooks:
+        LOGGER.debug("pre_run_playbooks: %s",
+                     " ".join(ARGS.pre_run_playbooks))
+        LOGGER.debug("PRERUN_LIST: %s",
+                     " ".join(PRERUN_LIST))
+    LOGGER.debug("playbooks: %s", " ".join(ARGS.playbooks))
+    LOGGER.debug("RUN_LIST: %s", " ".join(RUN_LIST))
+    LOGGER.debug("playbook_root_dir: %s", str(ARGS.playbook_root_dir))
+
+if __name__ == "__main__":
+    startup()

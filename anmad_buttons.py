@@ -18,8 +18,7 @@ LOGGER = anmad_yaml.LOGGER
 def buttonlist():
     """Get a list of allowed playbook buttons."""
     try:
-        my_buttonlist = (ARGS.pre_run_playbooks +
-                         ARGS.playbooks)
+        my_buttonlist = (ARGS.pre_run_playbooks + ARGS.playbooks)
     except TypeError:
         my_buttonlist = (ARGS.playbooks)
     return my_buttonlist
@@ -27,8 +26,7 @@ def buttonlist():
 
 def extraplays():
     """Get a list of yaml files in root dir that arent in buttonlist()."""
-    yamlfiles = anmad_yaml.find_yaml_files(
-        ARGS.playbook_root_dir)
+    yamlfiles = anmad_yaml.find_yaml_files(ARGS.playbook_root_dir)
     yamlbasenames = []
     for yml in yamlfiles:
         yamlbasenames.append(os.path.basename(yml))
@@ -79,8 +77,7 @@ def log():
         'messages': QUEUES.info_list,
         }
     LOGGER.debug("Rendering log page")
-    return render_template('log.html',
-                           **template_data)
+    return render_template('log.html', **template_data)
 
 
 @APP.route(BASEURL + "otherplays")
@@ -94,8 +91,7 @@ def otherplaybooks():
         'extras': extraplays()
         }
     LOGGER.info("Rendering other playbooks page")
-    return render_template('other.html',
-                           **template_data)
+    return render_template('other.html', **template_data)
 
 
 @APP.route(BASEURL + "clearqueues")

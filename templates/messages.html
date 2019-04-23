@@ -1,0 +1,9 @@
+{% if messages|length > 0 %}
+<h2>Last {{ messages|length }} messages (newest first):</h2>
+{% for message in messages %}
+  <h4>{{ message }}</h4>
+{% endfor %}
+{% else %}
+  <h3>No messages found yet</h3>
+{% endif %}
+<h3><a href="/log">More logs...</a></h3>

@@ -5,15 +5,6 @@
   {% include 'backbutton.html' %}
 
   <h3>NOTE: for full logs, check syslog!</h3>
-  <h2>Last 100 messages (newest first):</h2>
-
-  {% if messages %}
-  {% for message in messages %}
-    <h4>{{ ''.join(message) }}</h4>
-  {% endfor %}
-  {% else %}
-    <h3>None</h3>
-  {% endif %}
-
-   </body>
+  {% include 'messages.html' %}
+</body>
 </html>

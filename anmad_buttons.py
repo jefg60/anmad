@@ -55,7 +55,7 @@ def mainpage():
         'version': anmad_args.VERSION,
         'preq_message': QUEUES.prequeue_list,
         'queue_message': QUEUES.queue_list,
-        'messages': QUEUES.info_list,
+        'messages': QUEUES.info_list[0:3],
         'playbooks': anmad_args.ARGS.playbooks,
         'prerun': anmad_args.ARGS.pre_run_playbooks,
         }

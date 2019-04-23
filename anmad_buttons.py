@@ -41,6 +41,7 @@ def oneplaybook(playbook, playbooklist):
         anmad_logging.LOGGER.warning("API request for %s DENIED", str(playbook))
         abort(404)
     my_runlist = [anmad_args.ARGS.playbook_root_dir + '/' + playbook]
+    anmad_logging.LOGGER.info("Queueing %s", str(my_runlist))
     QUEUES.queue_job(my_runlist)
 
 

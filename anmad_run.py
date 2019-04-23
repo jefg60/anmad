@@ -4,11 +4,38 @@ import os
 import sys
 
 import anmad_syntaxchecks
+import anmad_logging
 import anmad_ssh
 
-QUEUES = anmad_syntaxchecks.QUEUES
-ARGS = anmad_syntaxchecks.ARGS
-LOGGER = anmad_syntaxchecks.LOGGER
+QUEUES = anmad_logging.QUEUES
+ARGS = anmad_logging.ARGS
+LOGGER = anmad_logging.LOGGER
+VERSION = anmad_logging.VERSION
+MAININVENTORY = anmad_logging.MAININVENTORY
+PRERUN_LIST = anmad_logging.PRERUN_LIST
+RUN_LIST = anmad_logging.RUN_LIST
+DEFAULT_CONFIGFILE = anmad_logging.DEFAULT_CONFIGFILE
+ANSIBLE_PLAYBOOK_CMD = anmad_logging.ANSIBLE_PLAYBOOK_CMD
+
+LOGGER.info("anmad_run version: %s starting", str(VERSION))
+LOGGER.debug("config file: %s",
+             str(ARGS.configfile)
+             if ARGS.configfile is not None
+             else str(DEFAULT_CONFIGFILE))
+LOGGER.debug("vault password file: %s", str(ARGS.vault_password_file))
+LOGGER.debug("ssh id: %s", str(ARGS.ssh_id))
+LOGGER.debug("venv: %s", str(ARGS.venv))
+LOGGER.debug("ansible_playbook_cmd: %s", str(ANSIBLE_PLAYBOOK_CMD))
+LOGGER.debug("inventorylist: %s", " ".join(ARGS.inventories))
+LOGGER.debug("maininventory: %s", str(MAININVENTORY))
+if ARGS.pre_run_playbooks:
+    LOGGER.debug("pre_run_playbooks: %s",
+                 " ".join(ARGS.pre_run_playbooks))
+    LOGGER.debug("PRERUN_LIST: %s",
+                 " ".join(PRERUN_LIST))
+LOGGER.debug("playbooks: %s", " ".join(ARGS.playbooks))
+LOGGER.debug("RUN_LIST: %s", " ".join(RUN_LIST))
+LOGGER.debug("playbook_root_dir: %s", str(ARGS.playbook_root_dir))
 
 anmad_ssh.add_ssh_key_to_agent(ARGS.ssh_id)
 

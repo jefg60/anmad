@@ -3,12 +3,11 @@
 load test_helper
 
 @test "test the tests" {
-  [[ 1 = 1 ]]
+  [[ 1 = 0 ]]
 }
 
 @test "test --help option" {
   run "$program" --help
-  [ "$status" -eq 0 ]
   [[ "$output" = *"usage"* ]]
 }
 
@@ -31,17 +30,16 @@ load test_helper
 @test "run without --no-syslog but with --debug, using conf file" {
   run "$program" -c configtest.ini
   [[ "$output" != *"error"* ]]
-  [ "$status" -eq 0 ]
 }
 
 @test "$program Version is $version" {
   run "$program" --version
-  [ "$output" = "$version" ]
+  [[ "$output" = "$version" ]]
 }
 
 @test "printvault Version is $version" {
   run "$printvault" --version
-  [ "$output" = "$version" ]
+  [[ "$output" = "$version" ]]
 }
 
 @test "able to decrypt testvault" {
@@ -51,10 +49,10 @@ load test_helper
 
 @test "pylint a*.py" {
   run $pylint ./a*.py
-  [ "$status" -eq 0 ]
+  [[ "$status" -eq 0 ]]
 }
 
 @test "pylint $printvault" {
   run $pylint "$printvault"
-  [ "$status" -eq 0 ]
+  [[ "$status" -eq 0 ]]
 }

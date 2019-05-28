@@ -3,7 +3,7 @@
 load test_helper
 
 @test "test the tests" {
-  [[ 1 = 0 ]]
+  [[ 1 = 1 ]]
 }
 
 @test "test --help option" {

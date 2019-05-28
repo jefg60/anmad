@@ -6,13 +6,15 @@ import configargparse
 import mod_wsgi
 import __main__ as main
 
+import anmad_version
+
 try:
     PROCESS_NAME = mod_wsgi.process_group
 except AttributeError:
     PROCESS_NAME = os.path.basename(main.__file__)
 
 DEFAULT_CONFIGFILE = '/etc/anmad/conf.d/' + PROCESS_NAME
-VERSION = "0.14.1"
+VERSION = anmad_version.VERSION
 
 def parse_args():
     """Read arguments from command line."""

@@ -34,7 +34,7 @@ RUN_LIST = anmad_args.RUN_LIST
 SYSLOG_FORMATTER = logging.Formatter(
     '%(name)s - [%(levelname)s] - %(message)s')
 TIMED_FORMATTER = logging.Formatter(
-    '%(asctime)s - %(name)s - [%(levelname)s] - %(message)s')
+    '%(asctime)s - [%(levelname)s] - %(message)s')
 
 QUEUE_HANDLER = AnmadInfoHandler(QUEUES.info)
 QUEUE_HANDLER.setFormatter(TIMED_FORMATTER)

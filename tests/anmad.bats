@@ -8,7 +8,7 @@ load test_helper
 
 @test "running in python3.7" {
   run python --version
-  [[ "$output" = "*3.7.*" ]]
+  [[ "$output" == *"3.7."* ]]
 }
 
 @test "test --help option" {

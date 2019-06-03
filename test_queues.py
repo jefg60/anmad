@@ -9,13 +9,16 @@ class TestQueues(unittest.TestCase):
 
 
     def setUp(self):
+        """Setup some test queues."""
         self.queues = anmad_queues.AnmadQueues('test_prerun', 'test_playbooks', 'test_info')
         self.queues.clear()
         self.queues.clearinfo()
-        self.queues.prequeue_job(['prequeue_test.yml'])
+        self.queues.prequeue_job('prequeue_test.yml')
         self.queues.queue_job(['queue_test1.yml', 'queue_test2.yaml'])
+        self.queues.update_job_lists()
 
     def tearDown(self):
+        """TearDown some test queues."""
         self.queues.clear()
         self.queues.clearinfo()
 
@@ -24,6 +27,12 @@ class TestQueues(unittest.TestCase):
         self.assertEqual(self.queues.prequeue.name, 'test_prerun')
         self.assertEqual(self.queues.queue.name, 'test_playbooks')
         self.assertEqual(self.queues.info.name, 'test_info')
+
+    def test_queue_lengths(self):
+        """Test queue lengths."""
+        self.assertEqual(len(self.queues.queue_list), 1)
+        self.assertEqual(len(self.queues.prequeue_list), 1)
+        self.assertLessEqual(len(self.queues.info_list), 100)
 
 
 if __name__ == '__main__':

@@ -11,6 +11,7 @@ class TestVersion(unittest.TestCase):
     def test_version(self):
         """Tests for version constant."""
         version = anmad_version.VERSION
+        self.assertIsNotNone(version)
         self.assertEqual(version, "0.14.4")
 
 

@@ -46,10 +46,8 @@ class TestQueues(unittest.TestCase):
     def test_getfromqueues(self):
         """Test that queues can be consumed in correct order."""
         # get first item from each queue
-        preQ_job = self.queues.prequeue.get()
-        Q_job = self.queues.queue.get()
-        self.assertEqual(preQ_job, [self.preq1])
-        self.assertEqual(Q_job, self.q1)
+        self.assertEqual(self.queues.prequeue.get(), [self.preq1])
+        self.assertEqual(self.queues.queue.get(), self.q1)
         self.queues.update_job_lists()
         self.assertEqual(len(self.queues.queue_list), 1)
         self.assertEqual(len(self.queues.prequeue_list), 1)

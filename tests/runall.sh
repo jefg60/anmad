@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
-python ./test_*.py || exit 1
+for i in ./test_*.py
+do
+  echo unit testing $i
+  python $i || exit 1
+done
+
 bats tests/anmad.bats
 

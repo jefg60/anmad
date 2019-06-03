@@ -58,6 +58,14 @@ class TestQueues(unittest.TestCase):
         self.assertEqual(len(self.queues.queue_list), 0)
         self.assertEqual(len(self.queues.prequeue_list), 0)
 
+    def test_clear_queues(self):
+        self.queues.clear()
+        self.queues.clearinfo()
+        self.queues.update_job_lists()
+        self.assertEqual(len(self.queues.queue_list), 0)
+        self.assertEqual(len(self.queues.prequeue_list), 0)
+        self.assertEqual(len(self.queues.info_list), 0)
+
 
 if __name__ == '__main__':
     unittest.main()

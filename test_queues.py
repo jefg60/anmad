@@ -34,6 +34,16 @@ class TestQueues(unittest.TestCase):
         self.assertEqual(len(self.queues.prequeue_list), 1)
         self.assertLessEqual(len(self.queues.info_list), 100)
 
+    def test_addtoqueues(self):
+        """Test queue lengths after adding to them."""
+        self.queues.prequeue_job('prequeue_test2.yml')
+        self.queues.queue_job(['queue_test3.yml', 'queue_test4.yaml'])
+        self.queues.update_job_lists()
+        self.assertEqual(len(self.queues.queue_list), 2)
+        self.assertEqual(len(self.queues.prequeue_list), 2)
+        self.assertLessEqual(len(self.queues.info_list), 100)
+
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -13,7 +13,7 @@ class TestQueues(unittest.TestCase):
         self.queues.clear()
         self.queues.clearinfo()
         self.queues.prequeue_job(['prequeue_test.yml'])
-        self.queues.queue_job(['queue_test.yml'])
+        self.queues.queue_job(['queue_test1.yml', 'queue_test2.yaml'])
 
     def tearDown(self):
         self.queues.clear()

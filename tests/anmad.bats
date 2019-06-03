@@ -2,7 +2,7 @@
 #
 load test_helper
 
-@test "test the tests" {
+@test "test the bats tests" {
   [[ 1 = 1 ]]
 }
 

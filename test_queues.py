@@ -15,6 +15,9 @@ class TestQueues(unittest.TestCase):
         self.queues.clearinfo()
         self.queues.prequeue_job('prequeue_test.yml')
         self.queues.queue_job(['queue_test1.yml', 'queue_test2.yaml'])
+        # put 105 items in the info queue to fill it up
+        for x in range(0, 105):
+            self.queues.info.put(x)
         self.queues.update_job_lists()
 
     def tearDown(self):

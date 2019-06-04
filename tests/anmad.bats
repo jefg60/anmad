@@ -11,6 +11,12 @@ load test_helper
   [[ "$output" == *"3.7."* ]]
 }
 
+@test "unit test of args" {
+  run python ./anmad_args.py --configfile configtest.ini
+  [[ "$output" != *"error"* ]]
+  [ "$status" -eq 0 ]
+}
+
 @test "test --help option" {
   run "$program" --help
   [[ "$output" = *"usage"* ]]

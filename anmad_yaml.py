@@ -6,10 +6,10 @@ import yaml
 
 import anmad_logging
 
-def find_yaml_files(directory):
+def find_yaml_files(logger, directory):
     """Returns a list of files with yaml or yml extensions in a directory.
     Does not recurse into subdirectories."""
-    LOGGER.debug("Searching in %s for yaml files", str(directory))
+    logger.debug("Searching in %s for yaml files", str(directory))
     yamlfiles = glob.glob(directory + '/*.yaml')
     ymlfiles = glob.glob(directory + '/*.yml')
     return yamlfiles + ymlfiles

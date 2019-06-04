@@ -8,18 +8,16 @@ import __main__ as main
 
 import anmad_version
 
-try:
-    PROCESS_NAME = mod_wsgi.process_group
-except AttributeError:
-    PROCESS_NAME = os.path.basename(main.__file__)
-
-DEFAULT_CONFIGFILE = '/etc/anmad/conf.d/' + PROCESS_NAME
-VERSION = anmad_version.VERSION
-
 def parse_args():
     """Read arguments from command line."""
 
-    __version__ = VERSION
+    try:
+        process_name = mod_wsgi.process_group
+    except AttributeError:
+        process_name = os.path.basename(main.__file__)
+
+    default_configfile = '/etc/anmad/conf.d/' + process_name
+    __version__ = anmad_version.VERSION
 
     home = expanduser("~")
 
@@ -32,8 +30,8 @@ def parse_args():
 
     parser = configargparse.ArgParser(
         default_config_files=[
-            DEFAULT_CONFIGFILE,
-            '~/.' + PROCESS_NAME + '.conf'
+            default_configfile,
+            '~/.' + process_name + '.conf'
             ]
         )
     parser.add_argument(
@@ -47,7 +45,7 @@ def parse_args():
         "-c",
         "--configfile",
         is_config_file=True,
-        help="override default config file " + DEFAULT_CONFIGFILE
+        help="override default config file " + default_configfile
         )
     parser.add_argument(
         "--venv",
@@ -142,28 +140,30 @@ def parse_args():
 
     parser.set_defaults(debug=False, syslog=True, dryrun=False)
     myargs = parser.parse_args()
-    return myargs
+    # filter list args to remove empty strings that may have been passed from
+    # the config file
+    myargs.inventories = list(filter(None, myargs.inventories))
+    myargs.playbooks = list(filter(None, myargs.playbooks))
+    myargs.prerun_list = None
 
-def prepend_rootdir(myrootdir, mylist):
-    """Prepends a path to each item in a list."""
-    ret = [myrootdir + '/' + str(x) for x in mylist]
-    return ret
+    def prepend_rootdir(myrootdir, mylist):
+        """Prepends a path to each item in a list."""
+        ret = [myrootdir + '/' + str(x) for x in mylist]
+        return ret
+
+    if myargs.pre_run_playbooks:
+        myargs.pre_run_playbooks = list(filter(None, myargs.pre_run_playbooks))
+        myargs.prerun_list = prepend_rootdir(myargs.playbook_root_dir, myargs.pre_run_playbooks)
+
+    myargs.run_list = prepend_rootdir(myargs.playbook_root_dir, myargs.playbooks)
+
+    # First inventory is the one that plays run against
+    myargs.maininventory = os.path.abspath(myargs.inventories[0])
+
+    myargs.ansible_playbook_cmd = myargs.venv + '/bin/ansible-playbook'
+
+    return myargs
 
 if __name__ == '__main__':
     ARGS = parse_args()
-
-    # filter list args to remove empty strings that may have been passed from
-    # the config file
-    ARGS.inventories = list(filter(None, ARGS.inventories))
-    ARGS.playbooks = list(filter(None, ARGS.playbooks))
-    PRERUN_LIST = None
-    if ARGS.pre_run_playbooks:
-        ARGS.pre_run_playbooks = list(filter(None, ARGS.pre_run_playbooks))
-        PRERUN_LIST = prepend_rootdir(ARGS.playbook_root_dir, ARGS.pre_run_playbooks)
-
-    RUN_LIST = prepend_rootdir(ARGS.playbook_root_dir, ARGS.playbooks)
-
-    # First inventory is the one that plays run against
-    MAININVENTORY = os.path.abspath(ARGS.inventories[0])
-
-    ANSIBLE_PLAYBOOK_CMD = ARGS.venv + '/bin/ansible-playbook'
+    print(ARGS)

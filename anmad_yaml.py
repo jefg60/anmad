@@ -22,10 +22,6 @@ def verify_yaml_file(logger, filename):
     try:
         with open(filename, 'r') as my_filename:
             yaml.safe_load(my_filename)
-    except FileNotFoundError:
-        logger.error(
-            "YAML File %s cannot be found", str(filename))
-        return False
     except IsADirectoryError:
         if not find_yaml_files(logger, filename):
             logger.error("No yaml files found in %s", str(filename))
@@ -40,39 +36,22 @@ def verify_yaml_file(logger, filename):
     return True
 
 
-def verify_files_exist():
-    """ Check that files exist before continuing.
-    Returns names of files that are missing or fail yaml syntax checks"""
-    try:
-        fileargs1 = (ARGS.inventories + RUN_LIST + PRERUN_LIST)
-    except TypeError:
-        fileargs1 = (ARGS.inventories + RUN_LIST)
+def list_bad_yamlfiles(logger, filelist):
+    """ Check a list of yaml files for bad syntax.
+    Return list of files that look wrong, or empty list if OK."""
     badfiles = []
-    for filename in fileargs1:
-        yamldata = verify_yaml_file(filename)
+    for filename in filelist:
+        yamldata = verify_yaml_file(logger, filename)
         if not yamldata:
             badfiles.append(filename)
-    if badfiles is not None:
-        return badfiles
+    return badfiles
 
-    fileargs2 = [ARGS.ssh_id]
-    try:
-        fileargs2.append(ARGS.vault_password_file)
-    except NameError:
-        pass
-    for filename in fileargs2:
+def list_missing_files(logger, filelist):
+    """Check a list of files to see if they exist. log if not.
+    return empty list if OK or list of missing files."""
+    badfiles = []
+    for filename in filelist:
         if not os.path.exists(filename):
-            LOGGER.error("Unable to find path %s , aborting", str(filename))
-            return filename
-    return str()
-
-if __name__ == '__main__':
-    QUEUES = anmad_logging.QUEUES
-    VERSION = anmad_logging.VERSION
-
-    ARGS = anmad_logging.ARGS
-    ANSIBLE_PLAYBOOK_CMD = anmad_logging.ANSIBLE_PLAYBOOK_CMD
-    MAININVENTORY = anmad_logging.MAININVENTORY
-    PRERUN_LIST = anmad_logging.PRERUN_LIST
-    RUN_LIST = anmad_logging.RUN_LIST
-    LOGGER = anmad_logging.LOGGER
+            logger.error("Unable to find path %s , aborting", str(filename))
+            badfiles.append(filename)
+    return badfiles

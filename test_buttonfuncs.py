@@ -3,11 +3,13 @@
 
 import logging
 import os
+import werkzeug
 import unittest
 
 import __main__ as main
 
 import anmad_buttonfuncs
+import anmad_queues
 
 class TestVersion(unittest.TestCase):
     """Tests for anmad_buttons module."""
@@ -22,11 +24,15 @@ class TestVersion(unittest.TestCase):
             dx = [('deploy' + str(x) + '.yaml')]
             self.testextras.extend(dx)
         self.testextras.extend(['deploy9.yml'])
+        self.queues = anmad_queues.AnmadQueues('test_prerun', 'test_playbooks', 'test_info')
 
-    def test_noarg_buttonlist(self):
-        """Test buttonlist behavior without args."""
-        with self.assertRaises(TypeError):
-            anmad_buttonfuncs.buttonlist()
+    def tearDown(self):
+        self.playbooks = None
+        self.pre_run_playbooks = None
+        self.playbookroot = None
+        self.testextras = None
+        self.queues.clear()
+        self.queues.clearinfo()
 
     def test_nopre_buttonlist(self):
         """Test buttonlist without prerun."""
@@ -43,11 +49,6 @@ class TestVersion(unittest.TestCase):
         self.assertEqual(len(buttons), 3)
         self.assertEqual(buttons, ['deploy4.yaml', 'deploy.yaml', 'deploy2.yaml'])
 
-    def test_noarg_extraplays(self):
-        """Test extraplays behavior without args."""
-        with self.assertRaises(TypeError):
-            anmad_buttonfuncs.extraplays()
-
     def test_nopre_extraplays(self):
         """Test extraplays behavior without prerun.
         adds pre_run_playbooks to expected list of extras for this test."""
@@ -56,6 +57,28 @@ class TestVersion(unittest.TestCase):
         extraplaybooks = anmad_buttonfuncs.extraplays(
             self.logger, self.playbookroot, self.playbooks)
         self.assertEqual(extraplaybooks, self.testextras)
+
+    def test_pre_extraplays(self):
+        """Test extraplays behavior with prerun."""
+        extraplaybooks = anmad_buttonfuncs.extraplays(
+            self.logger, self.playbookroot, self.playbooks, self.pre_run_playbooks)
+        self.assertEqual(extraplaybooks, self.testextras)
+
+    def test_oneplaybook(self):
+        """Test oneplaybook func to queue one play."""
+        playbook = 'deploy.yaml'
+        anmad_buttonfuncs.oneplaybook(self.logger, self.queues, playbook, self.playbooks, self.playbookroot)
+        self.queues.update_job_lists()
+        self.assertTrue([('samples/' + playbook)] in self.queues.queue_list)
+
+    def test_one_badplaybook(self):
+        """Test that requests are denied to add playbooks not in list."""
+        playbook = 'badstuff.yaml'
+        with self.assertRaises(werkzeug.exceptions.NotFound):
+            anmad_buttonfuncs.oneplaybook(self.logger, self.queues, playbook, self.playbooks, self.playbookroot)
+        self.queues.update_job_lists()
+        self.assertFalse([('samples/' + playbook)] in self.queues.queue_list)
+
 
 if __name__ == '__main__':
     unittest.main()

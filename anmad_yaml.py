@@ -12,26 +12,28 @@ def find_yaml_files(logger, directory):
     logger.debug("Searching in %s for yaml files", str(directory))
     yamlfiles = glob.glob(directory + '/*.yaml')
     ymlfiles = glob.glob(directory + '/*.yml')
-    return yamlfiles + ymlfiles
+    output = yamlfiles + ymlfiles
+    output.sort()
+    return output
 
 
-def verify_yaml_file(filename):
+def verify_yaml_file(logger, filename):
     """Try to read yaml safely, return False if not valid"""
     try:
         with open(filename, 'r') as my_filename:
             yaml.safe_load(my_filename)
     except FileNotFoundError:
-        LOGGER.error(
+        logger.error(
             "YAML File %s cannot be found", str(filename))
         return False
     except IsADirectoryError:
         if not find_yaml_files(filename):
-            LOGGER.error("No yaml files found in %s", str(filename))
+            logger.error("No yaml files found in %s", str(filename))
             return False
         for yml in find_yaml_files(filename):
             verify_yaml_file(yml)
     except yaml.scanner.ScannerError:
-        LOGGER.error(
+        logger.error(
             "Bad YAML syntax in %s", str(filename))
         return False
     except yaml.parser.ParserError:

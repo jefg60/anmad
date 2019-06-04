@@ -4,7 +4,7 @@ import datetime
 import os
 from flask import Flask, render_template, redirect, abort
 
-import anmad_yaml
+import anmad_button_funcs
 
 APP = Flask(__name__)
 BASEURL = "/"
@@ -14,36 +14,6 @@ VERSION = anmad_yaml.VERSION
 PRERUN_LIST = anmad_yaml.PRERUN_LIST
 RUN_LIST = anmad_yaml.RUN_LIST
 LOGGER = anmad_yaml.LOGGER
-
-def buttonlist():
-    """Get a list of allowed playbook buttons."""
-    try:
-        my_buttonlist = (ARGS.pre_run_playbooks + ARGS.playbooks)
-    except TypeError:
-        my_buttonlist = (ARGS.playbooks)
-    return my_buttonlist
-
-
-def extraplays():
-    """Get a list of yaml files in root dir that arent in buttonlist()."""
-    yamlfiles = anmad_yaml.find_yaml_files(ARGS.playbook_root_dir)
-    yamlbasenames = []
-    for yml in yamlfiles:
-        yamlbasenames.append(os.path.basename(yml))
-    extraplaybooks = list(set(yamlbasenames) - set(buttonlist()))
-    extraplaybooks.sort()
-    return extraplaybooks
-
-
-def oneplaybook(playbook, playbooklist):
-    """Queues one playbook, only if its in the playbooklist."""
-    if playbook not in playbooklist:
-        LOGGER.warning("API request for %s DENIED", str(playbook))
-        abort(404)
-    my_runlist = [ARGS.playbook_root_dir + '/' + playbook]
-    LOGGER.info("Queueing %s", str(my_runlist))
-    QUEUES.queue_job(my_runlist)
-
 
 @APP.route(BASEURL)
 def mainpage():
@@ -88,7 +58,7 @@ def otherplaybooks():
         'title' : 'anmad others',
         'time': time_string,
         'version': VERSION,
-        'extras': extraplays()
+        'extras': anmad_button_funcs.extraplays()
         }
     LOGGER.debug("Rendering other playbooks page")
     return render_template('other.html', **template_data)
@@ -126,7 +96,7 @@ def runall():
 @APP.route(BASEURL + 'playbooks/<path:playbook>')
 def configuredplaybook(playbook):
     """Runs one playbook, if its one of the configured ones."""
-    oneplaybook(playbook, buttonlist())
+    anmad_button_funcs.oneplaybook(playbook, anmad_button_funcs.buttonlist(ARGS.pre_run_playbooks, ARGS.playbooks))
     LOGGER.debug("Redirecting to control page")
     return redirect(BASEURL)
 
@@ -134,7 +104,7 @@ def configuredplaybook(playbook):
 @APP.route(BASEURL + 'otherplaybooks/<path:playbook>')
 def otherplaybook(playbook):
     """Runs one playbook, if its one of the other ones found by extraplays."""
-    oneplaybook(playbook, extraplays())
+    anmad_button_funcs.oneplaybook(playbook, anmad_button_funcs.extraplays())
     LOGGER.debug("Redirecting to others page")
     return redirect(BASEURL + 'otherplays')
 

@@ -6,16 +6,6 @@ import yaml
 
 import anmad_logging
 
-QUEUES = anmad_logging.QUEUES
-VERSION = anmad_logging.VERSION
-
-ARGS = anmad_logging.ARGS
-ANSIBLE_PLAYBOOK_CMD = anmad_logging.ANSIBLE_PLAYBOOK_CMD
-MAININVENTORY = anmad_logging.MAININVENTORY
-PRERUN_LIST = anmad_logging.PRERUN_LIST
-RUN_LIST = anmad_logging.RUN_LIST
-LOGGER = anmad_logging.LOGGER
-
 def find_yaml_files(directory):
     """Returns a list of files with yaml or yml extensions in a directory.
     Does not recurse into subdirectories."""
@@ -78,3 +68,14 @@ def verify_files_exist():
             LOGGER.error("Unable to find path %s , aborting", str(filename))
             return filename
     return str()
+
+if __name__ == '__main__':
+    QUEUES = anmad_logging.QUEUES
+    VERSION = anmad_logging.VERSION
+
+    ARGS = anmad_logging.ARGS
+    ANSIBLE_PLAYBOOK_CMD = anmad_logging.ANSIBLE_PLAYBOOK_CMD
+    MAININVENTORY = anmad_logging.MAININVENTORY
+    PRERUN_LIST = anmad_logging.PRERUN_LIST
+    RUN_LIST = anmad_logging.RUN_LIST
+    LOGGER = anmad_logging.LOGGER

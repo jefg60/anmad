@@ -149,20 +149,21 @@ def prepend_rootdir(myrootdir, mylist):
     ret = [myrootdir + '/' + str(x) for x in mylist]
     return ret
 
-ARGS = parse_args()
+if __name__ == '__main__':
+    ARGS = parse_args()
 
-# filter list args to remove empty strings that may have been passed from
-# the config file
-ARGS.inventories = list(filter(None, ARGS.inventories))
-ARGS.playbooks = list(filter(None, ARGS.playbooks))
-PRERUN_LIST = None
-if ARGS.pre_run_playbooks:
-    ARGS.pre_run_playbooks = list(filter(None, ARGS.pre_run_playbooks))
-    PRERUN_LIST = prepend_rootdir(ARGS.playbook_root_dir, ARGS.pre_run_playbooks)
+    # filter list args to remove empty strings that may have been passed from
+    # the config file
+    ARGS.inventories = list(filter(None, ARGS.inventories))
+    ARGS.playbooks = list(filter(None, ARGS.playbooks))
+    PRERUN_LIST = None
+    if ARGS.pre_run_playbooks:
+        ARGS.pre_run_playbooks = list(filter(None, ARGS.pre_run_playbooks))
+        PRERUN_LIST = prepend_rootdir(ARGS.playbook_root_dir, ARGS.pre_run_playbooks)
 
-RUN_LIST = prepend_rootdir(ARGS.playbook_root_dir, ARGS.playbooks)
+    RUN_LIST = prepend_rootdir(ARGS.playbook_root_dir, ARGS.playbooks)
 
-# First inventory is the one that plays run against
-MAININVENTORY = os.path.abspath(ARGS.inventories[0])
+    # First inventory is the one that plays run against
+    MAININVENTORY = os.path.abspath(ARGS.inventories[0])
 
-ANSIBLE_PLAYBOOK_CMD = ARGS.venv + '/bin/ansible-playbook'
+    ANSIBLE_PLAYBOOK_CMD = ARGS.venv + '/bin/ansible-playbook'

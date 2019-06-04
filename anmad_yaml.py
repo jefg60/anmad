@@ -27,21 +27,16 @@ def verify_yaml_file(logger, filename):
             "YAML File %s cannot be found", str(filename))
         return False
     except IsADirectoryError:
-        if not find_yaml_files(filename):
+        if not find_yaml_files(logger, filename):
             logger.error("No yaml files found in %s", str(filename))
             return False
-        for yml in find_yaml_files(filename):
-            verify_yaml_file(yml)
-    except yaml.scanner.ScannerError:
+        for yml in find_yaml_files(logger, filename):
+            if not verify_yaml_file(logger, yml):
+                return False
+    except:
         logger.error(
             "Bad YAML syntax in %s", str(filename))
         return False
-    except yaml.parser.ParserError:
-        try:
-            config = ConfigParser()
-            config.read(filename)
-        except config.Error:
-            return False
     return True
 
 

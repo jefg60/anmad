@@ -20,7 +20,7 @@ def extraplays(logger, playbook_root_dir, playbooks, prerun=None):
     yamlbasenames = []
     for yml in yamlfiles:
         yamlbasenames.append(os.path.basename(yml))
-    if prerun is not None:
+    if prerun is None:
         my_buttonlist = buttonlist(playbooks)
     else:
         my_buttonlist = buttonlist(playbooks, prerun)
@@ -28,7 +28,7 @@ def extraplays(logger, playbook_root_dir, playbooks, prerun=None):
     extraplaybooks.sort()
     return extraplaybooks
 
-def oneplaybook(playbook, playbooklist, playbook_root_dir, logger, queues):
+def oneplaybook(logger, queues, playbook, playbooklist, playbook_root_dir):
     """Queues one playbook, only if its in the playbooklist."""
     if playbook not in playbooklist:
         logger.warning("API request for %s DENIED", str(playbook))

@@ -32,10 +32,50 @@ class TestVersion(unittest.TestCase):
         self.assertEqual(len(yamlfiles), 9)
         self.assertEqual(yamlfiles, self.testyamlfiles_parent)
 
-    def test_verify_yaml_file(self):
+    def test_verify_yaml_missingfile(self):
+        verify = anmad_yaml.verify_yaml_file(self.logger, 'tests/missing.yml')
+        self.assertFalse(verify)
+
+    def test_verify_yaml_is_empty_directory(self):
+        verify = anmad_yaml.verify_yaml_file(self.logger, 'empty_dir')
+        self.assertFalse(verify)
+
+    def test_verify_yaml_is_directory(self):
+        verify = anmad_yaml.verify_yaml_file(self.logger, 'samples')
+        self.assertTrue(verify)
+
+    def test_verify_yaml_is_bad_directory(self):
+        verify = anmad_yaml.verify_yaml_file(self.logger, 'tests')
+        self.assertFalse(verify)
+
+    def test_verify_yaml_goodfile(self):
         """Test verify_yaml_file func with valid yaml."""
         verify = anmad_yaml.verify_yaml_file(self.logger, (self.playbookroot + '/' + self.playbooks[0]))
         self.assertTrue(verify)
+
+    def test_verify_yaml_badfile(self):
+        """Test that verify_yaml_file correctly identifies bad yaml."""
+        verify = anmad_yaml.verify_yaml_file(self.logger, 'tests/badyaml.yml')
+        self.assertFalse(verify)
+
+    def test_list_bad_yamlfiles(self):
+        """Test that bad yamlfiles are listed."""
+        verify = anmad_yaml.list_bad_yamlfiles(self.logger, ['tests'])
+        self.assertEqual(verify, ['tests'])
+
+    def test_list_bad_yamlfiles_allgood(self):
+        """Test that list_bad_yamlfiles returns empty string when it should."""
+        verify = anmad_yaml.list_bad_yamlfiles(self.logger, ['samples'])
+        self.assertEqual(verify, [])
+
+    def test_list_missing_files(self):
+        """Test missing files func."""
+        testfiles = ['samples/' + x for x in self.playbooks]
+        verify = anmad_yaml.list_bad_yamlfiles(self.logger, testfiles)
+        self.assertEqual(verify, [])
+        verify = anmad_yaml.list_bad_yamlfiles(self.logger, ['tests/missing.yml'])
+        self.assertEqual(verify, ['tests/missing.yml'])
+
 
 if __name__ == '__main__':
     unittest.main()

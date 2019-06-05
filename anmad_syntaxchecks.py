@@ -5,17 +5,7 @@ import subprocess
 
 import anmad_yaml
 
-QUEUES = anmad_yaml.QUEUES
-VERSION = anmad_yaml.VERSION
-
-ARGS = anmad_yaml.ARGS
-ANSIBLE_PLAYBOOK_CMD = anmad_yaml.ANSIBLE_PLAYBOOK_CMD
-MAININVENTORY = anmad_yaml.MAININVENTORY
-PRERUN_LIST = anmad_yaml.PRERUN_LIST
-RUN_LIST = anmad_yaml.RUN_LIST
-LOGGER = anmad_yaml.LOGGER
-
-def syntax_check_play_inv(my_playbook, my_inventory):
+def syntax_check_play_inv(logger, my_playbook, my_inventory):
     """Check a single playbook against a single inventory.
     Plays should be absolute paths here.
     Returns a list of failed playbooks or inventories or
@@ -78,7 +68,7 @@ def checkplaybooks(listofplaybooks):
     return bad_playbooks
 
 
-def syntax_check_dir(check_dir):
+def syntax_check_dir(logger, check_dir):
     """Check all YAML in a directory for ansible syntax."""
     if not os.path.exists(check_dir):
         LOGGER.error("%s cannot be found", str(check_dir))
@@ -88,7 +78,7 @@ def syntax_check_dir(check_dir):
     return problemlist
 
 
-def run_one_playbook(my_playbook):
+def run_one_playbook(logger, my_playbook):
     """Run exactly one ansible playbook. Don't call this
     directly. Instead, call one of the multi-playbook funcs with a list of
     one playbook eg [playbook]."""
@@ -124,3 +114,15 @@ def runplaybooks(listofplaybooks):
     pool.join()
 
     return ret
+
+if __name__ == '__main__':
+    QUEUES = anmad_yaml.QUEUES
+    VERSION = anmad_yaml.VERSION
+
+    ARGS = anmad_yaml.ARGS
+    ANSIBLE_PLAYBOOK_CMD = anmad_yaml.ANSIBLE_PLAYBOOK_CMD
+    MAININVENTORY = anmad_yaml.MAININVENTORY
+    PRERUN_LIST = anmad_yaml.PRERUN_LIST
+    RUN_LIST = anmad_yaml.RUN_LIST
+    LOGGER = anmad_yaml.LOGGER
+

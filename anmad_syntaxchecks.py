@@ -4,6 +4,7 @@ from multiprocessing import Pool
 import subprocess
 
 import anmad_yaml
+import anmad_args
 
 def syntax_check_play_inv(logger, my_playbook, my_inventory):
     """Check a single playbook against a single inventory.
@@ -11,30 +12,32 @@ def syntax_check_play_inv(logger, my_playbook, my_inventory):
     Returns a list of failed playbooks or inventories or
     an empty string if all were ok"""
 
+    args = anmad_args.parse_args()
+
     my_playbook = os.path.abspath(my_playbook)
     my_inventory = os.path.abspath(my_inventory)
-    LOGGER.info(
+    logger.info(
         "Syntax Checking ansible playbook %s against "
         "inventory %s", str(my_playbook), str(my_inventory))
     ret = subprocess.call(
-        [ANSIBLE_PLAYBOOK_CMD,
+        [args.ansible_playbook_cmd,
          '--inventory', my_inventory,
-         '--vault-password-file', ARGS.vault_password_file,
+         '--vault-password-file', args.vault_password_file,
          my_playbook, '--syntax-check'])
     if ret == 0:
-        LOGGER.info(
+        logger.info(
             "ansible-playbook syntax check return code: "
             "%s", str(ret))
         return str()
 
-    LOGGER.info(
+    logger.info(
         "Playbook %s failed syntax check!!!", str(my_playbook))
     try:
-        LOGGER.debug(
+        logger.debug(
             "ansible-playbook syntax check return code: "
             "%s", str(ret))
     except NameError:
-        LOGGER.error(
+        logger.error(
             "playbooks / inventories must be valid YAML, %s or %s is not",
             str(my_playbook), str(my_inventory))
     return ('   playbook: ' + my_playbook +
@@ -71,7 +74,7 @@ def checkplaybooks(listofplaybooks):
 def syntax_check_dir(logger, check_dir):
     """Check all YAML in a directory for ansible syntax."""
     if not os.path.exists(check_dir):
-        LOGGER.error("%s cannot be found", str(check_dir))
+        logger.error("%s cannot be found", str(check_dir))
         return check_dir
 
     problemlist = checkplaybooks(anmad_yaml.find_yaml_files(check_dir))
@@ -84,7 +87,7 @@ def run_one_playbook(logger, my_playbook):
     one playbook eg [playbook]."""
 
     my_playbook = os.path.abspath(my_playbook)
-    LOGGER.info(
+    logger.info(
         "Attempting to run ansible-playbook --inventory %s %s",
         str(MAININVENTORY), str(my_playbook))
     ret = subprocess.call(
@@ -94,12 +97,12 @@ def run_one_playbook(logger, my_playbook):
          my_playbook])
 
     if ret == 0:
-        LOGGER.info(
+        logger.info(
             "ansible-playbook %s return code: %s",
             str(my_playbook), str(ret))
         return ret
 
-    LOGGER.error(
+    logger.error(
         "ansible-playbook %s did not complete, return code: %s",
         str(my_playbook), str(ret))
     return ret
@@ -124,5 +127,3 @@ if __name__ == '__main__':
     MAININVENTORY = anmad_yaml.MAININVENTORY
     PRERUN_LIST = anmad_yaml.PRERUN_LIST
     RUN_LIST = anmad_yaml.RUN_LIST
-    LOGGER = anmad_yaml.LOGGER
-

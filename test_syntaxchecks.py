@@ -43,6 +43,11 @@ class TestSyntaxCheck(unittest.TestCase):
         output = self.run_syn_check_play_inv(self.testplay)
         self.assertEqual(output, '')
 
+    def test_syntax_check_play_inv_badplay(self):
+        """Tests for syntaxcheck_play_inv."""
+        output = self.run_syn_check_play_inv(self.badplay)
+        self.assertNotEqual(output, '')
+
     def test_syntax_check_play_inv_vaultpw(self):
         """Tests for syntaxcheck_play_inv."""
         output = self.run_syn_check_play_inv(self.testplay, self.vaultpw)

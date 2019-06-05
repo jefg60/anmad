@@ -6,7 +6,12 @@ import subprocess
 import anmad_yaml
 import anmad_args
 
-def syntax_check_play_inv(logger, my_playbook, my_inventory, ansible_playbook_cmd, vault_password_file=None):
+def syntax_check_play_inv(
+        logger,
+        my_playbook,
+        my_inventory,
+        ansible_playbook_cmd,
+        vault_password_file=None):
     """Check a single playbook against a single inventory.
     Plays should be absolute paths here.
     Returns a list of failed playbooks or inventories or

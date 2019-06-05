@@ -6,24 +6,28 @@ import subprocess
 import anmad_yaml
 import anmad_args
 
-def syntax_check_play_inv(logger, my_playbook, my_inventory):
+def syntax_check_play_inv(logger, my_playbook, my_inventory, ansible_playbook_cmd, vault_password_file=None):
     """Check a single playbook against a single inventory.
     Plays should be absolute paths here.
     Returns a list of failed playbooks or inventories or
     an empty string if all were ok"""
-
-    args = anmad_args.parse_args()
 
     my_playbook = os.path.abspath(my_playbook)
     my_inventory = os.path.abspath(my_inventory)
     logger.info(
         "Syntax Checking ansible playbook %s against "
         "inventory %s", str(my_playbook), str(my_inventory))
-    ret = subprocess.call(
-        [args.ansible_playbook_cmd,
-         '--inventory', my_inventory,
-         '--vault-password-file', args.vault_password_file,
-         my_playbook, '--syntax-check'])
+    if vault_password_file is not None:
+        ret = subprocess.call(
+            [ansible_playbook_cmd,
+             '--inventory', my_inventory,
+             '--vault-password-file', vault_password_file,
+             my_playbook, '--syntax-check'])
+    else:
+        ret = subprocess.call(
+            [ansible_playbook_cmd,
+             '--inventory', my_inventory,
+             my_playbook, '--syntax-check'])
     if ret == 0:
         logger.info(
             "ansible-playbook syntax check return code: "

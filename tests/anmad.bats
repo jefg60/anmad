@@ -17,6 +17,13 @@ load test_helper
   [ "$status" -eq 0 ]
 }
 
+@test "unit test of logging" {
+  run python ./anmad_logging.py --configfile configtest.ini
+  [[ "$output" != *"error"* ]]
+  [ "$status" -eq 0 ]
+  [[ "$output" = *"anmad_logging test ok" ]]
+}
+
 @test "test --help option" {
   run "$program" --help
   [[ "$output" = *"usage"* ]]

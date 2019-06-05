@@ -1,9 +1,6 @@
 """Initialize anmad."""
 import logging
 import logging.handlers
-import os
-import mod_wsgi
-import __main__ as main
 
 import anmad_args
 import anmad_queues
@@ -14,46 +11,41 @@ class AnmadInfoHandler(logging.handlers.QueueHandler):
     def enqueue(self, record):
         self.queue.put(record.message)
 
-if __name__ == '__main__':
-    try:
-        PROCESS_NAME = mod_wsgi.process_group
-    except AttributeError:
-        PROCESS_NAME = os.path.basename(main.__file__)
+def logsetup():
+    """Set up anmad logging."""
+    args = anmad_args.parse_args()
+    logger = logging.getLogger(args.process_name)
+    queues = anmad_queues.AnmadQueues('prerun', 'playbooks', 'info')
 
-
-    LOGGER = logging.getLogger(PROCESS_NAME)
-    QUEUES = anmad_queues.AnmadQueues('prerun', 'playbooks', 'info')
-    ARGS = anmad_args.ARGS
-    VERSION = anmad_args.VERSION
-    DEFAULT_CONFIGFILE = anmad_args.DEFAULT_CONFIGFILE
-    ANSIBLE_PLAYBOOK_CMD = anmad_args.ANSIBLE_PLAYBOOK_CMD
-    MAININVENTORY = anmad_args.MAININVENTORY
-    PRERUN_LIST = anmad_args.PRERUN_LIST
-    RUN_LIST = anmad_args.RUN_LIST
-
-    SYSLOG_FORMATTER = logging.Formatter(
+    syslog_formatter = logging.Formatter(
         '%(name)s - [%(levelname)s] - %(message)s')
-    TIMED_FORMATTER = logging.Formatter(
-        '%(asctime)s - [%(levelname)s] - %(message)s')
+    timed_formatter = logging.Formatter(
+        '%(asctime)s [%(levelname)s] - %(message)s')
 
-    QUEUE_HANDLER = AnmadInfoHandler(QUEUES.info)
-    QUEUE_HANDLER.setFormatter(TIMED_FORMATTER)
-    QUEUE_HANDLER.setLevel(logging.INFO)
+    queue_handler = AnmadInfoHandler(queues.info)
+    queue_handler.setFormatter(timed_formatter)
+    queue_handler.setLevel(logging.INFO)
 
-    LOGGER.addHandler(QUEUE_HANDLER)
-    LOGGER.level = logging.INFO
+    logger.addHandler(queue_handler)
+    logger.level = logging.INFO
 
     # create sysloghandler if needed (default true)
-    if ARGS.syslog:
-        SYSLOGHANDLER = logging.handlers.SysLogHandler(
-            address=ARGS.syslogdevice,
+    if args.syslog:
+        sysloghandler = logging.handlers.SysLogHandler(
+            address=args.syslogdevice,
             facility='local3')
-        SYSLOGHANDLER.setFormatter(SYSLOG_FORMATTER)
-        LOGGER.addHandler(SYSLOGHANDLER)
+        sysloghandler.setFormatter(syslog_formatter)
+        logger.addHandler(sysloghandler)
 
     # create consolehandler if debug mode
-    if ARGS.debug:
-        CONSOLEHANDLER = logging.StreamHandler()
-        CONSOLEHANDLER.setFormatter(TIMED_FORMATTER)
-        LOGGER.addHandler(CONSOLEHANDLER)
-        LOGGER.level = logging.DEBUG
+    if args.debug:
+        consolehandler = logging.StreamHandler()
+        consolehandler.setFormatter(timed_formatter)
+        logger.addHandler(consolehandler)
+        logger.level = logging.DEBUG
+
+    return logger
+
+if __name__ == '__main__':
+    LOGGER = logsetup()
+    LOGGER.debug("anmad_logging test ok")

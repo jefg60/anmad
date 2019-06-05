@@ -161,6 +161,9 @@ def parse_args():
     myargs.maininventory = os.path.abspath(myargs.inventories[0])
 
     myargs.ansible_playbook_cmd = myargs.venv + '/bin/ansible-playbook'
+    myargs.process_name = process_name
+    myargs.default_configfile = default_configfile
+    myargs.version = __version__
 
     return myargs
 

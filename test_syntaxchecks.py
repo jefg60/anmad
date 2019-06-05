@@ -19,6 +19,7 @@ class TestSyntaxCheck(unittest.TestCase):
         self.testplay = 'samples/deploy.yaml'
         self.testinv = 'samples/inventory-internal'
         self.ansible_playbook_cmd = './venv/bin/ansible-playbook'
+        self.vaultpw = './vaultpassword'
 
     def test_syntax_check_play_inv(self):
         """Tests for syntaxcheck_play_inv."""
@@ -27,6 +28,16 @@ class TestSyntaxCheck(unittest.TestCase):
             self.testplay,
             self.testinv,
             self.ansible_playbook_cmd)
+        self.assertEqual(output, '')
+
+    def test_syntax_check_play_inv_vaultpw(self):
+        """Tests for syntaxcheck_play_inv."""
+        output = anmad_syntaxchecks.syntax_check_play_inv(
+            self.logger,
+            self.testplay,
+            self.testinv,
+            self.ansible_playbook_cmd,
+            self.vaultpw)
         self.assertEqual(output, '')
 
 

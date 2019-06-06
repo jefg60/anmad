@@ -14,8 +14,8 @@ def syntax_check_play_inv(
         vault_password_file=None):
     """Check a single playbook against a single inventory.
     Plays should be absolute paths here.
-    Returns a list of failed playbooks or inventories or
-    an empty string if all were ok"""
+    Returns ansible-playbook command return code
+    (should be 0 if syntax checks pass)."""
 
     my_playbook = os.path.abspath(my_playbook)
     my_inventory = os.path.abspath(my_inventory)
@@ -35,37 +35,59 @@ def syntax_check_play_inv(
              my_playbook, '--syntax-check'])
     if ret == 0:
         logger.info(
-            "ansible-playbook syntax check return code: "
+            "OK. ansible-playbook syntax check return code: "
             "%s", str(ret))
-        return str()
-
+        return ret
+    # if external syntax checks pass, the code below should NOT run
     logger.info(
-        "Playbook %s failed syntax check!!!", str(my_playbook))
+        "Playbook %s failed syntax check against inventory %s!!!",
+        str(my_playbook), str(my_inventory))
+    logger.info(
+        "ansible-playbook syntax check return code: "
+        "%s", str(ret))
     try:
         logger.debug(
             "ansible-playbook syntax check return code: "
             "%s", str(ret))
-    except NameError:
+    # catch any exceptions caused by the ret value being None etc.
+    # generic log message if so, and return 255.
+    except:
         logger.error(
-            "playbooks / inventories must be valid YAML, %s or %s is not",
+            "verifying %s or %s failed for unknown reason",
             str(my_playbook), str(my_inventory))
-    return ('   playbook: ' + my_playbook +
-            '\n   inventory: ' + my_inventory)
+        return 255
+    # after logging any errors above, return the return code from ansible
+    # to calling funcs
+    return ret
 
-def syntax_check_play(my_playbook):
-    """Check a single playbook against all inventories."""
+def syntax_check_one_play_many_inv(logger, my_playbook, inventories):
+    """Check a single playbook against all inventories.
+    Returns 0 if all OK, 1 or 2 if there was a parsing issue
+    with the playbook or the inventories respectively.
+    Returns 3 if ansible-playbook syntax check failed.
+    If any errors are found, the function will stop and return one
+    of the above without continuing."""
+    # check if we've been passed a single string, make it a one item list
+    # if so.
+    if isinstance(inventories, str):
+        inventories = [inventories]
     my_playbook = os.path.abspath(my_playbook)
-    if not anmad_yaml.verify_yaml_file(my_playbook):
-        failed = ('failed playbook: ' + my_playbook)
-        return failed
-    for my_inventory in ARGS.inventories:
+    if not anmad_yaml.verify_yaml_file(logger, my_playbook):
+        logger.error(
+            "Unable to verify yaml file %s", str(my,playbook))
+        return 1
+    for my_inventory in inventories:
         my_inventory = os.path.abspath(my_inventory)
-        if not anmad_yaml.verify_yaml_file(my_inventory):
-            failed = ('failed inventory: ' + my_inventory)
-            return failed
-        failed = syntax_check_play_inv(my_playbook, my_inventory)
-    return failed
-
+        if not anmad_yaml.verify_yaml_file(logger, my_inventory):
+            logger.error(
+                "Unable to verify yaml file %s", str(my_inventory))
+            if not anmad_yaml.verify_conf_file(logger, my_inventory)
+                return 2
+        if syntax_check_play_inv(my_playbook, my_inventory) is not 0:
+            return 3
+    # if none of the above return statements happen, then syntax checks 
+    # passed and we can return 0 to the caller.
+    return 0
 
 def checkplaybooks(listofplaybooks):
     """Syntax check a list of playbooks."""
@@ -73,11 +95,14 @@ def checkplaybooks(listofplaybooks):
     bad_playbooks = []
 
     pool = Pool(ARGS.concurrency)
-    bad_playbooks = pool.map(syntax_check_play, listofplaybooks)
+    bad_playbooks = pool.map(syntax_check_one_play_many_inv, listofplaybooks)
     pool.close()
     pool.join()
 
-    return bad_playbooks
+    if bad_playbooks is not []:
+        return bad_playbooks
+    
+    return 0
 
 
 def syntax_check_dir(logger, check_dir):

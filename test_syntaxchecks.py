@@ -59,8 +59,7 @@ class TestSyntaxCheck(unittest.TestCase):
             self.logger,
             self.testplay,
             self.testinv)
-        pass
-
+        self.assertEqual(output, 0)
 
 
 if __name__ == '__main__':

@@ -80,6 +80,8 @@ class TestVersion(unittest.TestCase):
         """Test the verify_config_file func."""
         verify = anmad_yaml.verify_config_file('tests/bad-inventory')
         self.assertFalse(verify)
+        verify = anmad_yaml.verify_config_file('samples/inventory-internal')
+        self.assertTrue(verify)
 
 
 if __name__ == '__main__':

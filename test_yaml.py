@@ -76,6 +76,11 @@ class TestVersion(unittest.TestCase):
         verify = anmad_yaml.list_bad_yamlfiles(self.logger, ['tests/missing.yml'])
         self.assertEqual(verify, ['tests/missing.yml'])
 
+    def test_verify_config_file(self):
+        """Test the verify_config_file func."""
+        verify = anmad_yaml.verify_config_file('tests/bad-inventory')
+        self.assertFalse(verify)
+
 
 if __name__ == '__main__':
     unittest.main()

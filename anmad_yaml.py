@@ -38,7 +38,7 @@ def verify_config_file(filename):
     try:
         config = ConfigParser()
         config.read(filename)
-    except config.Error:
+    except:
         return False
     return True
 

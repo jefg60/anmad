@@ -23,34 +23,39 @@ def syntax_check_play_inv(
         "Syntax Checking ansible playbook %s against "
         "inventory %s", str(my_playbook), str(my_inventory))
     if vault_password_file is not None:
-        with open(os.devnull, 'w') as devnull:
-            ret = subprocess.run(
-                [ansible_playbook_cmd,
-                 '--inventory', my_inventory,
-                 '--vault-password-file', vault_password_file,
-                 my_playbook, '--syntax-check'],
-                stdout=devnull,
-                stderr=devnull)
+        ret = subprocess.run(
+            [ansible_playbook_cmd,
+             '--inventory', my_inventory,
+             '--vault-password-file', vault_password_file,
+             my_playbook, '--syntax-check'],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True)
     else:
-        with open(os.devnull, 'w') as devnull:
-            ret = subprocess.run(
-                [ansible_playbook_cmd,
-                 '--inventory', my_inventory,
-                 my_playbook, '--syntax-check'],
-                stdout=devnull,
-                stderr=devnull)
+        ret = subprocess.run(
+            [ansible_playbook_cmd,
+             '--inventory', my_inventory,
+             my_playbook, '--syntax-check'],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True)
+    if 'WARNING' in (ret.stdout, ret.stderr):
+        logger.warning("Warnings found in ansible output: %s %s",
+            ret.stdout, ret.stderr)
     if ret.returncode == 0:
         logger.info(
             "OK. ansible-playbook syntax check return code: "
             "%s", str(ret))
         return ret.returncode
     # if external syntax checks pass, the code below should NOT run
-    logger.info(
+    logger.warning(
         "Playbook %s failed syntax check against inventory %s!!!",
         str(my_playbook), str(my_inventory))
-    logger.info(
+    logger.warning(
         "ansible-playbook syntax check return code: "
         "%s", str(ret.returncode))
+    logger.warning("Warnings found in ansible output: %s %s",
+        ret.stdout, ret.stderr)
     try:
         logger.debug(
             "ansible-playbook syntax check return code: "

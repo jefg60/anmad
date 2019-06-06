@@ -23,16 +23,22 @@ def syntax_check_play_inv(
         "Syntax Checking ansible playbook %s against "
         "inventory %s", str(my_playbook), str(my_inventory))
     if vault_password_file is not None:
-        ret = subprocess.run(
-            [ansible_playbook_cmd,
-             '--inventory', my_inventory,
-             '--vault-password-file', vault_password_file,
-             my_playbook, '--syntax-check'])
+        with open(os.devnull, 'w') as devnull:
+            ret = subprocess.run(
+                [ansible_playbook_cmd,
+                 '--inventory', my_inventory,
+                 '--vault-password-file', vault_password_file,
+                 my_playbook, '--syntax-check'],
+                stdout=devnull,
+                stderr=devnull)
     else:
-        ret = subprocess.run(
-            [ansible_playbook_cmd,
-             '--inventory', my_inventory,
-             my_playbook, '--syntax-check'])
+        with open(os.devnull, 'w') as devnull:
+            ret = subprocess.run(
+                [ansible_playbook_cmd,
+                 '--inventory', my_inventory,
+                 my_playbook, '--syntax-check'],
+                stdout=devnull,
+                stderr=devnull)
     if ret.returncode == 0:
         logger.info(
             "OK. ansible-playbook syntax check return code: "

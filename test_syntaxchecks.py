@@ -16,6 +16,7 @@ class TestSyntaxCheck(unittest.TestCase):
     def setUp(self):
         """Set up syntax check tests."""
         self.logger = logging.getLogger(os.path.basename(main.__file__))
+        self.logger.setLevel(logging.ERROR)
         self.testplay = 'samples/deploy.yaml'
         self.badplay = 'samples/deploy3.yaml'
         self.testinv = 'samples/inventory-internal'

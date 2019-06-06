@@ -60,7 +60,12 @@ def syntax_check_play_inv(
     # to calling funcs
     return ret
 
-def syntax_check_one_play_many_inv(logger, my_playbook, inventories):
+def syntax_check_one_play_many_inv(
+        logger,
+        my_playbook,
+        inventories,
+        ansible_playbook_cmd,
+        vault_password_file=None):
     """Check a single playbook against all inventories.
     Returns 0 if all OK, 1 or 2 if there was a parsing issue
     with the playbook or the inventories respectively.
@@ -81,9 +86,8 @@ def syntax_check_one_play_many_inv(logger, my_playbook, inventories):
         if not anmad_yaml.verify_yaml_file(logger, my_inventory):
             logger.error(
                 "Unable to verify yaml file %s", str(my_inventory))
-            if not anmad_yaml.verify_conf_file(logger, my_inventory)
-                return 2
-        if syntax_check_play_inv(my_playbook, my_inventory) is not 0:
+            return 2
+        if syntax_check_play_inv(logger, my_playbook, my_inventory, ansible_playbook_cmd, vault_password_file) is not 0:
             return 3
     # if none of the above return statements happen, then syntax checks 
     # passed and we can return 0 to the caller.

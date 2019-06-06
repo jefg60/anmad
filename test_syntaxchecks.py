@@ -58,7 +58,8 @@ class TestSyntaxCheck(unittest.TestCase):
         output = anmad_syntaxchecks.syntax_check_one_play_many_inv(
             self.logger,
             self.testplay,
-            self.testinv)
+            self.testinv,
+            self.ansible_playbook_cmd)
         self.assertEqual(output, 0)
 
 

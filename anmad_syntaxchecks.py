@@ -103,7 +103,7 @@ def syntax_check_one_play_many_inv(
     return 0
 
 def checkplaybooks(listofplaybooks):
-    """Syntax check a list of playbooks."""
+    """Syntax check a list of playbooks concurrently"""
 
     bad_playbooks = []
 

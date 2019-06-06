@@ -23,32 +23,32 @@ def syntax_check_play_inv(
         "Syntax Checking ansible playbook %s against "
         "inventory %s", str(my_playbook), str(my_inventory))
     if vault_password_file is not None:
-        ret = subprocess.call(
+        ret = subprocess.run(
             [ansible_playbook_cmd,
              '--inventory', my_inventory,
              '--vault-password-file', vault_password_file,
              my_playbook, '--syntax-check'])
     else:
-        ret = subprocess.call(
+        ret = subprocess.run(
             [ansible_playbook_cmd,
              '--inventory', my_inventory,
              my_playbook, '--syntax-check'])
-    if ret == 0:
+    if ret.returncode == 0:
         logger.info(
             "OK. ansible-playbook syntax check return code: "
             "%s", str(ret))
-        return ret
+        return ret.returncode
     # if external syntax checks pass, the code below should NOT run
     logger.info(
         "Playbook %s failed syntax check against inventory %s!!!",
         str(my_playbook), str(my_inventory))
     logger.info(
         "ansible-playbook syntax check return code: "
-        "%s", str(ret))
+        "%s", str(ret.returncode))
     try:
         logger.debug(
             "ansible-playbook syntax check return code: "
-            "%s", str(ret))
+            "%s", str(ret.returncode))
     # catch any exceptions caused by the ret value being None etc.
     # generic log message if so, and return 255.
     except:
@@ -58,7 +58,7 @@ def syntax_check_play_inv(
         return 255
     # after logging any errors above, return the return code from ansible
     # to calling funcs
-    return ret
+    return ret.returncode
 
 def syntax_check_one_play_many_inv(
         logger,

@@ -45,7 +45,7 @@ def syntax_check_play_inv(
     if ret.returncode == 0:
         logger.info(
             "OK. ansible-playbook syntax check return code: "
-            "%s", str(ret))
+            "%s", str(ret.returncode))
         return ret.returncode
     # if external syntax checks pass, the code below should NOT run
     logger.warning(

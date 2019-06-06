@@ -102,20 +102,61 @@ def syntax_check_one_play_many_inv(
     # passed and we can return 0 to the caller.
     return 0
 
-def checkplaybooks(listofplaybooks):
-    """Syntax check a list of playbooks concurrently"""
+class SyntaxCheckPool:
+    """Wrapper for syntax_check_play_inv to map args to it."""
+    def __init__(self,
+            logger,
+            inventory,
+            ansible_playbook_cmd,
+            vault_password_file=None):
+        """Init SyntaxCheckWorker."""
+        self.logger = logger
+        self.inventory = inventory
+        self.ansible_playbook_cmd = ansible_playbook_cmd
+        self.vault_password_file = vault_password_file
 
-    bad_playbooks = []
+    def worker(self, playbook):
+        """Syntax check a list of playbooks concurrently against one inv.
+        Return number of failed syntax checks (so 0 = success)."""
+        output = syntax_check_play_inv(
+            self.logger,
+            playbook,
+            self.inventory,
+            self.ansible_playbook_cmd,
+            self.vault_password_file)
+        return output
 
-    pool = Pool(ARGS.concurrency)
-    bad_playbooks = pool.map(syntax_check_one_play_many_inv, listofplaybooks)
+
+def checkplaybooks(
+        logger,
+        listofplaybooks,
+        inventory,
+        ansible_playbook_cmd,
+        vault_password_file=None,
+        concurrency=os.cpu_count()):
+    """Syntax check a list of playbooks concurrently against one inv.
+    Return number of failed syntax checks (so 0 = success)."""
+    if isinstance(listofplaybooks, str):
+        listofplaybooks = [listofplaybooks]
+    syntax_check_pool = SyntaxCheckPool(
+        logger,
+        inventory,
+        ansible_playbook_cmd,
+        vault_password_file)
+    
+    output = []
+
+    pool = Pool(concurrency)
+    output = pool.map(syntax_check_pool.worker, listofplaybooks)
     pool.close()
     pool.join()
 
-    if bad_playbooks is not []:
-        return bad_playbooks
-    
-    return 0
+    # if the returned list of outputs only contains 0, success.
+    if output.count(0) == len(output):
+        return 0
+    # otherwise, subtract number of passed (0) values from the list length,
+    # to get the number of failed checks.
+    return len(output) - output.count(0)
 
 
 def syntax_check_dir(logger, check_dir):

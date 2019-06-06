@@ -69,6 +69,34 @@ class TestSyntaxCheck(unittest.TestCase):
             self.ansible_playbook_cmd)
         self.assertEqual(output, 0)
 
+    def test_checkplaybooks(self):
+        """Test that checkplaybooks func returns 0 when everything passed,
+        and not 0 if there is a bad playbook or inventory."""
+        output = anmad_syntaxchecks.checkplaybooks(
+            self.logger,
+            self.testplay,
+            self.testinv,
+            self.ansible_playbook_cmd)
+        self.assertEqual(output, 0)
+        output = anmad_syntaxchecks.checkplaybooks(
+            self.logger,
+            [self.testplay, self.testplay],
+            self.testinv,
+            self.ansible_playbook_cmd)
+        self.assertEqual(output, 0)
+        output = anmad_syntaxchecks.checkplaybooks(
+            self.logger,
+            [self.testplay, self.badplay],
+            self.testinv,
+            self.ansible_playbook_cmd)
+        self.assertNotEqual(output, 0)
+        output = anmad_syntaxchecks.checkplaybooks(
+            self.logger,
+            self.badplay,
+            self.testinv,
+            self.ansible_playbook_cmd)
+        self.assertNotEqual(output, 0)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -38,20 +38,29 @@ class TestSyntaxCheck(unittest.TestCase):
                 self.ansible_playbook_cmd)
         return output
 
-    def test_syntax_check_play_inv(self):
+    def test_play_inv(self):
         """Tests for syntaxcheck_play_inv."""
         output = self.run_syn_check_play_inv(self.testplay)
-        self.assertEqual(output, '')
+        self.assertEqual(output, 0)
 
-    def test_syntax_check_play_inv_badplay(self):
-        """Tests for syntaxcheck_play_inv."""
+    def test_play_inv_badplay(self):
+        """Tests for syntaxcheck_play_inv with a bad playbook."""
         output = self.run_syn_check_play_inv(self.badplay)
-        self.assertNotEqual(output, '')
+        self.assertNotEqual(output, 0)
 
-    def test_syntax_check_play_inv_vaultpw(self):
-        """Tests for syntaxcheck_play_inv."""
+    def test_play_inv_vaultpw(self):
+        """Tests for syntaxcheck_play_inv with vaultpw arg."""
         output = self.run_syn_check_play_inv(self.testplay, self.vaultpw)
-        self.assertEqual(output, '')
+        self.assertEqual(output, 0)
+
+    def test_one_play_many_inv(self):
+        """Test syntax_check_one_play_many_inv func with single inv."""
+        output = anmad_syntaxchecks.syntax_check_one_play_many_inv(
+            self.logger,
+            self.testplay,
+            self.testinv)
+        pass
+
 
 
 if __name__ == '__main__':

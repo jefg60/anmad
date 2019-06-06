@@ -29,20 +29,18 @@ def verify_yaml_file(logger, filename):
         for yml in find_yaml_files(logger, filename):
             if not verify_yaml_file(logger, yml):
                 return False
-    # ansible inventories might be in config file format instead of yaml,
-    # so also run configparser before declaring it invalid.
-    except yaml.parser.ParserError:
-        try:
-            config = ConfigParser()
-            config.read(filename)
-        except config.Error:
-            return False
     except:
-        logger.error(
-            "Bad YAML syntax in %s", str(filename))
         return False
     return True
 
+def verify_config_file(filename):
+    """Verify config file syntax. return True if passed."""
+    try:
+        config = ConfigParser()
+        config.read(filename)
+    except config.Error:
+        return False
+    return True
 
 def list_bad_yamlfiles(logger, filelist):
     """ Check a list of yaml files for bad syntax.

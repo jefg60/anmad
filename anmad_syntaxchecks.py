@@ -84,10 +84,19 @@ def syntax_check_one_play_many_inv(
     for my_inventory in inventories:
         my_inventory = os.path.abspath(my_inventory)
         if not anmad_yaml.verify_yaml_file(logger, my_inventory):
-            logger.error(
-                "Unable to verify yaml file %s", str(my_inventory))
-            return 2
-        if syntax_check_play_inv(logger, my_playbook, my_inventory, ansible_playbook_cmd, vault_password_file) is not 0:
+            # check the 'bad yaml' isnt actually a valid ini style inventory,
+            # before reporting it bad.
+            if not anmad_yaml.verify_config_file(my_inventory):
+                logger.error(
+                    "Unable to verify file %s", str(my_inventory))
+                return 2
+
+        if syntax_check_play_inv(
+            logger,
+            my_playbook,
+            my_inventory,
+            ansible_playbook_cmd,
+            vault_password_file) is not 0:
             return 3
     # if none of the above return statements happen, then syntax checks 
     # passed and we can return 0 to the caller.

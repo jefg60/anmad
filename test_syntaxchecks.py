@@ -54,11 +54,18 @@ class TestSyntaxCheck(unittest.TestCase):
         self.assertEqual(output, 0)
 
     def test_one_play_many_inv(self):
-        """Test syntax_check_one_play_many_inv func with single inv."""
+        """Test syntax_check_one_play_many_inv func with single inv
+        and multi inv."""
         output = anmad_syntaxchecks.syntax_check_one_play_many_inv(
             self.logger,
             self.testplay,
             self.testinv,
+            self.ansible_playbook_cmd)
+        self.assertEqual(output, 0)
+        output = anmad_syntaxchecks.syntax_check_one_play_many_inv(
+            self.logger,
+            self.testplay,
+            [self.testinv, self.testinv],
             self.ansible_playbook_cmd)
         self.assertEqual(output, 0)
 

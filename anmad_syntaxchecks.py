@@ -4,7 +4,6 @@ from multiprocessing import Pool
 import subprocess
 
 import anmad_yaml
-import anmad_args
 
 def syntax_check_play_inv(
         logger,
@@ -169,7 +168,7 @@ def checkplaybooks(
     # to get the number of failed checks.
     return len(output) - output.count(0)
 
-
+##############################################################################
 def syntax_check_dir(logger, check_dir):
     """Check all YAML in a directory for ansible syntax."""
     if not os.path.exists(check_dir):

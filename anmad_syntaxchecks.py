@@ -90,7 +90,8 @@ class ansibleSyntaxCheck:
     def checkplaybooks(self, listofplaybooks):
         """Syntax check a list of playbooks concurrently against one inv.
         Return number of failed syntax checks (so 0 = success)."""
-        return self.concurrentrun(listofplaybooks, syncheck=True)
+        problemcount = self.concurrentrun(listofplaybooks, syncheck=True)
+        return problemcount
 
     def syncheck_dir(self, check_dir):
         """Check all YAML in a directory for ansible syntax.
@@ -107,4 +108,5 @@ class ansibleSyntaxCheck:
     def runplaybooks(self, listofplaybooks): 
         """Run a list of ansible playbooks and wait for them to finish.
         Return number of nonzero exit codes (so 0 = success)."""
-        return self.concurrentrun(listofplaybooks)
+        problemcount = self.concurrentrun(listofplaybooks)
+        return problemcount

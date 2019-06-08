@@ -6,93 +6,98 @@ import subprocess
 import anmad_yaml
 import anmad_playbook
 
-def syntax_check_one_play_many_inv(
-        logger,
-        playbook,
-        inventories,
-        ansible_playbook_cmd,
-        vault_password_file=None):
-    """Check a single playbook against all inventories.
-    Returns 0 if all OK, 1 or 2 if there was a parsing issue
-    with the playbook or the inventories respectively.
-    Returns 3 if ansible-playbook syntax check failed.
-    If any errors are found, the function will stop and return one
-    of the above without continuing."""
-    # check if we've been passed a single string, make it a one item list
-    # if so.
-    if isinstance(inventories, str):
-        inventories = [inventories]
-    if not anmad_yaml.verify_yaml_file(logger, playbook):
-        logger.error(
-            "Unable to verify yaml file %s", str(playbook))
-        return 1
-    for my_inventory in inventories:
-        if not anmad_yaml.verify_yaml_file(logger, my_inventory):
-            # check the 'bad yaml' isnt actually a valid ini style inventory,
-            # before reporting it bad.
-            if not anmad_yaml.verify_config_file(my_inventory):
-                logger.error(
-                    "Unable to verify file %s", str(my_inventory))
-                return 2
+class ansibleSyntaxCheck:
+    """Anmad syntax checking class. Accepts a list of inventories."""
 
-        playbookobject = anmad_playbook.ansibleRun(
-            logger, my_inventory, ansible_playbook_cmd, vault_password_file)
-        if playbookobject.syncheck_playbook(playbook) is not 0:
-            return 3
-    # if none of the above return statements happen, then syntax checks 
-    # passed and we can return 0 to the caller.
-    return 0
 
-def checkplaybooks(
-        logger,
-        listofplaybooks,
-        inventory,
-        ansible_playbook_cmd,
-        vault_password_file=None,
-        concurrency=os.cpu_count()):
-    """Syntax check a list of playbooks concurrently against one inv.
-    Return number of failed syntax checks (so 0 = success)."""
-    if isinstance(listofplaybooks, str):
-        listofplaybooks = [listofplaybooks]
-    syntax_check_pool = anmad_playbook.ansibleRun(
-        logger,
-        inventory,
-        ansible_playbook_cmd,
-        vault_password_file)
-    
-    output = []
+    def __init__(self,
+            logger,
+            inventories,
+            ansible_playbook_cmd,
+            vault_password_file=None):
+        """Init ansibleSyntaxCheck."""
+        self.logger = logger
+        if isinstance(inventories, str):
+            self.inventories = [inventories]
+        else:
+            self.inventories = inventories
+        self.maininventory = inventories[0]
+        self.ansible_playbook_cmd = ansible_playbook_cmd
+        self.vault_password_file = vault_password_file
 
-    pool = Pool(concurrency)
-    output = pool.map(syntax_check_pool.syncheck_playbook, listofplaybooks)
-    pool.close()
-    pool.join()
+    def syntax_check_one_play_many_inv(self, playbook):
+        """Check a single playbook against all inventories.
+        Returns 0 if all OK, 1 or 2 if there was a parsing issue
+        with the playbook or the inventories respectively.
+        Returns 3 if ansible-playbook syntax check failed.
+        If any errors are found, the function will stop and return one
+        of the above without continuing."""
+        # check if we've been passed a single string, make it a one item list
+        # if so.
+        if not anmad_yaml.verify_yaml_file(self.logger, playbook):
+            self.logger.error(
+                "Unable to verify yaml file %s", str(playbook))
+            return 1
+        for my_inventory in self.inventories:
+            if not anmad_yaml.verify_yaml_file(self.logger, my_inventory):
+                # check the 'bad yaml' isnt actually a valid ini style inventory,
+                # before reporting it bad.
+                if not anmad_yaml.verify_config_file(my_inventory):
+                    self.logger.error(
+                        "Unable to verify file %s", str(my_inventory))
+                    return 2
 
-    # if the returned list of outputs only contains 0, success.
-    if output.count(0) == len(output):
+            playbookobject = anmad_playbook.ansibleRun(
+                self.logger,
+                my_inventory,
+                self.ansible_playbook_cmd,
+                self.vault_password_file)
+            if playbookobject.syncheck_playbook(playbook) is not 0:
+                return 3
+        # if none of the above return statements happen, then syntax checks 
+        # passed and we can return 0 to the caller.
         return 0
-    # otherwise, subtract number of passed (0) values from the list length,
-    # to get the number of failed checks.
-    return len(output) - output.count(0)
 
-def syncheck_dir(logger,
-        inventory,
-        ansible_playbook_cmd,
-        check_dir,
-        vault_password_file=None):
-    """Check all YAML in a directory for ansible syntax.
-    Return number of files failing syntax check (0 = success)
-    and/or 255 if dir not found"""
-    if not os.path.exists(check_dir):
-        logger.error("%s cannot be found", str(check_dir))
-        return 255
+    def checkplaybooks(self, listofplaybooks, concurrency=os.cpu_count()):
+        """Syntax check a list of playbooks concurrently against one inv.
+        Return number of failed syntax checks (so 0 = success)."""
+        if isinstance(listofplaybooks, str):
+            listofplaybooks = [listofplaybooks]
+        syntax_check_pool = anmad_playbook.ansibleRun(
+            self.logger,
+            self.maininventory,
+            self.ansible_playbook_cmd,
+            self.vault_password_file)
+        
+        output = []
 
-    problemcount = checkplaybooks(
-        logger,
-        anmad_yaml.find_yaml_files(logger, check_dir),
-        inventory,
-        ansible_playbook_cmd,
-        vault_password_file)
-    return problemcount
+        pool = Pool(concurrency)
+        output = pool.map(syntax_check_pool.syncheck_playbook, listofplaybooks)
+        pool.close()
+        pool.join()
+
+        # if the returned list of outputs only contains 0, success.
+        if output.count(0) == len(output):
+            return 0
+        # otherwise, subtract number of passed (0) values from the list length,
+        # to get the number of failed checks.
+        return len(output) - output.count(0)
+
+    def syncheck_dir(self, check_dir):
+        """Check all YAML in a directory for ansible syntax.
+        Return number of files failing syntax check (0 = success)
+        and/or 255 if dir not found"""
+        if not os.path.exists(check_dir):
+            self.logger.error("%s cannot be found", str(check_dir))
+            return 255
+
+        problemcount = checkplaybooks(
+            self.logger,
+            anmad_yaml.find_yaml_files(self.logger, check_dir),
+            self.maininventory,
+            self.ansible_playbook_cmd,
+            self.vault_password_file)
+        return problemcount
 
 ##############################################################################
 

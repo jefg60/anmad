@@ -29,7 +29,7 @@ class TestPlaybook(unittest.TestCase):
             self.testinv,
             self.ansible_playbook_cmd)
         returned = playbookobject.run_playbook(self.testplay, syncheck=True)
-        self.assertEqual(returned , 0)
+        self.assertEqual(returned.returncode , 0)
 
 
 if __name__ == '__main__':

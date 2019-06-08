@@ -20,9 +20,9 @@ class TestVersion(unittest.TestCase):
         # Change logging.ERROR to INFO, to see log messages during testing.
         self.logger.setLevel(logging.CRITICAL)
         self.testyamlfiles = ['deploy.yaml']
-        for x in range(2, 9):
-            dx = [('deploy' + str(x) + '.yaml')]
-            self.testyamlfiles.extend(dx)
+        for num in range(2, 9):
+            dnum = [('deploy' + str(num) + '.yaml')]
+            self.testyamlfiles.extend(dnum)
         self.testyamlfiles.extend(['deploy9.yml'])
         self.testyamlfiles_parent = ['samples/' + x for x in self.testyamlfiles]
         self.testyamlfiles_parent.sort()
@@ -35,24 +35,30 @@ class TestVersion(unittest.TestCase):
         self.assertEqual(yamlfiles, self.testyamlfiles_parent)
 
     def test_verify_yaml_missingfile(self):
+        """Test verify_yaml with missing file."""
         verify = anmad_yaml.verify_yaml_file(self.logger, 'tests/missing.yml')
         self.assertFalse(verify)
 
     def test_verify_yaml_is_empty_directory(self):
+        """Test verify_yaml with empty dir."""
         verify = anmad_yaml.verify_yaml_file(self.logger, 'empty_dir')
         self.assertFalse(verify)
 
     def test_verify_yaml_is_directory(self):
+        """Test verify_yaml with a dir containing stuff."""
         verify = anmad_yaml.verify_yaml_file(self.logger, 'samples')
         self.assertTrue(verify)
 
     def test_verify_yaml_is_bad_directory(self):
+        """Test verify_yaml_file with a dir containing bad yaml."""
         verify = anmad_yaml.verify_yaml_file(self.logger, 'tests')
         self.assertFalse(verify)
 
     def test_verify_yaml_goodfile(self):
         """Test verify_yaml_file func with valid yaml."""
-        verify = anmad_yaml.verify_yaml_file(self.logger, (self.playbookroot + '/' + self.playbooks[0]))
+        verify = anmad_yaml.verify_yaml_file(
+            self.logger,
+            (self.playbookroot + '/' + self.playbooks[0]))
         self.assertTrue(verify)
 
     def test_verify_yaml_badfile(self):

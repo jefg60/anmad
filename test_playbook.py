@@ -60,7 +60,9 @@ class TestPlaybook(unittest.TestCase):
 
     def test_syncheck_playbook(self):
         """Test syncheck_playbook method."""
-        pass
+        returned = self.playbookobject.syncheck_playbook(
+            self.testplay)
+        self.assertEqual(returned, 0)
 
 
 if __name__ == '__main__':

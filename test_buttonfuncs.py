@@ -19,6 +19,8 @@ class TestVersion(unittest.TestCase):
         self.pre_run_playbooks = ['deploy4.yaml']
         self.playbookroot = 'samples'
         self.logger = logging.getLogger(os.path.basename(main.__file__))
+        # Change logging.ERROR to INFO, to see log messages during testing.
+        self.logger.setLevel(logging.CRITICAL)
         self.testextras = ['deploy3.yaml']
         for x in range(5, 9):
             dx = [('deploy' + str(x) + '.yaml')]

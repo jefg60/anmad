@@ -68,6 +68,14 @@ class TestSyntaxCheck(unittest.TestCase):
         output = self.syncheckobj.syncheck_dir('asdkjagdkjasgd')
         self.assertEqual(output, 255)
 
+    def test_runplaybooks(self):
+        """Test that runplaybooks func returns correct num of failed playbooks
+        in testing."""
+        output = self.syncheckobj.runplaybooks(self.testplay)
+        self.assertEqual(output, 1)
+        output = self.syncheckobj.runplaybooks(
+            [self.testplay, self.testplay])
+        self.assertEqual(output, 2)
 
 if __name__ == '__main__':
     unittest.main()

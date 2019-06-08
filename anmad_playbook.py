@@ -39,3 +39,30 @@ class ansibleRun:
             logger.warning("Warnings found in ansible output: %s %s",
                 ret.stdout, ret.stderr)
         return ret
+
+    def syncheck_playbook(self, playbook):
+        """Check a single playbook against a single inventory.
+        Returns ansible-playbook command return code
+        (should be 0 if syntax checks pass)."""
+        self.logger.info("Syntax Checking ansible playbook %s against "
+            "inevntory %s", str(playbook), str(self.inventory))
+        ret = self.run_playbook(playbook, syncheck=True)
+        if ret.returncode == 0:
+            logger.info(
+                "OK. ansible-playbook syntax check return code: "
+                "%s", str(ret.returncode))
+            return ret.returncode
+        # if syntax checks pass, the code below should NOT run
+        logger.warning(
+            "Playbook %s failed syntax check against inventory %s!!!",
+            str(playbook), str(self.inventory))
+        logger.warning(
+            "ansible-playbook syntax check return code: "
+            "%s", str(ret.returncode))
+        logger.warning("Warnings found in ansible output: %s %s",
+            ret.stdout, ret.stderr)
+        logger.debug(
+            "ansible-playbook syntax check return code: "
+            "%s", str(ret.returncode))
+        return ret.returncode
+

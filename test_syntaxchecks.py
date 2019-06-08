@@ -17,7 +17,7 @@ class TestSyntaxCheck(unittest.TestCase):
         """Set up syntax check tests."""
         self.logger = logging.getLogger(os.path.basename(main.__file__))
         # Change logging.ERROR to INFO, to see log messages during testing.
-        self.logger.setLevel(logging.ERROR)
+        self.logger.setLevel(logging.CRITICAL)
         self.testplay = 'samples/deploy.yaml'
         self.badplay = 'samples/deploy3.yaml'
         self.testinv = 'samples/inventory-internal'
@@ -62,9 +62,11 @@ class TestSyntaxCheck(unittest.TestCase):
 
     def test_syncheck_dir(self):
         """Test syncheck_dir func against samples/. should return 2
-        because there are 2 bad playbooks in there."""
+        because there are 2 bad playbooks in there, or 255 for missing dir."""
         output = self.syncheckobj.syncheck_dir(self.checkdir)
         self.assertEqual(output, 2)
+        output = self.syncheckobj.syncheck_dir('asdkjagdkjasgd')
+        self.assertEqual(output, 255)
 
 
 if __name__ == '__main__':

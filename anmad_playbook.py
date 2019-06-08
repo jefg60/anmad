@@ -19,7 +19,7 @@ class ansibleRun:
         """Run an ansible playbook, optionally in syntax check mode."""
         playbook = os.path.abspath(playbook)
         inventory = os.path.abspath(self.inventory)
-        ansible_playbook_args = ('--inventory' + self.inventory +
+        ansible_playbook_args = ('--inventory ' + self.inventory + ' ' +
             playbook )
         if self.vault_password_file is not None:
             ansible_playbook_args = ( ansible_playbook_args +
@@ -28,6 +28,8 @@ class ansibleRun:
             ansible_playbook_args = ( ansible_playbook_args +
             ' --syntax-check ' )
 
+        print("Running ", str(self.ansible_playbook_cmd),
+            str(ansible_playbook_args))
         self.logger.info("Running %s %s", str(self.ansible_playbook_cmd),
             str(ansible_playbook_args))
         ret = subprocess.run(                                                  

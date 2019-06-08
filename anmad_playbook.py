@@ -18,7 +18,8 @@ class ansibleRun:
             ['--vault-password-file', vault_password_file] )
 
     def run_playbook(self, playbook, syncheck=False, checkmode=False):
-        """Run an ansible playbook, optionally in syntax check mode."""
+        """Run an ansible playbook, optionally in syntax check mode or
+        with --check --diff"""
         playbook = os.path.abspath(playbook)
         inventory = os.path.abspath(self.inventory)
         ansible_playbook_cmd = self.ansible_playbook_cmd

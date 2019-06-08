@@ -38,15 +38,15 @@ class ansibleRun:
             stderr=subprocess.PIPE,
             text=True)
         if 'WARNING' in (ret.stdout, ret.stderr):
-            logger.warning("Warnings found in ansible output: %s %s",
+            self.logger.warning("Warnings found in ansible output: %s %s",
                 ret.stdout, ret.stderr)
         if ret.returncode == 0:
-            logger.info(
+            self.logger.info(
                 "ansible-playbook %s return code: %s",
                 str(playbook), str(ret.returncode))
             return ret
         ## should only log as an error if return code not 0
-        logger.error(
+        self.logger.error(
             "ansible-playbook %s did not complete, return code: %s",
             str(playbook), str(ret.returncode))
         return ret

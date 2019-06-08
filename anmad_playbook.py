@@ -13,7 +13,9 @@ class ansibleRun:
         self.logger = logger                                                   
         self.inventory = inventory                                             
         self.ansible_playbook_cmd = [ansible_playbook_cmd]
-        self.vault_password_file = vault_password_file
+        if vault_password_file is not None:
+            self.ansible_playbook_cmd.extend(
+            ['--vault-password-file', vault_password_file] )
 
     def run_playbook(self, playbook, syncheck=False):
         """Run an ansible playbook, optionally in syntax check mode."""
@@ -21,9 +23,6 @@ class ansibleRun:
         inventory = os.path.abspath(self.inventory)
         ansible_playbook_cmd = self.ansible_playbook_cmd
         ansible_playbook_cmd.extend(['--inventory', inventory, playbook])
-        if self.vault_password_file is not None:
-            ansible_playbook_cmd.extend(
-            ['--vault-password-file', self.vault_password_file] )
         if syncheck:
             ansible_playbook_cmd.extend( ['--syntax-check'] )
 

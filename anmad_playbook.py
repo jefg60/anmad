@@ -27,8 +27,7 @@ class ansibleRun:
         if syncheck:
             ansible_playbook_cmd.extend( ['--syntax-check'] )
 
-        print("Running ", str(self.ansible_playbook_cmd))
-        self.logger.info("Running %s %s", str(self.ansible_playbook_cmd))
+        self.logger.info("Running %s", str(self.ansible_playbook_cmd))
         ret = subprocess.run(                                                  
             self.ansible_playbook_cmd,
             stdout=subprocess.PIPE,

@@ -31,6 +31,15 @@ class TestPlaybook(unittest.TestCase):
         returned = playbookobject.run_playbook(self.testplay, syncheck=True)
         self.assertEqual(returned.returncode , 0)
 
+    def test_ansible_playbook_vault_syn(self):
+        playbookobject = anmad_playbook.ansibleRun(
+            self.logger,
+            self.testinv,
+            self.ansible_playbook_cmd,
+            self.vaultpw)
+        returned = playbookobject.run_playbook(self.testplay, syncheck=True)
+        self.assertEqual(returned.returncode , 0)
+
     def test_ansible_playbook_novault_nosyn(self):
         playbookobject = anmad_playbook.ansibleRun(
             self.logger,

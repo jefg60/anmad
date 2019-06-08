@@ -3,8 +3,8 @@
 
 import logging
 import os
-import werkzeug
 import unittest
+import werkzeug
 
 import __main__ as main
 
@@ -22,11 +22,12 @@ class TestVersion(unittest.TestCase):
         # Change logging.ERROR to INFO, to see log messages during testing.
         self.logger.setLevel(logging.CRITICAL)
         self.testextras = ['deploy3.yaml']
-        for x in range(5, 9):
-            dx = [('deploy' + str(x) + '.yaml')]
-            self.testextras.extend(dx)
+        for num in range(5, 9):
+            dnum = [('deploy' + str(num) + '.yaml')]
+            self.testextras.extend(dnum)
         self.testextras.extend(['deploy9.yml'])
-        self.queues = anmad_queues.AnmadQueues('test_prerun', 'test_playbooks', 'test_info')
+        self.queues = anmad_queues.AnmadQueues(
+            'test_prerun', 'test_playbooks', 'test_info')
 
     def tearDown(self):
         self.playbooks = None
@@ -49,7 +50,8 @@ class TestVersion(unittest.TestCase):
             self.playbooks, self.pre_run_playbooks)
         self.assertIsNotNone(buttons)
         self.assertEqual(len(buttons), 3)
-        self.assertEqual(buttons, ['deploy4.yaml', 'deploy.yaml', 'deploy2.yaml'])
+        self.assertEqual(
+            buttons, ['deploy4.yaml', 'deploy.yaml', 'deploy2.yaml'])
 
     def test_nopre_extraplays(self):
         """Test extraplays behavior without prerun.
@@ -63,13 +65,21 @@ class TestVersion(unittest.TestCase):
     def test_pre_extraplays(self):
         """Test extraplays behavior with prerun."""
         extraplaybooks = anmad_buttonfuncs.extraplays(
-            self.logger, self.playbookroot, self.playbooks, self.pre_run_playbooks)
+            self.logger,
+            self.playbookroot,
+            self.playbooks,
+            self.pre_run_playbooks)
         self.assertEqual(extraplaybooks, self.testextras)
 
     def test_oneplaybook(self):
         """Test oneplaybook func to queue one play."""
         playbook = 'deploy.yaml'
-        anmad_buttonfuncs.oneplaybook(self.logger, self.queues, playbook, self.playbooks, self.playbookroot)
+        anmad_buttonfuncs.oneplaybook(
+            self.logger,
+            self.queues,
+            playbook,
+            self.playbooks,
+            self.playbookroot)
         self.queues.update_job_lists()
         self.assertTrue([('samples/' + playbook)] in self.queues.queue_list)
 
@@ -77,7 +87,12 @@ class TestVersion(unittest.TestCase):
         """Test that requests are denied to add playbooks not in list."""
         playbook = 'badstuff.yaml'
         with self.assertRaises(werkzeug.exceptions.NotFound):
-            anmad_buttonfuncs.oneplaybook(self.logger, self.queues, playbook, self.playbooks, self.playbookroot)
+            anmad_buttonfuncs.oneplaybook(
+                self.logger,
+                self.queues,
+                playbook,
+                self.playbooks,
+                self.playbookroot)
         self.queues.update_job_lists()
         self.assertFalse([('samples/' + playbook)] in self.queues.queue_list)
 

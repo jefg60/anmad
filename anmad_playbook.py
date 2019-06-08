@@ -59,10 +59,5 @@ class ansibleRun:
         self.logger.warning(
             "ansible-playbook syntax check return code: "
             "%s", str(ret.returncode))
-        self.logger.warning("Warnings found in ansible output: %s %s",
-            ret.stdout, ret.stderr)
-        self.logger.debug(
-            "ansible-playbook syntax check return code: "
-            "%s", str(ret.returncode))
         return ret.returncode
 

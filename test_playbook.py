@@ -16,19 +16,20 @@ class TestPlaybook(unittest.TestCase):
     def setUp(self):
         """Set up playbook tests."""
         self.logger = logging.getLogger(os.path.basename(main.__file__))
-        self.logger.setLevel(logging.ERROR)
+        self.logger.setLevel(logging.DEBUG)
         self.testplay = 'samples/deploy.yaml'
         self.badplay = 'samples/deploy3.yaml'
         self.testinv = 'samples/inventory-internal'
         self.ansible_playbook_cmd = './venv/bin/ansible-playbook'
         self.vaultpw = './vaultpassword'
 
-    def test_ansible_playbook_novault_nosyn(self):
+    def test_ansible_playbook_novault_syn(self):
         playbookobject = anmad_playbook.ansibleRun(
             self.logger,
             self.testinv,
             self.ansible_playbook_cmd)
-        self.assertEqual(playbookobject.run_playbook(self.testplay), 4)
+        returned = playbookobject.run_playbook(self.testplay, syncheck=True)
+        self.assertEqual(returned , 0)
 
 
 if __name__ == '__main__':

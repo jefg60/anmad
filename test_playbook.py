@@ -16,7 +16,7 @@ class TestPlaybook(unittest.TestCase):
     def setUp(self):
         """Set up playbook tests."""
         self.logger = logging.getLogger(os.path.basename(main.__file__))
-        self.logger.setLevel(logging.ERROR)
+        self.logger.setLevel(logging.CRITICAL)
         self.testplay = 'samples/deploy.yaml'
         self.badplay = 'samples/deploy3.yaml'
         self.testinv = 'samples/inventory-internal'

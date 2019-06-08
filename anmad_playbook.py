@@ -17,14 +17,16 @@ class ansibleRun:
             self.ansible_playbook_cmd.extend(
             ['--vault-password-file', vault_password_file] )
 
-    def run_playbook(self, playbook, syncheck=False):
+    def run_playbook(self, playbook, syncheck=False, checkmode=False):
         """Run an ansible playbook, optionally in syntax check mode."""
         playbook = os.path.abspath(playbook)
         inventory = os.path.abspath(self.inventory)
         ansible_playbook_cmd = self.ansible_playbook_cmd
-        ansible_playbook_cmd.extend(['--inventory', inventory, playbook])
         if syncheck:
             ansible_playbook_cmd.extend( ['--syntax-check'] )
+        if checkmode:
+            ansible_playbook_cmd.extend( ['--check', '--diff'] )
+        ansible_playbook_cmd.extend(['--inventory', inventory, playbook])
 
         self.logger.info("Running %s", str(ansible_playbook_cmd))
         ret = subprocess.run(                                                  

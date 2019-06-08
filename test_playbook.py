@@ -22,7 +22,7 @@ class TestPlaybook(unittest.TestCase):
         self.testinv = 'samples/inventory-internal'
         self.ansible_playbook_cmd = './venv/bin/ansible-playbook'
         self.vaultpw = './vaultpassword'
-        self.playbookobject = anmad_playbook.ansibleRun(
+        self.playbookobject = anmad_playbook.AnmadRun(
             self.logger,
             self.testinv,
             self.ansible_playbook_cmd)
@@ -50,7 +50,7 @@ class TestPlaybook(unittest.TestCase):
 
     def test_ansible_playbook_vault_syn(self):
         """Test run_playbook with vault."""
-        playbookobject = anmad_playbook.ansibleRun(
+        playbookobject = anmad_playbook.AnmadRun(
             self.logger,
             self.testinv,
             self.ansible_playbook_cmd,

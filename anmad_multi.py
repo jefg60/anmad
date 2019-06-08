@@ -48,7 +48,7 @@ class AnmadMulti:
                         "Unable to verify file %s", str(my_inventory))
                     return 2
 
-            playbookobject = anmad_playbook.ansibleRun(
+            playbookobject = anmad_playbook.AnmadRun(
                 self.logger,
                 my_inventory,
                 self.ansible_playbook_cmd,
@@ -65,7 +65,7 @@ class AnmadMulti:
         Return number of nonzero exit codes (so 0 = success)."""
         if isinstance(listofplaybooks, str):
             listofplaybooks = [listofplaybooks]
-        playbookobj = anmad_playbook.ansibleRun(
+        playbookobj = anmad_playbook.AnmadRun(
             self.logger,
             self.maininventory,
             self.ansible_playbook_cmd,

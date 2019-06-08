@@ -1,7 +1,7 @@
 """Functions to verify yaml files."""
 import os
 import glob
-from configparser import ConfigParser
+import configparser
 import yaml
 
 def find_yaml_files(logger, directory):
@@ -21,6 +21,9 @@ def verify_yaml_file(logger, filename):
     try:
         with open(filename, 'r') as my_filename:
             yaml.safe_load(my_filename)
+    except FileNotFoundError:
+        logger.error("%s not found", filename)
+        return False
     except IsADirectoryError:
         if not find_yaml_files(logger, filename):
             logger.error("No yaml files found in %s", str(filename))
@@ -35,9 +38,9 @@ def verify_yaml_file(logger, filename):
 def verify_config_file(filename):
     """Verify config file syntax. return True if passed."""
     try:
-        config = ConfigParser()
+        config = configparser.ConfigParser()
         config.read(filename)
-    except config.configparser.Error:
+    except configparser.Error:
         return False
     return True
 

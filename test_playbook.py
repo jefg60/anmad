@@ -16,7 +16,7 @@ class TestPlaybook(unittest.TestCase):
     def setUp(self):
         """Set up playbook tests."""
         self.logger = logging.getLogger(os.path.basename(main.__file__))
-        self.logger.setLevel(logging.DEBUG)
+        self.logger.setLevel(logging.ERROR)
         self.testplay = 'samples/deploy.yaml'
         self.badplay = 'samples/deploy3.yaml'
         self.testinv = 'samples/inventory-internal'
@@ -63,6 +63,9 @@ class TestPlaybook(unittest.TestCase):
         returned = self.playbookobject.syncheck_playbook(
             self.testplay)
         self.assertEqual(returned, 0)
+        returned = self.playbookobject.syncheck_playbook(
+            self.badplay)
+        self.assertEqual(returned, 4)
 
 
 if __name__ == '__main__':

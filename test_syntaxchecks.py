@@ -23,37 +23,6 @@ class TestSyntaxCheck(unittest.TestCase):
         self.ansible_playbook_cmd = './venv/bin/ansible-playbook'
         self.vaultpw = './vaultpassword'
 
-    def run_syn_check_play_inv(self, play, vaultpw=None):
-        if vaultpw is not None:
-            output = anmad_syntaxchecks.syntax_check_play_inv(
-                self.logger,
-                play,
-                self.testinv,
-                self.ansible_playbook_cmd,
-                vaultpw)
-        else:
-            output = anmad_syntaxchecks.syntax_check_play_inv(
-                self.logger,
-                play,
-                self.testinv,
-                self.ansible_playbook_cmd)
-        return output
-
-    def test_play_inv(self):
-        """Tests for syntaxcheck_play_inv."""
-        output = self.run_syn_check_play_inv(self.testplay)
-        self.assertEqual(output, 0)
-
-    def test_play_inv_badplay(self):
-        """Tests for syntaxcheck_play_inv with a bad playbook."""
-        output = self.run_syn_check_play_inv(self.badplay)
-        self.assertNotEqual(output, 0)
-
-    def test_play_inv_vaultpw(self):
-        """Tests for syntaxcheck_play_inv with vaultpw arg."""
-        output = self.run_syn_check_play_inv(self.testplay, self.vaultpw)
-        self.assertEqual(output, 0)
-
     def test_one_play_many_inv(self):
         """Test syntax_check_one_play_many_inv func with single inv
         and multi inv."""

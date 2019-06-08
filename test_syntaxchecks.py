@@ -24,59 +24,46 @@ class TestSyntaxCheck(unittest.TestCase):
         self.ansible_playbook_cmd = './venv/bin/ansible-playbook'
         self.vaultpw = './vaultpassword'
         self.checkdir = './samples'
+        self.syncheckobj = anmad_syntaxchecks.ansibleSyntaxCheck(
+            self.logger,
+            self.testinv,
+            self.ansible_playbook_cmd,
+            self.vaultpw)
+        self.syncheckobj_multi_inv = anmad_syntaxchecks.ansibleSyntaxCheck(
+            self.logger,
+            [self.testinv, self.testinv],
+            self.ansible_playbook_cmd,
+            self.vaultpw)
 
     def test_one_play_many_inv(self):
         """Test syntax_check_one_play_many_inv func with single inv
         and multi inv."""
-        output = anmad_syntaxchecks.syntax_check_one_play_many_inv(
-            self.logger,
-            self.testplay,
-            self.testinv,
-            self.ansible_playbook_cmd)
+        output = self.syncheckobj.syntax_check_one_play_many_inv(
+            self.testplay)
         self.assertEqual(output, 0)
-        output = anmad_syntaxchecks.syntax_check_one_play_many_inv(
-            self.logger,
-            self.testplay,
-            [self.testinv, self.testinv],
-            self.ansible_playbook_cmd)
+        output = self.syncheckobj_multi_inv.syntax_check_one_play_many_inv(
+            self.testplay)
         self.assertEqual(output, 0)
 
     def test_checkplaybooks(self):
         """Test that checkplaybooks func returns 0 when everything passed,
         and not 0 if there is a bad playbook or inventory."""
-        output = anmad_syntaxchecks.checkplaybooks(
-            self.logger,
-            self.testplay,
-            self.testinv,
-            self.ansible_playbook_cmd)
+        output = self.syncheckobj.checkplaybooks(self.testplay)
         self.assertEqual(output, 0)
-        output = anmad_syntaxchecks.checkplaybooks(
-            self.logger,
-            [self.testplay, self.testplay],
-            self.testinv,
-            self.ansible_playbook_cmd)
+        output = self.syncheckobj.checkplaybooks(
+            [self.testplay, self.testplay])
         self.assertEqual(output, 0)
-        output = anmad_syntaxchecks.checkplaybooks(
-            self.logger,
-            [self.testplay, self.badplay],
-            self.testinv,
-            self.ansible_playbook_cmd)
+        output = self.syncheckobj.checkplaybooks(
+            [self.testplay, self.badplay])
         self.assertNotEqual(output, 0)
-        output = anmad_syntaxchecks.checkplaybooks(
-            self.logger,
-            self.badplay,
-            self.testinv,
-            self.ansible_playbook_cmd)
+        output = self.syncheckobj.checkplaybooks(
+            self.badplay)
         self.assertNotEqual(output, 0)
 
     def test_syncheck_dir(self):
         """Test syncheck_dir func against samples/. should return 2
         because there are 2 bad playbooks in there."""
-        output = anmad_syntaxchecks.syncheck_dir(
-            self.logger,
-            self.testinv,
-            self.ansible_playbook_cmd,
-            self.checkdir)
+        output = self.syncheckobj.syncheck_dir(self.checkdir)
         self.assertEqual(output, 2)
 
 

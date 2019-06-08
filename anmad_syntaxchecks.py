@@ -74,7 +74,6 @@ def checkplaybooks(
     # to get the number of failed checks.
     return len(output) - output.count(0)
 
-##############################################################################
 def syncheck_dir(logger,
         inventory,
         ansible_playbook_cmd,
@@ -95,6 +94,7 @@ def syncheck_dir(logger,
         vault_password_file)
     return problemcount
 
+##############################################################################
 
 def run_one_playbook(logger, my_playbook):
     """Run exactly one ansible playbook. Don't call this
@@ -132,13 +132,3 @@ def runplaybooks(listofplaybooks):
     pool.join()
 
     return ret
-
-if __name__ == '__main__':
-    QUEUES = anmad_yaml.QUEUES
-    VERSION = anmad_yaml.VERSION
-
-    ARGS = anmad_yaml.ARGS
-    ANSIBLE_PLAYBOOK_CMD = anmad_yaml.ANSIBLE_PLAYBOOK_CMD
-    MAININVENTORY = anmad_yaml.MAININVENTORY
-    PRERUN_LIST = anmad_yaml.PRERUN_LIST
-    RUN_LIST = anmad_yaml.RUN_LIST

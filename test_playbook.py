@@ -31,6 +31,16 @@ class TestPlaybook(unittest.TestCase):
         returned = playbookobject.run_playbook(self.testplay, syncheck=True)
         self.assertEqual(returned.returncode , 0)
 
+    def test_ansible_playbook_novault_nosyn(self):
+        playbookobject = anmad_playbook.ansibleRun(
+            self.logger,
+            self.testinv,
+            self.ansible_playbook_cmd)
+        returned = playbookobject.run_playbook(self.testplay)
+        self.assertEqual(returned.returncode , 4)
+        returned = playbookobject.run_playbook(self.testplay, syncheck=False)
+        self.assertEqual(returned.returncode , 4)
+
 
 if __name__ == '__main__':
     unittest.main()

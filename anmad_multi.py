@@ -6,8 +6,9 @@ import subprocess
 import anmad_yaml
 import anmad_playbook
 
-class ansibleSyntaxCheck:
-    """Anmad syntax checking class. Accepts a list of inventories."""
+class ansibleMulti:
+    """Anmad Multi inventory / playbook class. Accepts a list of inventories.
+    Multi playbooks will run against the first inventory in the list."""
 
 
     def __init__(self,

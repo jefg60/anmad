@@ -24,6 +24,11 @@ load test_helper
   [[ "$output" = *"anmad_logging test ok" ]]
 }
 
+@test "unit test other python modules" {
+  run tests/unittests.sh
+  [ "$status" -eq 0 ]
+}
+
 @test "test --help option" {
   run "$program" --help
   [[ "$output" = *"usage"* ]]

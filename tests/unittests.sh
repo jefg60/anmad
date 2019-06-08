@@ -5,6 +5,3 @@ do
   echo unit testing $i
   python $i || exit 1
 done
-
-bats tests/anmad.bats
-

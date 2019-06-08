@@ -91,12 +91,8 @@ class ansibleSyntaxCheck:
             self.logger.error("%s cannot be found", str(check_dir))
             return 255
 
-        problemcount = checkplaybooks(
-            self.logger,
-            anmad_yaml.find_yaml_files(self.logger, check_dir),
-            self.maininventory,
-            self.ansible_playbook_cmd,
-            self.vault_password_file)
+        problemcount = self.checkplaybooks(
+            anmad_yaml.find_yaml_files(self.logger, check_dir))
         return problemcount
 
 ##############################################################################

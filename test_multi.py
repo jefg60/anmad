@@ -24,12 +24,12 @@ class TestSyntaxCheck(unittest.TestCase):
         self.ansible_playbook_cmd = './venv/bin/ansible-playbook'
         self.vaultpw = './vaultpassword'
         self.checkdir = './samples'
-        self.multiobj = anmad_multi.ansibleMulti(
+        self.multiobj = anmad_multi.AnmadMulti(
             self.logger,
             self.testinv,
             self.ansible_playbook_cmd,
             self.vaultpw)
-        self.multimultiobj = anmad_multi.ansibleMulti(
+        self.multimultiobj = anmad_multi.AnmadMulti(
             self.logger,
             [self.testinv, self.testinv],
             self.ansible_playbook_cmd,

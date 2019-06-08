@@ -4,8 +4,6 @@ import glob
 from configparser import ConfigParser
 import yaml
 
-import anmad_logging
-
 def find_yaml_files(logger, directory):
     """Returns a list of files with yaml or yml extensions in a directory.
     Does not recurse into subdirectories."""
@@ -30,7 +28,7 @@ def verify_yaml_file(logger, filename):
         for yml in find_yaml_files(logger, filename):
             if not verify_yaml_file(logger, yml):
                 return False
-    except:
+    except yaml.parser.ParserError:
         return False
     return True
 
@@ -39,7 +37,7 @@ def verify_config_file(filename):
     try:
         config = ConfigParser()
         config.read(filename)
-    except:
+    except config.configparser.Error:
         return False
     return True
 

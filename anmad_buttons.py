@@ -4,7 +4,7 @@ import datetime
 import os
 from flask import Flask, render_template, redirect, abort
 
-import anmad_button_funcs
+import anmad_buttonfuncs
 
 APP = Flask(__name__)
 BASEURL = "/"
@@ -96,7 +96,9 @@ def runall():
 @APP.route(BASEURL + 'playbooks/<path:playbook>')
 def configuredplaybook(playbook):
     """Runs one playbook, if its one of the configured ones."""
-    anmad_button_funcs.oneplaybook(playbook, anmad_button_funcs.buttonlist(ARGS.pre_run_playbooks, ARGS.playbooks))
+    anmad_button_funcs.oneplaybook(
+        playbook,
+        anmad_button_funcs.buttonlist(ARGS.pre_run_playbooks, ARGS.playbooks))
     LOGGER.debug("Redirecting to control page")
     return redirect(BASEURL)
 

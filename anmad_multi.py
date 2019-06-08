@@ -1,21 +1,20 @@
 """Functions to check / run ansible playbooks."""
 import os
 from multiprocessing import Pool
-import subprocess
 
 import anmad_yaml
 import anmad_playbook
 
-class ansibleMulti:
+class AnmadMulti:
     """Anmad Multi inventory / playbook class. Accepts a list of inventories.
     Multi playbooks will run against the first inventory in the list."""
 
 
     def __init__(self,
-            logger,
-            inventories,
-            ansible_playbook_cmd,
-            vault_password_file=None):
+                 logger,
+                 inventories,
+                 ansible_playbook_cmd,
+                 vault_password_file=None):
         """Init ansibleSyntaxCheck."""
         self.logger = logger
         if isinstance(inventories, str):
@@ -25,7 +24,7 @@ class ansibleMulti:
         self.maininventory = inventories[0]
         self.ansible_playbook_cmd = ansible_playbook_cmd
         self.vault_password_file = vault_password_file
-        self.concurrency = concurrency=os.cpu_count()
+        self.concurrency = os.cpu_count()
 
     def syntax_check_one_play_many_inv(self, playbook):
         """Check a single playbook against all inventories.
@@ -54,9 +53,9 @@ class ansibleMulti:
                 my_inventory,
                 self.ansible_playbook_cmd,
                 self.vault_password_file)
-            if playbookobject.syncheck_playbook(playbook) is not 0:
+            if playbookobject.syncheck_playbook(playbook) != 0:
                 return 3
-        # if none of the above return statements happen, then syntax checks 
+        # if none of the above return statements happen, then syntax checks
         # passed and we can return 0 to the caller.
         return 0
 
@@ -71,7 +70,7 @@ class ansibleMulti:
             self.maininventory,
             self.ansible_playbook_cmd,
             self.vault_password_file)
-        
+
         output = []
         pool = Pool(self.concurrency)
         if syncheck:
@@ -106,7 +105,7 @@ class ansibleMulti:
             anmad_yaml.find_yaml_files(self.logger, check_dir))
         return problemcount
 
-    def runplaybooks(self, listofplaybooks): 
+    def runplaybooks(self, listofplaybooks):
         """Run a list of ansible playbooks and wait for them to finish.
         Return number of nonzero exit codes (so 0 = success)."""
         problemcount = self.concurrentrun(listofplaybooks)

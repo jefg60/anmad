@@ -4,12 +4,14 @@ import subprocess
 
 class ansibleRun:
     """Ansible-playbook operations class."""
+
+
     def __init__(self,                                                         
             logger,                                                            
             inventory,                                                         
             ansible_playbook_cmd,                                              
             vault_password_file=None):                                         
-        """Init SyntaxCheckWorker."""                                          
+        """Init ansibleRun."""
         self.logger = logger                                                   
         self.inventory = inventory                                             
         self.ansible_playbook_cmd = [ansible_playbook_cmd]

@@ -16,12 +16,14 @@ class TestSyntaxCheck(unittest.TestCase):
     def setUp(self):
         """Set up syntax check tests."""
         self.logger = logging.getLogger(os.path.basename(main.__file__))
+        # Change logging.ERROR to INFO, to see log messages during testing.
         self.logger.setLevel(logging.ERROR)
         self.testplay = 'samples/deploy.yaml'
         self.badplay = 'samples/deploy3.yaml'
         self.testinv = 'samples/inventory-internal'
         self.ansible_playbook_cmd = './venv/bin/ansible-playbook'
         self.vaultpw = './vaultpassword'
+        self.checkdir = './samples'
 
     def test_one_play_many_inv(self):
         """Test syntax_check_one_play_many_inv func with single inv
@@ -66,6 +68,16 @@ class TestSyntaxCheck(unittest.TestCase):
             self.testinv,
             self.ansible_playbook_cmd)
         self.assertNotEqual(output, 0)
+
+    def test_syncheck_dir(self):
+        """Test syncheck_dir func against samples/. should return 2
+        because there are 2 bad playbooks in there."""
+        output = anmad_syntaxchecks.syncheck_dir(
+            self.logger,
+            self.testinv,
+            self.ansible_playbook_cmd,
+            self.checkdir)
+        self.assertEqual(output, 2)
 
 
 if __name__ == '__main__':

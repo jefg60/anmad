@@ -75,14 +75,25 @@ def checkplaybooks(
     return len(output) - output.count(0)
 
 ##############################################################################
-def syntax_check_dir(logger, check_dir):
-    """Check all YAML in a directory for ansible syntax."""
+def syncheck_dir(logger,
+        inventory,
+        ansible_playbook_cmd,
+        check_dir,
+        vault_password_file=None):
+    """Check all YAML in a directory for ansible syntax.
+    Return number of files failing syntax check (0 = success)
+    and/or 255 if dir not found"""
     if not os.path.exists(check_dir):
         logger.error("%s cannot be found", str(check_dir))
-        return check_dir
+        return 255
 
-    problemlist = checkplaybooks(anmad_yaml.find_yaml_files(check_dir))
-    return problemlist
+    problemcount = checkplaybooks(
+        logger,
+        anmad_yaml.find_yaml_files(logger, check_dir),
+        inventory,
+        ansible_playbook_cmd,
+        vault_password_file)
+    return problemcount
 
 
 def run_one_playbook(logger, my_playbook):

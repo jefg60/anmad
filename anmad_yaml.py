@@ -19,6 +19,7 @@ def find_yaml_files(logger, directory):
 
 def verify_yaml_file(logger, filename):
     """Try to read yaml safely, return False if not valid"""
+    filename = os.path.abspath(filename)
     try:
         with open(filename, 'r') as my_filename:
             yaml.safe_load(my_filename)

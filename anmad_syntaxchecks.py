@@ -4,10 +4,11 @@ from multiprocessing import Pool
 import subprocess
 
 import anmad_yaml
+import anmad_playbook
 
 def syntax_check_one_play_many_inv(
         logger,
-        my_playbook,
+        playbook,
         inventories,
         ansible_playbook_cmd,
         vault_password_file=None):
@@ -21,13 +22,11 @@ def syntax_check_one_play_many_inv(
     # if so.
     if isinstance(inventories, str):
         inventories = [inventories]
-    my_playbook = os.path.abspath(my_playbook)
-    if not anmad_yaml.verify_yaml_file(logger, my_playbook):
+    if not anmad_yaml.verify_yaml_file(logger, playbook):
         logger.error(
-            "Unable to verify yaml file %s", str(my,playbook))
+            "Unable to verify yaml file %s", str(playbook))
         return 1
     for my_inventory in inventories:
-        my_inventory = os.path.abspath(my_inventory)
         if not anmad_yaml.verify_yaml_file(logger, my_inventory):
             # check the 'bad yaml' isnt actually a valid ini style inventory,
             # before reporting it bad.
@@ -36,41 +35,13 @@ def syntax_check_one_play_many_inv(
                     "Unable to verify file %s", str(my_inventory))
                 return 2
 
-        if syntax_check_play_inv(
-            logger,
-            my_playbook,
-            my_inventory,
-            ansible_playbook_cmd,
-            vault_password_file) is not 0:
+        playbookobject = anmad_playbook.ansibleRun(
+            logger, my_inventory, ansible_playbook_cmd, vault_password_file)
+        if playbookobject.syncheck_playbook(playbook) is not 0:
             return 3
     # if none of the above return statements happen, then syntax checks 
     # passed and we can return 0 to the caller.
     return 0
-
-class SyntaxCheckPool:
-    """Wrapper for syntax_check_play_inv to map args to it."""
-    def __init__(self,
-            logger,
-            inventory,
-            ansible_playbook_cmd,
-            vault_password_file=None):
-        """Init SyntaxCheckWorker."""
-        self.logger = logger
-        self.inventory = inventory
-        self.ansible_playbook_cmd = ansible_playbook_cmd
-        self.vault_password_file = vault_password_file
-
-    def worker(self, playbook):
-        """Syntax check a list of playbooks concurrently against one inv.
-        Return number of failed syntax checks (so 0 = success)."""
-        output = syntax_check_play_inv(
-            self.logger,
-            playbook,
-            self.inventory,
-            self.ansible_playbook_cmd,
-            self.vault_password_file)
-        return output
-
 
 def checkplaybooks(
         logger,
@@ -83,7 +54,7 @@ def checkplaybooks(
     Return number of failed syntax checks (so 0 = success)."""
     if isinstance(listofplaybooks, str):
         listofplaybooks = [listofplaybooks]
-    syntax_check_pool = SyntaxCheckPool(
+    syntax_check_pool = anmad_playbook.ansibleRun(
         logger,
         inventory,
         ansible_playbook_cmd,
@@ -92,7 +63,7 @@ def checkplaybooks(
     output = []
 
     pool = Pool(concurrency)
-    output = pool.map(syntax_check_pool.worker, listofplaybooks)
+    output = pool.map(syntax_check_pool.syncheck_playbook, listofplaybooks)
     pool.close()
     pool.join()
 

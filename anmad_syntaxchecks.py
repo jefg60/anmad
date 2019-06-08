@@ -24,6 +24,7 @@ class ansibleSyntaxCheck:
         self.maininventory = inventories[0]
         self.ansible_playbook_cmd = ansible_playbook_cmd
         self.vault_password_file = vault_password_file
+        self.concurrency = concurrency=os.cpu_count()
 
     def syntax_check_one_play_many_inv(self, playbook):
         """Check a single playbook against all inventories.
@@ -58,21 +59,24 @@ class ansibleSyntaxCheck:
         # passed and we can return 0 to the caller.
         return 0
 
-    def checkplaybooks(self, listofplaybooks, concurrency=os.cpu_count()):
-        """Syntax check a list of playbooks concurrently against one inv.
-        Return number of failed syntax checks (so 0 = success)."""
+    def concurrentrun(self, listofplaybooks, syncheck=False):
+        """Concurrently run a list of ansible playbooks
+        against a single inventory.
+        Return number of nonzero exit codes (so 0 = success)."""
         if isinstance(listofplaybooks, str):
             listofplaybooks = [listofplaybooks]
-        syntax_check_pool = anmad_playbook.ansibleRun(
+        playbookobj = anmad_playbook.ansibleRun(
             self.logger,
             self.maininventory,
             self.ansible_playbook_cmd,
             self.vault_password_file)
         
         output = []
-
-        pool = Pool(concurrency)
-        output = pool.map(syntax_check_pool.syncheck_playbook, listofplaybooks)
+        pool = Pool(self.concurrency)
+        if syncheck:
+            output = pool.map(playbookobj.syncheck_playbook, listofplaybooks)
+        else:
+            output = pool.map(playbookobj.run_playbook, listofplaybooks)
         pool.close()
         pool.join()
 
@@ -82,6 +86,11 @@ class ansibleSyntaxCheck:
         # otherwise, subtract number of passed (0) values from the list length,
         # to get the number of failed checks.
         return len(output) - output.count(0)
+
+    def checkplaybooks(self, listofplaybooks):
+        """Syntax check a list of playbooks concurrently against one inv.
+        Return number of failed syntax checks (so 0 = success)."""
+        return self.concurrentrun(listofplaybooks, syncheck=True)
 
     def syncheck_dir(self, check_dir):
         """Check all YAML in a directory for ansible syntax.
@@ -95,41 +104,7 @@ class ansibleSyntaxCheck:
             anmad_yaml.find_yaml_files(self.logger, check_dir))
         return problemcount
 
-##############################################################################
-
-def run_one_playbook(logger, my_playbook):
-    """Run exactly one ansible playbook. Don't call this
-    directly. Instead, call one of the multi-playbook funcs with a list of
-    one playbook eg [playbook]."""
-
-    my_playbook = os.path.abspath(my_playbook)
-    logger.info(
-        "Attempting to run ansible-playbook --inventory %s %s",
-        str(MAININVENTORY), str(my_playbook))
-    ret = subprocess.call(
-        [ANSIBLE_PLAYBOOK_CMD,
-         '--inventory', MAININVENTORY,
-         '--vault-password-file', ARGS.vault_password_file,
-         my_playbook])
-
-    if ret == 0:
-        logger.info(
-            "ansible-playbook %s return code: %s",
-            str(my_playbook), str(ret))
-        return ret
-
-    logger.error(
-        "ansible-playbook %s did not complete, return code: %s",
-        str(my_playbook), str(ret))
-    return ret
-
-
-def runplaybooks(listofplaybooks):
-    """Run a list of ansible playbooks and wait for them to finish."""
-
-    pool = Pool(ARGS.concurrency)
-    ret = pool.map(run_one_playbook, listofplaybooks)
-    pool.close()
-    pool.join()
-
-    return ret
+    def runplaybooks(self, listofplaybooks): 
+        """Run a list of ansible playbooks and wait for them to finish.
+        Return number of nonzero exit codes (so 0 = success)."""
+        return self.concurrentrun(listofplaybooks)

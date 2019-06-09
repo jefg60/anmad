@@ -118,6 +118,12 @@ class TestButtonApp(unittest.TestCase):
         self.assertEqual(len(self.queues.queue_list), 0)
         self.assertEqual(len(self.queues.prequeue_list), 0)
 
+    def test_ara(self):
+        """Test ara button."""
+        response = self.app.get('/ara')
+        self.assertEqual(response.status, '302 FOUND')
+        self.assertIn('ara', str(response.data))
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -53,7 +53,10 @@ class TestButtonApp(unittest.TestCase):
         rv = self.app.get('/')
         self.assertEqual(rv.status, '200 OK')
         self.assertIn('0.15.0', str(rv.data))
+        self.assertIn('Other Playbooks', str(rv.data))
+        self.assertIn('Queued Jobs', str(rv.data))
         self.assertIn(self.pre_run_playbooks[0], str(rv.data))
+        self.assertIn(self.playbooks[1], str(rv.data))
 
 
 if __name__ == '__main__':

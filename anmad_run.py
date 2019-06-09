@@ -3,41 +3,43 @@
 import os
 import sys
 
-import anmad_syntaxchecks
+import anmad_multi
 import anmad_logging
+import anmad_args
 import anmad_ssh
+import anmad_queues
+import anmad_version
 
-QUEUES = anmad_logging.QUEUES
-ARGS = anmad_logging.ARGS
-LOGGER = anmad_logging.LOGGER
-VERSION = anmad_logging.VERSION
-MAININVENTORY = anmad_logging.MAININVENTORY
-PRERUN_LIST = anmad_logging.PRERUN_LIST
-RUN_LIST = anmad_logging.RUN_LIST
-DEFAULT_CONFIGFILE = anmad_logging.DEFAULT_CONFIGFILE
-ANSIBLE_PLAYBOOK_CMD = anmad_logging.ANSIBLE_PLAYBOOK_CMD
+QUEUES = anmad_queues.AnmadQueues('prerun', 'playbooks', 'info')
+ARGS = anmad_args.parse_args()
+LOGGER = anmad_logging.logsetup()
+MULTIOBJ = anmad_multi.AnmadMulti(
+    LOGGER,
+    ARGS.inventories,
+    ARGS.ansible_playbook_cmd,
+    ARGS.vault_password_file)
 
-LOGGER.info("anmad_run version: %s starting", str(VERSION))
+LOGGER.info("anmad_run version: %s starting", str(anmad_version.VERSION))
 LOGGER.debug("config file: %s",
              str(ARGS.configfile)
              if ARGS.configfile is not None
-             else str(DEFAULT_CONFIGFILE))
+             else str(ARGS.default_configfile))
 LOGGER.debug("vault password file: %s", str(ARGS.vault_password_file))
 LOGGER.debug("ssh id: %s", str(ARGS.ssh_id))
 LOGGER.debug("venv: %s", str(ARGS.venv))
-LOGGER.debug("ansible_playbook_cmd: %s", str(ANSIBLE_PLAYBOOK_CMD))
+LOGGER.debug("ansible_playbook_cmd: %s", str(ARGS.ansible_playbook_cmd))
 LOGGER.debug("inventorylist: %s", " ".join(ARGS.inventories))
-LOGGER.debug("maininventory: %s", str(MAININVENTORY))
+LOGGER.debug("maininventory: %s", str(ARGS.maininventory))
 if ARGS.pre_run_playbooks:
     LOGGER.debug("pre_run_playbooks: %s",
                  " ".join(ARGS.pre_run_playbooks))
     LOGGER.debug("PRERUN_LIST: %s",
-                 " ".join(PRERUN_LIST))
+                 " ".join(ARGS.prerun_list))
 LOGGER.debug("playbooks: %s", " ".join(ARGS.playbooks))
-LOGGER.debug("RUN_LIST: %s", " ".join(RUN_LIST))
+LOGGER.debug("RUN_LIST: %s", " ".join(ARGS.run_list))
 LOGGER.debug("playbook_root_dir: %s", str(ARGS.playbook_root_dir))
 
-anmad_ssh.add_ssh_key_to_agent(ARGS.ssh_id)
+anmad_ssh.add_ssh_key_to_agent(LOGGER, ARGS.ssh_id, ARGS.ssh_askpass)
 
 for playbookjob in QUEUES.queue.consume():
     LOGGER.info("Starting to consume playbooks queue...")
@@ -54,7 +56,7 @@ for playbookjob in QUEUES.queue.consume():
                 LOGGER.info(
                     " Found a pre-run queue item: %s", str(preQ_job))
                 # statements to process pre-Q job
-                anmad_syntaxchecks.runplaybooks(preQ_job)
+                MULTIOBJ.runplaybooks(preQ_job)
 
             # if it wasnt a list, but something is there, something is wrong
             elif preQ_job is not None:
@@ -79,15 +81,12 @@ for playbookjob in QUEUES.queue.consume():
         LOGGER.info('Running job from playqueue: %s', str(playbookjob))
         #Syntax check playbooks, or all playbooks in syntax_check_dir
         if ARGS.syntax_check_dir is None:
-            problemlist = anmad_syntaxchecks.checkplaybooks(playbookjob)
+            problemcount = MULTIOBJ.checkplaybooks(playbookjob)
         else:
-            problemlist = anmad_syntaxchecks.syntax_check_dir(
+            problemcount = MULTIOBJ.syncheck_dir(
                 ARGS.syntax_check_dir)
 
-        if  ''.join(problemlist):
-            LOGGER.warning(
-                "Playbooks/inventories that failed syntax check: "
-                "%s", " \n".join(problemlist))
+        if problemcount != 0:
             LOGGER.warning(
                 "Refusing to queue requested playbooks until "
                 "syntax checks pass")
@@ -96,7 +95,7 @@ for playbookjob in QUEUES.queue.consume():
         # if we get to here syntax checks passed. Run the job
         LOGGER.info(
             "Running playbooks %s", str(playbookjob))
-        anmad_syntaxchecks.runplaybooks(playbookjob)
+        MULTIOBJ.runplaybooks(playbookjob)
         LOGGER.info(
             "Continuing to process items in playbooks queue...")
 

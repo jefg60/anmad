@@ -78,5 +78,13 @@ class TestButtonApp(unittest.TestCase):
         self.assertIn(self.version, str(response.data))
         self.assertIn("deploy9.yml", str(response.data))
 
+    def test_clearqueues_button(self):
+        """Test clearqueues button."""
+        response = self.app.get('/clearqueues')
+        self.assertEqual(response.status, '302 FOUND')
+        self.assertEqual(len(self.queues.queue_list), 0)
+        self.assertEqual(len(self.queues.prequeue_list), 0)
+
+
 if __name__ == '__main__':
     unittest.main()

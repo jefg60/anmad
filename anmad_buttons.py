@@ -106,6 +106,7 @@ def configuredplaybook(playbook):
         playbook,
         anmad_buttonfuncs.buttonlist(ARGS['pre_run_playbooks'], ARGS['playbooks']),
         ARGS['playbook_root_dir'])
+    QUEUES.update_job_lists()
     LOGGER.debug("Redirecting to control page")
     return redirect(BASEURL)
 

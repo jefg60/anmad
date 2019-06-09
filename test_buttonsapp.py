@@ -64,13 +64,22 @@ class TestButtonApp(unittest.TestCase):
         self.assertIn(self.pre_run_playbooks[0], str(response.data))
         self.assertIn(self.playbooks[1], str(response.data))
 
-    def test_logpage(self):
+    def test_logpage_playbook_button(self):
         """Test log page."""
         response = self.app.get('/log')
         self.assertEqual(response.status, '200 OK')
         self.assertIn(self.version, str(response.data))
         self.assertIn("Back to main interface", str(response.data))
         self.assertIn("No messages found yet", str(response.data))
+        self.assertNotIn("deploy4.yaml", str(response.data))
+        response = self.app.get('/playbooks/deploy4.yaml')
+        self.assertEqual(response.status, '302 FOUND')
+        self.assertNotEqual(len(self.queues.queue_list), 0)
+        self.assertEqual(len(self.queues.prequeue_list), 0)
+        response = self.app.get('/clearqueues')
+        self.assertEqual(response.status, '302 FOUND')
+        self.assertEqual(len(self.queues.queue_list), 0)
+        self.assertEqual(len(self.queues.prequeue_list), 0)
 
     def test_otherplays_page(self):
         """Test otherplays page."""

@@ -52,14 +52,14 @@ class TestButtonApp(unittest.TestCase):
 
     def test_mainpage(self):
         """Test mainpage renders as expected."""
-        rv = self.app.get('/')
-        self.assertEqual(rv.status, '200 OK')
-        self.assertIn('0.15.0', str(rv.data))
-        self.assertIn('Other Playbooks', str(rv.data))
-        self.assertIn('Queued Jobs', str(rv.data))
-        self.assertIn('More logs...', str(rv.data))
-        self.assertIn(self.pre_run_playbooks[0], str(rv.data))
-        self.assertIn(self.playbooks[1], str(rv.data))
+        response = self.app.get('/')
+        self.assertEqual(response.status, '200 OK')
+        self.assertIn('0.15.0', str(response.data))
+        self.assertIn('Other Playbooks', str(response.data))
+        self.assertIn('Queued Jobs', str(response.data))
+        self.assertIn('More logs...', str(response.data))
+        self.assertIn(self.pre_run_playbooks[0], str(response.data))
+        self.assertIn(self.playbooks[1], str(response.data))
 
     def test_logpage(self):
         """Test log page."""

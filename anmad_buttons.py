@@ -150,4 +150,3 @@ if PROCESS_NAME != os.path.basename(main.__file__) or __name__ == "__main__":
 if __name__ == "__main__":
     if not anmad_args.parse_args().dryrun:
         APP.run(host='0.0.0.0', port=9999, debug=True)
-        exit()

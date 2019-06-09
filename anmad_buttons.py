@@ -3,8 +3,8 @@
 import datetime
 import os
 import mod_wsgi
-import __main__ as main
 from flask import Flask, render_template, redirect
+import __main__ as main
 
 import anmad_buttonfuncs
 import anmad_queues
@@ -30,8 +30,8 @@ def mainpage():
         'preq_message': QUEUES.prequeue_list,
         'queue_message': QUEUES.queue_list,
         'messages': QUEUES.info_list[0:3],
-        'playbooks': ARGS.playbooks,
-        'prerun': ARGS.pre_run_playbooks,
+        'playbooks': ARGS['playbooks'],
+        'prerun': ARGS['pre_run_playbooks'],
         }
     LOGGER.debug("Rendering control page")
     return render_template('main.html',
@@ -61,7 +61,7 @@ def otherplaybooks():
         'title' : 'anmad others',
         'time': time_string,
         'version': VERSION,
-        'extras': anmad_buttonfuncs.extraplays(LOGGER, ARGS.playbook_root_dir, ARGS.playbooks)
+        'extras': anmad_buttonfuncs.extraplays(LOGGER, ARGS['playbook_root_dir'], ARGS['playbooks'])
         }
     LOGGER.debug("Rendering other playbooks page")
     return render_template('other.html', **template_data)
@@ -78,19 +78,19 @@ def clearqueues():
 @APP.route(BASEURL + "runall")
 def runall():
     """Run all playbooks after verifying that files exist."""
-    problemfile = anmad_yaml.list_missing_files(LOGGER, PRERUN_LIST)
+    problemfile = anmad_yaml.list_missing_files(LOGGER, ARGS['prerun_list'])
     if problemfile:
         LOGGER.info("Invalid files: %s", str(problemfile))
         return redirect(BASEURL)
 
-    if ARGS.pre_run_playbooks is not None:
-        for play in PRERUN_LIST:
+    if ARGS['pre_run_playbooks'] is not None:
+        for play in ARGS['prerun_list']:
             if [play] not in QUEUES.prequeue_list:
                 LOGGER.info("Pre-Queueing %s", str(play))
                 QUEUES.prequeue_job(play)
 
-    LOGGER.info("Queueing %s", str(RUN_LIST))
-    QUEUES.queue_job(RUN_LIST)
+    LOGGER.info("Queueing %s", str(ARGS['run_list']))
+    QUEUES.queue_job(ARGS['run_list'])
 
     LOGGER.debug("Redirecting to control page")
     return redirect(BASEURL)
@@ -103,8 +103,8 @@ def configuredplaybook(playbook):
         LOGGER,
         QUEUES,
         playbook,
-        anmad_buttonfuncs.buttonlist(ARGS.pre_run_playbooks, ARGS.playbooks),
-        ARGS.playbook_root_dir)
+        anmad_buttonfuncs.buttonlist(ARGS['pre_run_playbooks'], ARGS['playbooks']),
+        ARGS['playbook_root_dir'])
     LOGGER.debug("Redirecting to control page")
     return redirect(BASEURL)
 
@@ -117,9 +117,9 @@ def otherplaybook(playbook):
         QUEUES,
         playbook,
         anmad_buttonfuncs.extraplays(
-            LOGGER, ARGS.playbook_root_dir,
-            ARGS.playbooks, ARGS.pre_run_playbooks),
-        ARGS.playbook_root_dir)
+            LOGGER, ARGS['playbook_root_dir'],
+            ARGS['playbooks'], ARGS['pre_run_playbooks']),
+        ARGS['playbook_root_dir'])
     LOGGER.debug("Redirecting to others page")
     return redirect(BASEURL + 'otherplays')
 
@@ -128,7 +128,7 @@ def otherplaybook(playbook):
 def ara_redirect():
     """Redirect to ARA reports page."""
     LOGGER.debug("Redirecting to ARA reports page")
-    return redirect(ARGS.ara_url)
+    return redirect(ARGS['ara_url'])
 
 # Try accessing mod_wsgi process group, to see if we are running in wsgi.
 try:
@@ -136,28 +136,15 @@ try:
 except AttributeError:
     PROCESS_NAME = os.path.basename(main.__file__)
 
-class AnmadButtons:
-    """AnmadButtons class to hold vars."""
-
-
-    def __init__(
-            self,
-            ara_url,
-            playbook_root_dir,
-            playbooks,
-            pre_run_playbooks):
-        self.ara_url = ara_url
-        self.playbook_root_dir = playbook_root_dir
-        self.playbooks = playbooks
-        self.pre_run_playbooks = pre_run_playbooks
-
 # if wsgi process or cmd line run, set args
 if PROCESS_NAME != os.path.basename(main.__file__) or __name__ == "__main__":
-    ARGS = AnmadButtons(
-        anmad_args.parse_args().ara_url,
-        anmad_args.parse_args().playbook_root_dir,
-        anmad_args.parse_args().playbooks,
-        anmad_args.parse_args().pre_run_playbooks)
+    ARGS = {
+        'ara_url': anmad_args.parse_args().ara_url,
+        'playbook_root_dir': anmad_args.parse_args().playbook_root_dir,
+        'playbooks': anmad_args.parse_args().playbooks,
+        'pre_run_playbooks': anmad_args.parse_args().pre_run_playbooks,
+        'prerun_list': anmad_args.parse_args().prerun_list,
+        'run_list': anmad_args.parse_args().run_list}
     LOGGER = anmad_logging.logsetup()
 
 if __name__ == "__main__":

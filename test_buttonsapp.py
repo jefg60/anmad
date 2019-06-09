@@ -68,6 +68,8 @@ class TestButtonApp(unittest.TestCase):
         response = self.app.get('/log')
         self.assertEqual(response.status, '200 OK')
         self.assertIn(self.version, str(response.data))
+        self.assertIn("Back to main interface", str(response.data))
+        self.assertIn("[INFO]", str(response.data))
 
 
 if __name__ == '__main__':

@@ -65,7 +65,7 @@ class TestButtonApp(unittest.TestCase):
         self.assertIn(self.playbooks[1], str(response.data))
 
     def test_logpage_playbook_button(self):
-        """Test log page."""
+        """Test log page before / after playbook/deploy4."""
         response = self.app.get('/log')
         self.assertEqual(response.status, '200 OK')
         self.assertIn(self.version, str(response.data))
@@ -73,6 +73,25 @@ class TestButtonApp(unittest.TestCase):
         self.assertIn("No messages found yet", str(response.data))
         self.assertNotIn("deploy4.yaml", str(response.data))
         response = self.app.get('/playbooks/deploy4.yaml')
+        self.assertEqual(response.status, '302 FOUND')
+        response = self.app.get('/playbooks/deploy7.yaml')
+        self.assertEqual(response.status, '404 NOT FOUND')
+        self.assertNotEqual(len(self.queues.queue_list), 0)
+        self.assertEqual(len(self.queues.prequeue_list), 0)
+        response = self.app.get('/clearqueues')
+        self.assertEqual(response.status, '302 FOUND')
+        self.assertEqual(len(self.queues.queue_list), 0)
+        self.assertEqual(len(self.queues.prequeue_list), 0)
+
+    def test_logpage_otherplaybook_button(self):
+        """Test log page before / after playbook/deploy9."""
+        response = self.app.get('/log')
+        self.assertEqual(response.status, '200 OK')
+        self.assertIn(self.version, str(response.data))
+        self.assertIn("Back to main interface", str(response.data))
+        self.assertIn("No messages found yet", str(response.data))
+        self.assertNotIn("deploy4.yaml", str(response.data))
+        response = self.app.get('/otherplaybooks/deploy8.yaml')
         self.assertEqual(response.status, '302 FOUND')
         self.assertNotEqual(len(self.queues.queue_list), 0)
         self.assertEqual(len(self.queues.prequeue_list), 0)

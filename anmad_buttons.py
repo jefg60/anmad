@@ -123,6 +123,7 @@ def otherplaybook(playbook):
             ARGS['playbooks'], ARGS['pre_run_playbooks']),
         ARGS['playbook_root_dir'])
     LOGGER.debug("Redirecting to others page")
+    QUEUES.update_job_lists()
     return redirect(BASEURL + 'otherplays')
 
 

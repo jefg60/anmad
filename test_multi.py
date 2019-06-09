@@ -11,6 +11,7 @@ import anmad_multi
 
 class TestMulti(unittest.TestCase):
     """Tests for anmad_multi module."""
+    # pylint: disable=too-many-instance-attributes
 
 
     def setUp(self):

@@ -13,7 +13,7 @@ import anmad_queues
 import anmad_args
 
 class TestButtonApp(unittest.TestCase):
-    """Tests for anmad_buttons module."""
+    """Tests for anmad_buttons APP."""
 
     def setUp(self):
         self.playbooks = ['deploy.yaml', 'deploy2.yaml']
@@ -52,6 +52,8 @@ class TestButtonApp(unittest.TestCase):
         """Test mainpage renders as expected."""
         rv = self.app.get('/')
         self.assertEqual(rv.status, '200 OK')
+        self.assertIn('0.15.0', str(rv.data))
+        self.assertIn(self.pre_run_playbooks[0], str(rv.data))
 
 
 if __name__ == '__main__':

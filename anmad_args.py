@@ -146,11 +146,6 @@ def parse_args():
     myargs.playbooks = list(filter(None, myargs.playbooks))
     myargs.prerun_list = None
 
-    def prepend_rootdir(myrootdir, mylist):
-        """Prepends a path to each item in a list."""
-        ret = [myrootdir + '/' + str(x) for x in mylist]
-        return ret
-
     if myargs.pre_run_playbooks:
         myargs.pre_run_playbooks = list(filter(None, myargs.pre_run_playbooks))
         myargs.prerun_list = prepend_rootdir(myargs.playbook_root_dir, myargs.pre_run_playbooks)
@@ -166,6 +161,12 @@ def parse_args():
     myargs.version = __version__
 
     return myargs
+
+def prepend_rootdir(myrootdir, mylist):
+    """Prepends a path to each item in a list."""
+    ret = [myrootdir + '/' + str(x) for x in mylist]
+    return ret
+
 
 if __name__ == '__main__':
     ARGS = parse_args()

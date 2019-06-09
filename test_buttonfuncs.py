@@ -13,6 +13,7 @@ import anmad_queues
 
 class TestButtonFuncs(unittest.TestCase):
     """Tests for anmad_buttons module."""
+     # pylint: disable=duplicate-code
 
     def setUp(self):
         self.playbooks = ['deploy.yaml', 'deploy2.yaml']

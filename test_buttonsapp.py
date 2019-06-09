@@ -15,6 +15,7 @@ import anmad_version
 class TestButtonApp(unittest.TestCase):
     """Tests for anmad_buttons APP."""
     # pylint: disable=too-many-instance-attributes
+    # pylint: disable=duplicate-code
 
     def setUp(self):
         self.playbooks = ['deploy.yaml', 'deploy2.yaml']

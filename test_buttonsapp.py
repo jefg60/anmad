@@ -42,6 +42,7 @@ class TestButtonApp(unittest.TestCase):
             'run_list': anmad_args.prepend_rootdir(
                 self.playbookroot, self.playbooks)}
         anmad_buttons.LOGGER = self.logger
+        anmad_buttons.QUEUES = self.queues
 
 
     def tearDown(self):
@@ -69,7 +70,7 @@ class TestButtonApp(unittest.TestCase):
         self.assertEqual(response.status, '200 OK')
         self.assertIn(self.version, str(response.data))
         self.assertIn("Back to main interface", str(response.data))
-        self.assertIn("[INFO]", str(response.data))
+        self.assertIn("No messages found yet", str(response.data))
 
     def test_otherplays_page(self):
         """Test otherplays page."""
@@ -78,8 +79,12 @@ class TestButtonApp(unittest.TestCase):
         self.assertIn(self.version, str(response.data))
         self.assertIn("deploy9.yml", str(response.data))
 
-    def test_clearqueues_button(self):
+    def test_queues(self):
         """Test clearqueues button."""
+        response = self.app.get('/runall')
+        self.assertEqual(response.status, '302 FOUND')
+        self.assertNotEqual(len(self.queues.queue_list), 0)
+        self.assertNotEqual(len(self.queues.prequeue_list), 0)
         response = self.app.get('/clearqueues')
         self.assertEqual(response.status, '302 FOUND')
         self.assertEqual(len(self.queues.queue_list), 0)

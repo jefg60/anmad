@@ -15,7 +15,6 @@ import anmad_yaml
 
 APP = Flask(__name__)
 BASEURL = "/"
-QUEUES = anmad_queues.AnmadQueues('prerun', 'playbooks', 'info')
 VERSION = anmad_version.VERSION
 
 @APP.route(BASEURL)
@@ -72,6 +71,7 @@ def clearqueues():
     """Clear redis queues."""
     LOGGER.info("Clear redis queues requested.")
     QUEUES.clear()
+    QUEUES.update_job_lists()
     return redirect(BASEURL)
 
 
@@ -91,6 +91,7 @@ def runall():
 
     LOGGER.info("Queueing %s", str(ARGS['run_list']))
     QUEUES.queue_job(ARGS['run_list'])
+    QUEUES.update_job_lists()
 
     LOGGER.debug("Redirecting to control page")
     return redirect(BASEURL)
@@ -136,7 +137,7 @@ try:
 except AttributeError:
     PROCESS_NAME = os.path.basename(main.__file__)
 
-# if wsgi process or cmd line run, set args
+# if wsgi process or cmd line run, set constants
 if PROCESS_NAME != os.path.basename(main.__file__) or __name__ == "__main__":
     ARGS = {
         'ara_url': anmad_args.parse_args().ara_url,
@@ -146,6 +147,7 @@ if PROCESS_NAME != os.path.basename(main.__file__) or __name__ == "__main__":
         'prerun_list': anmad_args.parse_args().prerun_list,
         'run_list': anmad_args.parse_args().run_list}
     LOGGER = anmad_logging.logsetup()
+    QUEUES = anmad_queues.AnmadQueues('prerun', 'playbooks', 'info')
 
 if __name__ == "__main__":
     if not anmad_args.parse_args().dryrun:

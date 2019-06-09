@@ -55,6 +55,7 @@ class TestButtonApp(unittest.TestCase):
         self.assertIn('0.15.0', str(rv.data))
         self.assertIn('Other Playbooks', str(rv.data))
         self.assertIn('Queued Jobs', str(rv.data))
+        self.assertIn('More logs...', str(rv.data))
         self.assertIn(self.pre_run_playbooks[0], str(rv.data))
         self.assertIn(self.playbooks[1], str(rv.data))
 

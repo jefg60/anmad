@@ -35,8 +35,10 @@ class TestButtonApp(unittest.TestCase):
             'playbook_root_dir': self.playbookroot,
             'playbooks': self.playbooks,
             'pre_run_playbooks': self.pre_run_playbooks,
-            'prerun_list': anmad_args.prepend_rootdir(self.playbookroot, self.pre_run_playbooks),
-            'run_list': anmad_args.prepend_rootdir(self.playbookroot, self.playbooks)}
+            'prerun_list': anmad_args.prepend_rootdir(
+                self.playbookroot, self.pre_run_playbooks),
+            'run_list': anmad_args.prepend_rootdir(
+                self.playbookroot, self.playbooks)}
         anmad_buttons.LOGGER = self.logger
 
 
@@ -58,6 +60,10 @@ class TestButtonApp(unittest.TestCase):
         self.assertIn('More logs...', str(rv.data))
         self.assertIn(self.pre_run_playbooks[0], str(rv.data))
         self.assertIn(self.playbooks[1], str(rv.data))
+
+    def test_logpage(self):
+        """Test log page."""
+        pass
 
 
 if __name__ == '__main__':

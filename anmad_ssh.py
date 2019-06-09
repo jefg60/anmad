@@ -4,21 +4,16 @@ import subprocess
 
 import ssh_agent_setup
 
-import anmad_logging
-
-ARGS = anmad_logging.ARGS
-LOGGER = anmad_logging.LOGGER
-
-def add_ssh_key_to_agent(key_file):
+def add_ssh_key_to_agent(logger, key_file, ssh_askpass=None):
     """Adds ssh key, with ssh_askpass if possible"""
-    LOGGER.info("Loading ssh key...")
+    logger.info("Loading ssh key...")
     ssh_agent_setup.setup()
     my_env = os.environ.copy()
-    if ARGS.ssh_askpass is not None:
-        my_env["SSH_ASKPASS"] = ARGS.ssh_askpass
+    if ssh_askpass is not None:
+        my_env["SSH_ASKPASS"] = ssh_askpass
         my_env["DISPLAY"] = ":0"
 
-    LOGGER.debug("environment: %s", str(my_env))
+    logger.debug("environment: %s", str(my_env))
     try:
         subprocess.run(['ssh-add', key_file],
                        env=my_env,
@@ -27,7 +22,7 @@ def add_ssh_key_to_agent(key_file):
                        stderr=subprocess.DEVNULL
                        )
     except subprocess.CalledProcessError:
-        LOGGER.exception("Exception adding ssh key, shutting down")
+        logger.exception("Exception adding ssh key, shutting down")
         raise Exception
     else:
-        LOGGER.info("SSH key loaded")
+        logger.info("SSH key loaded")

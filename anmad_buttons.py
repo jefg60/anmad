@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 """Control interface for anmad."""
 import datetime
+import os
+import mod_wsgi
+import __main__ as main
 from flask import Flask, render_template, redirect
 
 import anmad_buttonfuncs
@@ -13,11 +16,7 @@ import anmad_yaml
 APP = Flask(__name__)
 BASEURL = "/"
 QUEUES = anmad_queues.AnmadQueues('prerun', 'playbooks', 'info')
-ARGS = anmad_args.parse_args()
 VERSION = anmad_version.VERSION
-PRERUN_LIST = ARGS.prerun_list
-RUN_LIST = ARGS.run_list
-LOGGER = anmad_logging.logsetup()
 
 @APP.route(BASEURL)
 def mainpage():
@@ -131,6 +130,38 @@ def ara_redirect():
     LOGGER.debug("Redirecting to ARA reports page")
     return redirect(ARGS.ara_url)
 
+# Try accessing mod_wsgi process group, to see if we are running in wsgi.
+try:
+    PROCESS_NAME = mod_wsgi.process_group
+except AttributeError:
+    PROCESS_NAME = os.path.basename(main.__file__)
 
-if __name__ == "__main__" and not ARGS.dryrun:
-    APP.run(host='0.0.0.0', port=9999, debug=True)
+class AnmadButtons:
+    """AnmadButtons class to hold vars."""
+
+
+    def __init__(
+            self,
+            ara_url,
+            playbook_root_dir,
+            playbooks,
+            pre_run_playbooks):
+        self.ara_url = ara_url
+        self.playbook_root_dir = playbook_root_dir
+        self.playbooks = playbooks
+        self.pre_run_playbooks = pre_run_playbooks
+
+# if wsgi process or cmd line run, set args
+if PROCESS_NAME != os.path.basename(main.__file__) or __name__ == "__main__":
+    CONFIG = anmad_args.parse_args()
+    ARGS = AnmadButtons(
+        CONFIG.ara_url,
+        CONFIG.playbook_root_dir,
+        CONFIG.playbooks,
+        CONFIG.pre_run_playbooks)
+    LOGGER = anmad_logging.logsetup()
+
+if __name__ == "__main__":
+    if not CONFIG.dryrun:
+        APP.run(host='0.0.0.0', port=9999, debug=True)
+        exit()

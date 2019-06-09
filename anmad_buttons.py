@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 """Control interface for anmad."""
 import datetime
-import os
-from flask import Flask, render_template, redirect, abort
+from flask import Flask, render_template, redirect
 
 import anmad_buttonfuncs
 import anmad_queues
@@ -102,8 +101,11 @@ def runall():
 def configuredplaybook(playbook):
     """Runs one playbook, if its one of the configured ones."""
     anmad_buttonfuncs.oneplaybook(
+        LOGGER,
+        QUEUES,
         playbook,
-        anmad_buttonfuncs.buttonlist(ARGS.pre_run_playbooks, ARGS.playbooks))
+        anmad_buttonfuncs.buttonlist(ARGS.pre_run_playbooks, ARGS.playbooks),
+        ARGS.playbook_root_dir)
     LOGGER.debug("Redirecting to control page")
     return redirect(BASEURL)
 
@@ -111,7 +113,14 @@ def configuredplaybook(playbook):
 @APP.route(BASEURL + 'otherplaybooks/<path:playbook>')
 def otherplaybook(playbook):
     """Runs one playbook, if its one of the other ones found by extraplays."""
-    anmad_buttonfuncs.oneplaybook(playbook, anmad_buttonfuncs.extraplays())
+    anmad_buttonfuncs.oneplaybook(
+        LOGGER,
+        QUEUES,
+        playbook,
+        anmad_buttonfuncs.extraplays(
+            LOGGER, ARGS.playbook_root_dir,
+            ARGS.playbooks, ARGS.pre_run_playbooks),
+        ARGS.playbook_root_dir)
     LOGGER.debug("Redirecting to others page")
     return redirect(BASEURL + 'otherplays')
 

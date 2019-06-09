@@ -9,7 +9,7 @@ import __main__ as main
 
 import anmad_yaml
 
-class TestVersion(unittest.TestCase):
+class TestYaml(unittest.TestCase):
     """Tests for anmad_buttons module."""
 
     def setUp(self):

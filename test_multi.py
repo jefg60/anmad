@@ -9,7 +9,7 @@ import __main__ as main
 
 import anmad_multi
 
-class TestSyntaxCheck(unittest.TestCase):
+class TestMulti(unittest.TestCase):
     """Tests for anmad_multi module."""
 
 

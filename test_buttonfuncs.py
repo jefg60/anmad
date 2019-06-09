@@ -11,7 +11,7 @@ import __main__ as main
 import anmad_buttonfuncs
 import anmad_queues
 
-class TestVersion(unittest.TestCase):
+class TestButtonFuncs(unittest.TestCase):
     """Tests for anmad_buttons module."""
 
     def setUp(self):

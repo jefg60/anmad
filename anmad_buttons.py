@@ -5,15 +5,20 @@ import os
 from flask import Flask, render_template, redirect, abort
 
 import anmad_buttonfuncs
+import anmad_queues
+import anmad_version
+import anmad_args
+import anmad_logging
+import anmad_yaml
 
 APP = Flask(__name__)
 BASEURL = "/"
-QUEUES = anmad_yaml.QUEUES
-ARGS = anmad_yaml.ARGS
-VERSION = anmad_yaml.VERSION
-PRERUN_LIST = anmad_yaml.PRERUN_LIST
-RUN_LIST = anmad_yaml.RUN_LIST
-LOGGER = anmad_yaml.LOGGER
+QUEUES = anmad_queues.AnmadQueues('prerun', 'playbooks', 'info')
+ARGS = anmad_args.parse_args()
+VERSION = anmad_version.VERSION
+PRERUN_LIST = ARGS.prerun_list
+RUN_LIST = ARGS.run_list
+LOGGER = anmad_logging.logsetup()
 
 @APP.route(BASEURL)
 def mainpage():
@@ -58,7 +63,7 @@ def otherplaybooks():
         'title' : 'anmad others',
         'time': time_string,
         'version': VERSION,
-        'extras': anmad_button_funcs.extraplays()
+        'extras': anmad_buttonfuncs.extraplays(LOGGER, ARGS.playbook_root_dir, ARGS.playbooks)
         }
     LOGGER.debug("Rendering other playbooks page")
     return render_template('other.html', **template_data)
@@ -75,7 +80,7 @@ def clearqueues():
 @APP.route(BASEURL + "runall")
 def runall():
     """Run all playbooks after verifying that files exist."""
-    problemfile = anmad_yaml.verify_files_exist()
+    problemfile = anmad_yaml.list_missing_files(LOGGER, PRERUN_LIST)
     if problemfile:
         LOGGER.info("Invalid files: %s", str(problemfile))
         return redirect(BASEURL)
@@ -96,9 +101,9 @@ def runall():
 @APP.route(BASEURL + 'playbooks/<path:playbook>')
 def configuredplaybook(playbook):
     """Runs one playbook, if its one of the configured ones."""
-    anmad_button_funcs.oneplaybook(
+    anmad_buttonfuncs.oneplaybook(
         playbook,
-        anmad_button_funcs.buttonlist(ARGS.pre_run_playbooks, ARGS.playbooks))
+        anmad_buttonfuncs.buttonlist(ARGS.pre_run_playbooks, ARGS.playbooks))
     LOGGER.debug("Redirecting to control page")
     return redirect(BASEURL)
 
@@ -106,7 +111,7 @@ def configuredplaybook(playbook):
 @APP.route(BASEURL + 'otherplaybooks/<path:playbook>')
 def otherplaybook(playbook):
     """Runs one playbook, if its one of the other ones found by extraplays."""
-    anmad_button_funcs.oneplaybook(playbook, anmad_button_funcs.extraplays())
+    anmad_buttonfuncs.oneplaybook(playbook, anmad_buttonfuncs.extraplays())
     LOGGER.debug("Redirecting to others page")
     return redirect(BASEURL + 'otherplays')
 

@@ -71,6 +71,12 @@ class TestButtonApp(unittest.TestCase):
         self.assertIn("Back to main interface", str(response.data))
         self.assertIn("[INFO]", str(response.data))
 
+    def test_otherplays_page(self):
+        """Test otherplays page."""
+        response = self.app.get('/otherplays')
+        self.assertEqual(response.status, '200 OK')
+        self.assertIn(self.version, str(response.data))
+        self.assertIn("deploy9.yml", str(response.data))
 
 if __name__ == '__main__':
     unittest.main()

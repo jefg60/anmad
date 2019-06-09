@@ -153,15 +153,14 @@ class AnmadButtons:
 
 # if wsgi process or cmd line run, set args
 if PROCESS_NAME != os.path.basename(main.__file__) or __name__ == "__main__":
-    CONFIG = anmad_args.parse_args()
     ARGS = AnmadButtons(
-        CONFIG.ara_url,
-        CONFIG.playbook_root_dir,
-        CONFIG.playbooks,
-        CONFIG.pre_run_playbooks)
+        anmad_args.parse_args().ara_url,
+        anmad_args.parse_args().playbook_root_dir,
+        anmad_args.parse_args().playbooks,
+        anmad_args.parse_args().pre_run_playbooks)
     LOGGER = anmad_logging.logsetup()
 
 if __name__ == "__main__":
-    if not CONFIG.dryrun:
+    if not anmad_args.parse_args().dryrun:
         APP.run(host='0.0.0.0', port=9999, debug=True)
         exit()

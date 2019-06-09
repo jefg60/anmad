@@ -80,7 +80,7 @@ class TestButtonApp(unittest.TestCase):
         self.assertIn("deploy9.yml", str(response.data))
 
     def test_queues(self):
-        """Test clearqueues button."""
+        """Test runall and clearqueues button."""
         response = self.app.get('/runall')
         self.assertEqual(response.status, '302 FOUND')
         self.assertNotEqual(len(self.queues.queue_list), 0)

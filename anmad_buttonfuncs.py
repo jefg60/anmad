@@ -58,8 +58,6 @@ def service_status(service):
 
     if state_change_timestamp != '':
         state_change_timestamp = str(' since ' + lines[2])
-    if active_state == 'active' and sub_state == 'running':
-        font_color = '<span style="color:green">'
     active_state = lines[0]
     return {"service": service,
             "active_state": active_state,

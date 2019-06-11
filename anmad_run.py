@@ -80,7 +80,7 @@ for playbookjob in QUEUES.queue.consume():
 
         LOGGER.info('Running job from playqueue: %s', str(playbookjob))
         #Syntax check playbooks, or all playbooks in syntax_check_dir
-        if ARGS.syntax_check_dir is None:
+        if ARGS.syntax_check_dir is None or len(playbookjob) == 1:
             problemcount = MULTIOBJ.checkplaybooks(playbookjob)
         else:
             problemcount = MULTIOBJ.syncheck_dir(

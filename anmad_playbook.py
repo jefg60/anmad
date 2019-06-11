@@ -62,14 +62,14 @@ class AnmadRun:
         ret = self.run_playbook(playbook, syncheck=True)
         if ret.returncode == 0:
             self.logger.info(
-                "OK. ansible-playbook syntax check return code: "
-                "%s", str(ret.returncode))
+                "OK. ansible-playbook syntax check of %s return code: "
+                "%s", str(playbook), str(ret.returncode))
             return ret.returncode
         # if syntax checks pass, the code below should NOT run
         self.logger.warning(
             "Playbook %s failed syntax check against inventory %s!!!",
             str(playbook), str(self.inventory))
         self.logger.warning(
-            "ansible-playbook syntax check return code: "
-            "%s", str(ret.returncode))
+            "ansible-playbook syntax check return code for %s: "
+            "%s", str(playbook), str(ret.returncode))
         return ret.returncode

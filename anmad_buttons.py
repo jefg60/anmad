@@ -35,6 +35,7 @@ def mainpage():
         'title' : 'anmad',
         'time': time_string,
         'version': VERSION,
+        'daemon_status': anmad_buttonfuncs.service_status('anmad_run'),
         'preq_message': APP.config['queues'].prequeue_list,
         'queue_message': APP.config['queues'].queue_list,
         'messages': APP.config['queues'].info_list[0:3],

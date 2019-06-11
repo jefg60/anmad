@@ -58,7 +58,7 @@ class AnmadRun:
         (should be 0 if syntax checks pass)."""
         self.logger.info(
             "Syntax Checking ansible playbook %s against "
-            "inevntory %s", str(playbook), str(self.inventory))
+            "inventory %s", str(playbook), str(self.inventory))
         ret = self.run_playbook(playbook, syncheck=True)
         if ret.returncode == 0:
             self.logger.info(

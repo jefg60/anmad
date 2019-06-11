@@ -74,7 +74,7 @@
 	{% endif %}
 
 	<h2>Queued Jobs:</h2>
-	<h3>(multiples will be concurrent)</h3>
+	<h3>(multiples between [] will be concurrently run)</h3>
 	{% if queue_message %}
 	{% for message in queue_message %}
 	<h3>{{ message }}</h3>

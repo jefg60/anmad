@@ -41,8 +41,7 @@ def oneplaybook(logger, queues, playbook, playbooklist, playbook_root_dir):
 def service_status(service):
     """Check a service status."""
     servicestatus = subprocess.run(
-        ['sudo',
-         'systemctl',
+        ['systemctl',
          '--property',
          'StateChangeTimestamp,ActiveState,SubState',
          '--value',
@@ -51,12 +50,18 @@ def service_status(service):
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
         text=True)
+
     lines = servicestatus.stdout.splitlines()
-    if lines[2] != '':
-        state_change_timestamp = str(' since ' + lines[2])
-    else:
-        state_change_timestamp = lines[2]
     active_state = lines[0]
     sub_state = lines[1]
-    ret = str(active_state + ',' + sub_state + state_change_timestamp)
-    return ret
+    state_change_timestamp = lines[2]
+
+    if state_change_timestamp != '':
+        state_change_timestamp = str(' since ' + lines[2])
+    if active_state == 'active' and sub_state == 'running':
+        font_color = '<span style="color:green">'
+    active_state = lines[0]
+    return {"service": service,
+            "active_state": active_state,
+            "sub_state": sub_state,
+            "state_change_timestamp": state_change_timestamp}

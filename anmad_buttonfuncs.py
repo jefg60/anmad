@@ -2,6 +2,7 @@
 """Functions for anmad_buttons."""
 
 import os
+import subprocess
 from flask import abort
 
 import anmad_yaml
@@ -36,3 +37,26 @@ def oneplaybook(logger, queues, playbook, playbooklist, playbook_root_dir):
     my_runlist = [playbook_root_dir + '/' + playbook]
     logger.info("Queueing %s", str(my_runlist))
     queues.queue_job(my_runlist)
+
+def service_status(service):
+    """Check a service status."""
+    servicestatus = subprocess.run(
+        ['sudo',
+         'systemctl',
+         '--property',
+         'StateChangeTimestamp,ActiveState,SubState',
+         '--value',
+         'show',
+         service],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True)
+    lines = servicestatus.stdout.splitlines()
+    if lines[2] != '':
+        state_change_timestamp = str(' since ' + lines[2])
+    else:
+        state_change_timestamp = lines[2]
+    active_state = lines[0]
+    sub_state = lines[1]
+    ret = str(active_state + ',' + sub_state + state_change_timestamp)
+    return ret

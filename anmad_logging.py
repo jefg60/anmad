@@ -20,7 +20,7 @@ def logsetup():
     syslog_formatter = logging.Formatter(
         '%(name)s - [%(levelname)s] - %(message)s')
     timed_formatter = logging.Formatter(
-        '%(asctime)s [%(levelname)s] - %(message)s')
+        '%(asctime)s - %(name)s - [%(levelname)s] - %(message)s')
 
     queue_handler = AnmadInfoHandler(queues.info)
     queue_handler.setFormatter(timed_formatter)

@@ -1,11 +1,11 @@
 <script src="{{ url_for('static', filename='moment.min.js') }}"></script>
 <h1>
 <script>
-  document.write(moment("{{ time }} Z").format('LL'), " ", moment("{{ time }} Z").format('LTS'));
+  document.write(moment("{{ time }} Z").format('ddd YYYY-MM-D HH:mm:ss'));
 </script>
 (Local Time)<br />
 <script>
-  document.write(moment("{{ time }}").format('LL'), " ", moment("{{ time }}").format('LTS'));
+  document.write(moment("{{ time }}").format('ddd YYYY-MM-D HH:mm:ss'));
 </script>
 (UTC Time)
 <button onclick="ReloadFunc()">Refresh now...</button>

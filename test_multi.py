@@ -18,8 +18,10 @@ class TestMulti(unittest.TestCase):
         """Set up multi arg tests."""
         self.logger = logging.getLogger(os.path.basename(main.__file__))
         # Change logging.ERROR to INFO, to see log messages during testing.
-        self.logger.setLevel(logging.CRITICAL)
+        self.logger.setLevel(logging.DEBUG)
         self.testplay = 'samples/deploy.yaml'
+        self.timedplay = 'samples/deploy6.yaml'
+        self.timeout = 2
         self.badplay = 'samples/deploy3.yaml'
         self.testinv = 'samples/inventory-internal'
         self.ansible_playbook_cmd = './venv/bin/ansible-playbook'
@@ -71,12 +73,25 @@ class TestMulti(unittest.TestCase):
 
     def test_runplaybooks(self):
         """Test that runplaybooks func returns correct num of failed playbooks
-        in testing."""
+        in testing. note that timedplay should WORK unless timeout <=2"""
         output = self.multimultiobj.runplaybooks(self.testplay)
         self.assertEqual(output, 1)
+        output = self.multimultiobj.runplaybooks(self.timedplay)
+        self.assertEqual(output, 0)
         output = self.multiobj.runplaybooks(
             [self.testplay, self.testplay])
-        self.assertEqual(output, 2)
+        self.assertEqual(output, 0)
+        output = self.multiobj.runplaybooks(
+            [self.testplay, self.timedplay])
+        self.assertEqual(output, 1)
+        timedmultiobj = anmad_multi.AnmadMulti(
+            self.logger,
+            [self.testinv, self.testinv],
+            self.ansible_playbook_cmd,
+            self.vaultpw,
+            self.timeout)
+        self.assertRaises(subprocess.TimeoutExpired,
+            lambda: self.timedmultiobj.runplaybooks(self.timedplay))
 
 if __name__ == '__main__':
     unittest.main()

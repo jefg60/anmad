@@ -1,12 +1,10 @@
 ---
-- hosts: linux
+- hosts: localhost
   tasks:
     - name: simple debug message
       debug:
-        msg: "deploy2.yaml was called sucessfully"
+        msg: "deploy6.yaml was called sucessfully"
 
-    - name: update /srv/success2.txt
-      copy:
-        dest: /srv/success2.txt
-        content: "{{ ansible_date_time.iso8601 }} deploy2.yaml has been run sucessfully!"
-      become: yes
+    - name: pause 3 sec to test timeout params
+      pause:
+        seconds: 3

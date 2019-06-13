@@ -57,7 +57,7 @@ class AnmadMulti:
                 self.ansible_playbook_cmd,
                 self.vault_password_file,
                 self.timeout)
-            if playbookobject.syncheck_playbook(playbook) != 0:
+            if playbookobject.syncheck_playbook(playbook).returncode != 0:
                 return 3
         # if none of the above return statements happen, then syntax checks
         # passed and we can return 0 to the caller.

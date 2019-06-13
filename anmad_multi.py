@@ -19,11 +19,11 @@ class AnmadMulti:
                  timeout=1800):
         """Init ansibleSyntaxCheck."""
         self.logger = logger
-        if isinstance(inventories, str):
+        if type(inventories) is not list:
             self.inventories = [inventories]
         else:
             self.inventories = inventories
-        self.maininventory = inventories[0]
+        self.maininventory = self.inventories[0]
         self.ansible_playbook_cmd = ansible_playbook_cmd
         self.vault_password_file = vault_password_file
         self.concurrency = os.cpu_count()

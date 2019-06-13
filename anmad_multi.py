@@ -78,11 +78,16 @@ class AnmadMulti:
         output = []
         pool = Pool(self.concurrency)
         if syncheck:
-            output = pool.map(playbookobj.syncheck_playbook, listofplaybooks)
+            completed_processes = pool.map(playbookobj.syncheck_playbook, listofplaybooks)
         else:
-            output = pool.map(playbookobj.run_playbook, listofplaybooks)
+            completed_processes = pool.map(playbookobj.run_playbook, listofplaybooks)
         pool.close()
         pool.join()
+
+        output = []
+
+        for completedprocess in completed_processes:
+            output.append(completedprocess.returncode)
 
         # if the returned list of outputs only contains 0, success.
         if output.count(0) == len(output):

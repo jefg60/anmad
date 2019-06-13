@@ -1,9 +1,13 @@
 ---
-- hosts: linux
+- hosts: localhost
   tasks:
     - name: simple debug message
       debug:
         msg: "deploy2.yaml was called sucessfully"
+
+    - name: wait 3 secs to test timeout param
+      pause:
+        seconds: 3
 
     - name: update /srv/success2.txt
       copy:

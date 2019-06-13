@@ -4,6 +4,7 @@
 import logging
 import os
 import unittest
+import subprocess
 
 import __main__ as main
 
@@ -18,10 +19,12 @@ class TestPlaybook(unittest.TestCase):
         self.logger = logging.getLogger(os.path.basename(main.__file__))
         self.logger.setLevel(logging.CRITICAL)
         self.testplay = 'samples/deploy.yaml'
+        self.timedplay = 'samples/deploy2.yaml'
         self.badplay = 'samples/deploy3.yaml'
         self.testinv = 'samples/inventory-internal'
         self.ansible_playbook_cmd = './venv/bin/ansible-playbook'
         self.vaultpw = './vaultpassword'
+        self.timeout = 2
         self.playbookobject = anmad_playbook.AnmadRun(
             self.logger,
             self.testinv,
@@ -66,6 +69,20 @@ class TestPlaybook(unittest.TestCase):
         returned = self.playbookobject.syncheck_playbook(
             self.badplay)
         self.assertEqual(returned, 4)
+
+    def test_ansible_playbook_timeout(self):
+        """Test run_playbook with timeout. must set vault_password_file
+        if also setting timeout"""
+        playbookobject = anmad_playbook.AnmadRun(
+            self.logger,
+            self.testinv,
+            self.ansible_playbook_cmd,
+            self.vaultpw,
+            self.timeout)
+        self.assertRaises(subprocess.TimeoutExpired,
+            lambda: playbookobject.run_playbook(self.timedplay))
+        returned = playbookobject.run_playbook(self.timedplay, syncheck = True)
+        self.assertEqual(returned.returncode, 0)
 
 
 if __name__ == '__main__':

@@ -80,7 +80,7 @@ class TestMulti(unittest.TestCase):
         self.assertEqual(output, 0)
         output = self.multiobj.runplaybooks(
             [self.testplay, self.testplay])
-        self.assertEqual(output, 0)
+        self.assertEqual(output, 2)
         output = self.multiobj.runplaybooks(
             [self.testplay, self.timedplay])
         self.assertEqual(output, 1)

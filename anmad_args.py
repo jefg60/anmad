@@ -137,6 +137,11 @@ def parse_args():
         help="ARA URL to display after starting jobs",
         default='http://ara/'
         )
+    parser.add_argument(
+        "--timeout",
+        help="timeout in seconds before aborting playbooks",
+        default=1800
+        )
 
     parser.set_defaults(debug=False, syslog=True, dryrun=False)
     myargs = parser.parse_args()

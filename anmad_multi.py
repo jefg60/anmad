@@ -8,13 +8,15 @@ import anmad_playbook
 class AnmadMulti:
     """Anmad Multi inventory / playbook class. Accepts a list of inventories.
     Multi playbooks will run against the first inventory in the list."""
+    # pylint: disable=too-many-arguments
 
 
     def __init__(self,
                  logger,
                  inventories,
                  ansible_playbook_cmd,
-                 vault_password_file=None):
+                 vault_password_file=None,
+                 timeout=1800):
         """Init ansibleSyntaxCheck."""
         self.logger = logger
         if isinstance(inventories, str):
@@ -25,6 +27,7 @@ class AnmadMulti:
         self.ansible_playbook_cmd = ansible_playbook_cmd
         self.vault_password_file = vault_password_file
         self.concurrency = os.cpu_count()
+        self.timeout = timeout
 
     def syntax_check_one_play_many_inv(self, playbook):
         """Check a single playbook against all inventories.
@@ -52,7 +55,8 @@ class AnmadMulti:
                 self.logger,
                 my_inventory,
                 self.ansible_playbook_cmd,
-                self.vault_password_file)
+                self.vault_password_file,
+                self.timeout)
             if playbookobject.syncheck_playbook(playbook) != 0:
                 return 3
         # if none of the above return statements happen, then syntax checks

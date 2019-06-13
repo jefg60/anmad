@@ -17,7 +17,8 @@ MULTIOBJ = anmad_multi.AnmadMulti(
     LOGGER,
     ARGS.inventories,
     ARGS.ansible_playbook_cmd,
-    ARGS.vault_password_file)
+    ARGS.vault_password_file,
+    ARGS.timeout)
 
 LOGGER.info("anmad_run version: %s starting", str(anmad_version.VERSION))
 LOGGER.debug("config file: %s",

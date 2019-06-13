@@ -4,13 +4,15 @@ import subprocess
 
 class AnmadRun:
     """Ansible-playbook operations class."""
+    # pylint: disable=too-many-arguments
 
 
     def __init__(self,
                  logger,
                  inventory,
                  ansible_playbook_cmd,
-                 vault_password_file=None):
+                 vault_password_file=None,
+                 timeout=1800):
         """Init ansibleRun."""
         self.logger = logger
         self.inventory = inventory
@@ -18,6 +20,7 @@ class AnmadRun:
         if vault_password_file is not None:
             self.ansible_playbook_cmd.extend(
                 ['--vault-password-file', vault_password_file])
+        self.timeout = timeout
 
     def run_playbook(self, playbook, syncheck=False, checkmode=False):
         """Run an ansible playbook, optionally in syntax check mode or
@@ -36,7 +39,8 @@ class AnmadRun:
             ansible_playbook_cmd,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
-            text=True)
+            text=True,
+            timeout=self.timeout)
         if 'WARNING' in (ret.stdout, ret.stderr):
             self.logger.warning(
                 "Warnings found in ansible output: %s %s",

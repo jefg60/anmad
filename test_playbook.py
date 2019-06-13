@@ -65,10 +65,10 @@ class TestPlaybook(unittest.TestCase):
         """Test syncheck_playbook method."""
         returned = self.playbookobject.syncheck_playbook(
             self.testplay)
-        self.assertEqual(returned, 0)
+        self.assertEqual(returned.returncode, 0)
         returned = self.playbookobject.syncheck_playbook(
             self.badplay)
-        self.assertEqual(returned, 4)
+        self.assertEqual(returned.returncode, 4)
 
     def test_ansible_playbook_timeout(self):
         """Test run_playbook with timeout. must set vault_password_file

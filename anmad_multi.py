@@ -19,7 +19,7 @@ class AnmadMulti:
                  timeout=1800):
         """Init ansibleSyntaxCheck."""
         self.logger = logger
-        if type(inventories) is not list:
+        if not isinstance(inventories, list):
             self.inventories = [inventories]
         else:
             self.inventories = inventories

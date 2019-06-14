@@ -74,7 +74,8 @@ class TestMulti(unittest.TestCase):
 
     def test_runplaybooks(self):
         """Test that runplaybooks func returns correct num of failed playbooks
-        in testing. note that timedplay should WORK unless timeout <=2"""
+        in testing. note that timedplay should WORK unless timeout <=2
+        because it runs against localhost, unlike the other plays"""
         timedmultiobj = anmad_multi.AnmadMulti(
             self.logger,
             self.testinv,
@@ -83,6 +84,9 @@ class TestMulti(unittest.TestCase):
             self.timeout)
         output = timedmultiobj.runplaybooks(self.timedplay)
         self.assertEqual(output, 1)
+
+        output = self.multiobj.runplaybooks(self.timedplay)
+        self.assertEqual(output, 0)
 
         output = self.multimultiobj.runplaybooks(self.timedplay)
         self.assertEqual(output, 0)

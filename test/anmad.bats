@@ -12,20 +12,20 @@ load test_helper
 }
 
 @test "unit test of args" {
-  run python ./anmad_args.py --configfile configtest.ini
+  run python test_args.py --configfile test/configtest.ini
   [[ "$output" != *"error"* ]]
   [ "$status" -eq 0 ]
 }
 
 @test "unit test of logging" {
-  run python ./anmad_logging.py --configfile configtest.ini
+  run python test_logging.py --configfile test/configtest.ini
   [[ "$output" != *"error"* ]]
   [ "$status" -eq 0 ]
-  [[ "$output" = *"anmad_logging test ok" ]]
+  [[ "$output" = *"anmad.logging test ok" ]]
 }
 
 @test "unit test other python modules" {
-  run tests/unittests.sh
+  run python -m unittest discover
   [ "$status" -eq 0 ]
 }
 
@@ -51,7 +51,7 @@ load test_helper
 }
 
 @test "run without --no-syslog but with --debug, using conf file" {
-  run "$program" -c configtest.ini
+  run "$program" -c test/configtest.ini
   [[ "$output" != *"error"* ]]
 }
 
@@ -66,7 +66,7 @@ load test_helper
 }
 
 @test "able to decrypt testvault" {
-  run "$printvault" --vaultfile testvault --yaml_key master_ansible_user_ssh_phrase --vault_password_file vaultpassword
+  run "$printvault" --vaultfile test/testvault --yaml_key master_ansible_user_ssh_phrase --vault_password_file test/vaultpassword
   [[ "$output" == "1234567890abc321" ]]
 }
 

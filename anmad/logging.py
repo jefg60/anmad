@@ -45,7 +45,3 @@ def logsetup():
         logger.level = logging.DEBUG
 
     return logger
-
-if __name__ == '__main__':
-    LOGGER = logsetup()
-    LOGGER.debug("anmad.logging test ok")

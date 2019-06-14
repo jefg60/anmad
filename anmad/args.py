@@ -171,8 +171,3 @@ def prepend_rootdir(myrootdir, mylist):
     """Prepends a path to each item in a list."""
     ret = [myrootdir + '/' + str(x) for x in mylist]
     return ret
-
-
-if __name__ == '__main__':
-    ARGS = parse_args()
-    print(ARGS)

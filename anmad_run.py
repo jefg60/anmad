@@ -3,24 +3,24 @@
 import os
 import sys
 
-import anmad_multi
-import anmad_logging
-import anmad_args
-import anmad_ssh
-import anmad_queues
-import anmad_version
+import anmad.multi
+import anmad.logging
+import anmad.args
+import anmad.ssh
+import anmad.queues
+import anmad.version
 
-QUEUES = anmad_queues.AnmadQueues('prerun', 'playbooks', 'info')
-ARGS = anmad_args.parse_args()
-LOGGER = anmad_logging.logsetup()
-MULTIOBJ = anmad_multi.AnmadMulti(
+QUEUES = anmad.queues.AnmadQueues('prerun', 'playbooks', 'info')
+ARGS = anmad.args.parse_args()
+LOGGER = anmad.logging.logsetup()
+MULTIOBJ = anmad.multi.AnmadMulti(
     LOGGER,
     ARGS.inventories,
     ARGS.ansible_playbook_cmd,
     ARGS.vault_password_file,
     ARGS.timeout)
 
-LOGGER.info("anmad_run version: %s starting", str(anmad_version.VERSION))
+LOGGER.info("anmad_run version: %s starting", str(anmad.version.VERSION))
 LOGGER.debug("config file: %s",
              str(ARGS.configfile)
              if ARGS.configfile is not None
@@ -40,7 +40,7 @@ LOGGER.debug("playbooks: %s", " ".join(ARGS.playbooks))
 LOGGER.debug("RUN_LIST: %s", " ".join(ARGS.run_list))
 LOGGER.debug("playbook_root_dir: %s", str(ARGS.playbook_root_dir))
 
-anmad_ssh.add_ssh_key_to_agent(LOGGER, ARGS.ssh_id, ARGS.ssh_askpass)
+anmad.ssh.add_ssh_key_to_agent(LOGGER, ARGS.ssh_id, ARGS.ssh_askpass)
 
 for playbookjob in QUEUES.queue.consume():
     LOGGER.info("Starting to consume playbooks queue...")

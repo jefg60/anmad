@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Tests for anmad_multi module."""
+"""Tests for anmad.multi module."""
 
 import logging
 import os
@@ -8,10 +8,10 @@ import unittest
 
 import __main__ as main
 
-import anmad_multi
+import anmad.multi
 
 class TestMulti(unittest.TestCase):
-    """Tests for anmad_multi module."""
+    """Tests for anmad.multi module."""
     # pylint: disable=too-many-instance-attributes
 
 
@@ -28,12 +28,12 @@ class TestMulti(unittest.TestCase):
         self.ansible_playbook_cmd = './venv/bin/ansible-playbook'
         self.vaultpw = './vaultpassword'
         self.checkdir = './samples'
-        self.multiobj = anmad_multi.AnmadMulti(
+        self.multiobj = anmad.multi.AnmadMulti(
             self.logger,
             self.testinv,
             self.ansible_playbook_cmd,
             self.vaultpw)
-        self.multimultiobj = anmad_multi.AnmadMulti(
+        self.multimultiobj = anmad.multi.AnmadMulti(
             self.logger,
             [self.testinv, self.testinv],
             self.ansible_playbook_cmd,
@@ -76,7 +76,7 @@ class TestMulti(unittest.TestCase):
         """Test that runplaybooks func returns correct num of failed playbooks
         in testing. note that timedplay should WORK unless timeout <=2
         because it runs against localhost, unlike the other plays"""
-        timedmultiobj = anmad_multi.AnmadMulti(
+        timedmultiobj = anmad.multi.AnmadMulti(
             self.logger,
             self.testinv,
             self.ansible_playbook_cmd,

@@ -8,9 +8,9 @@ import unittest
 import __main__ as main
 
 import anmad_buttons
-import anmad_queues
-import anmad_args
-import anmad_version
+import anmad.queues
+import anmad.args
+import anmad.version
 
 class TestButtonApp(unittest.TestCase):
     """Tests for anmad_buttons APP."""
@@ -21,7 +21,7 @@ class TestButtonApp(unittest.TestCase):
         self.playbooks = ['deploy.yaml', 'deploy2.yaml']
         self.pre_run_playbooks = ['deploy4.yaml']
         self.playbookroot = 'samples'
-        self.version = anmad_version.VERSION
+        self.version = anmad.version.VERSION
         self.logger = logging.getLogger(os.path.basename(main.__file__))
         # Change logging.ERROR to INFO, to see log messages during testing.
         self.logger.setLevel(logging.CRITICAL)
@@ -30,16 +30,16 @@ class TestButtonApp(unittest.TestCase):
             dnum = [('deploy' + str(num) + '.yaml')]
             self.testextras.extend(dnum)
         self.testextras.extend(['deploy9.yml'])
-        self.queues = anmad_queues.AnmadQueues(
+        self.queues = anmad.queues.AnmadQueues(
             'test_prerun', 'test_playbooks', 'test_info')
         self.app = anmad_buttons.APP.test_client()
         anmad_buttons.APP.config['ara_url'] = 'ara'
         anmad_buttons.APP.config['playbook_root_dir'] =  self.playbookroot
         anmad_buttons.APP.config['playbooks'] =  self.playbooks
         anmad_buttons.APP.config['pre_run_playbooks'] =  self.pre_run_playbooks
-        anmad_buttons.APP.config['prerun_list'] =  anmad_args.prepend_rootdir(
+        anmad_buttons.APP.config['prerun_list'] =  anmad.args.prepend_rootdir(
             self.playbookroot, self.pre_run_playbooks)
-        anmad_buttons.APP.config['run_list'] =  anmad_args.prepend_rootdir(
+        anmad_buttons.APP.config['run_list'] =  anmad.args.prepend_rootdir(
             self.playbookroot, self.playbooks)
         anmad_buttons.APP.config['logger'] = self.logger
         anmad_buttons.APP.config['queues'] = self.queues

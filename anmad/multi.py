@@ -2,8 +2,8 @@
 import os
 from multiprocessing import Pool
 
-import anmad_yaml
-import anmad_playbook
+import anmad.yaml
+import anmad.run
 
 class AnmadMulti:
     """Anmad Multi inventory / playbook class. Accepts a list of inventories.
@@ -38,20 +38,20 @@ class AnmadMulti:
         of the above without continuing."""
         # check if we've been passed a single string, make it a one item list
         # if so.
-        if not anmad_yaml.verify_yaml_file(self.logger, playbook):
+        if not anmad.yaml.verify_yaml_file(self.logger, playbook):
             self.logger.error(
                 "Unable to verify yaml file %s", str(playbook))
             return 1
         for my_inventory in self.inventories:
-            if not anmad_yaml.verify_yaml_file(self.logger, my_inventory):
+            if not anmad.yaml.verify_yaml_file(self.logger, my_inventory):
                 # check the 'bad yaml' isnt actually a valid ini style inventory,
                 # before reporting it bad.
-                if not anmad_yaml.verify_config_file(my_inventory):
+                if not anmad.yaml.verify_config_file(my_inventory):
                     self.logger.error(
                         "Unable to verify file %s", str(my_inventory))
                     return 2
 
-            playbookobject = anmad_playbook.AnmadRun(
+            playbookobject = anmad.run.AnmadRun(
                 self.logger,
                 my_inventory,
                 self.ansible_playbook_cmd,
@@ -69,7 +69,7 @@ class AnmadMulti:
         Return number of nonzero exit codes (so 0 = success)."""
         if isinstance(listofplaybooks, str):
             listofplaybooks = [listofplaybooks]
-        playbookobj = anmad_playbook.AnmadRun(
+        playbookobj = anmad.run.AnmadRun(
             self.logger,
             self.maininventory,
             self.ansible_playbook_cmd,
@@ -112,7 +112,7 @@ class AnmadMulti:
             return 255
 
         problemcount = self.checkplaybooks(
-            anmad_yaml.find_yaml_files(self.logger, check_dir))
+            anmad.yaml.find_yaml_files(self.logger, check_dir))
         return problemcount
 
     def runplaybooks(self, listofplaybooks):

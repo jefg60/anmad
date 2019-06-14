@@ -4,27 +4,27 @@ import datetime
 import mod_wsgi
 from flask import Flask, render_template, redirect
 
-import anmad_buttonfuncs
-import anmad_queues
-import anmad_version
-import anmad_args
-import anmad_logging
-import anmad_yaml
+import anmad.button_funcs
+import anmad.queues
+import anmad.version
+import anmad.args
+import anmad.logging
+import anmad.yaml
 
 APP = Flask(__name__)
 BASEURL = "/"
-VERSION = anmad_version.VERSION
+VERSION = anmad.version.VERSION
 
 def configure_app():
     """Fetch required args into config dict."""
-    APP.config['ara_url'] = anmad_args.parse_args().ara_url
-    APP.config['playbook_root_dir'] = anmad_args.parse_args().playbook_root_dir
-    APP.config['playbooks'] = anmad_args.parse_args().playbooks
-    APP.config['pre_run_playbooks'] = anmad_args.parse_args().pre_run_playbooks
-    APP.config['prerun_list'] = anmad_args.parse_args().prerun_list
-    APP.config['run_list'] = anmad_args.parse_args().run_list
-    APP.config['logger'] = anmad_logging.logsetup()
-    APP.config['queues'] = anmad_queues.AnmadQueues('prerun', 'playbooks', 'info')
+    APP.config['ara_url'] = anmad.args.parse_args().ara_url
+    APP.config['playbook_root_dir'] = anmad.args.parse_args().playbook_root_dir
+    APP.config['playbooks'] = anmad.args.parse_args().playbooks
+    APP.config['pre_run_playbooks'] = anmad.args.parse_args().pre_run_playbooks
+    APP.config['prerun_list'] = anmad.args.parse_args().prerun_list
+    APP.config['run_list'] = anmad.args.parse_args().run_list
+    APP.config['logger'] = anmad.logging.logsetup()
+    APP.config['queues'] = anmad.queues.AnmadQueues('prerun', 'playbooks', 'info')
 
 @APP.route(BASEURL)
 def mainpage():
@@ -35,7 +35,7 @@ def mainpage():
         'title' : 'anmad',
         'time': time_string,
         'version': VERSION,
-        'daemon_status': anmad_buttonfuncs.service_status('anmad_run'),
+        'daemon_status': anmad.button_funcs.service_status('anmad_run'),
         'preq_message': APP.config['queues'].prequeue_list,
         'queue_message': APP.config['queues'].queue_list,
         'messages': APP.config['queues'].info_list[0:3],
@@ -70,7 +70,7 @@ def otherplaybooks():
         'title' : 'anmad others',
         'time': time_string,
         'version': VERSION,
-        'extras': anmad_buttonfuncs.extraplays(
+        'extras': anmad.button_funcs.extraplays(
             APP.config['logger'],
             APP.config['playbook_root_dir'],
             APP.config['playbooks'])
@@ -91,7 +91,7 @@ def clearqueues():
 @APP.route(BASEURL + "runall")
 def runall():
     """Run all playbooks after verifying that files exist."""
-    problemfile = anmad_yaml.list_missing_files(APP.config['logger'], APP.config['prerun_list'])
+    problemfile = anmad.yaml.list_missing_files(APP.config['logger'], APP.config['prerun_list'])
     if problemfile:
         APP.config['logger'].info("Invalid files: %s", str(problemfile))
         return redirect(BASEURL)
@@ -113,11 +113,11 @@ def runall():
 @APP.route(BASEURL + 'playbooks/<path:playbook>')
 def configuredplaybook(playbook):
     """Runs one playbook, if its one of the configured ones."""
-    anmad_buttonfuncs.oneplaybook(
+    anmad.button_funcs.oneplaybook(
         APP.config['logger'],
         APP.config['queues'],
         playbook,
-        anmad_buttonfuncs.buttonlist(APP.config['pre_run_playbooks'], APP.config['playbooks']),
+        anmad.button_funcs.buttonlist(APP.config['pre_run_playbooks'], APP.config['playbooks']),
         APP.config['playbook_root_dir'])
     APP.config['queues'].update_job_lists()
     APP.config['logger'].debug("Redirecting to control page")
@@ -127,11 +127,11 @@ def configuredplaybook(playbook):
 @APP.route(BASEURL + 'otherplaybooks/<path:playbook>')
 def otherplaybook(playbook):
     """Runs one playbook, if its one of the other ones found by extraplays."""
-    anmad_buttonfuncs.oneplaybook(
+    anmad.button_funcs.oneplaybook(
         APP.config['logger'],
         APP.config['queues'],
         playbook,
-        anmad_buttonfuncs.extraplays(
+        anmad.button_funcs.extraplays(
             APP.config['logger'], APP.config['playbook_root_dir'],
             APP.config['playbooks'], APP.config['pre_run_playbooks']),
         APP.config['playbook_root_dir'])
@@ -155,5 +155,5 @@ except AttributeError:
 
 if __name__ == "__main__":
     configure_app()
-    if not anmad_args.parse_args().dryrun:
+    if not anmad.args.parse_args().dryrun:
         APP.run(host='0.0.0.0', port=9999, debug=True)

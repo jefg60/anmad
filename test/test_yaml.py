@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Tests for anmad_yaml module."""
+"""Tests for anmad.yaml module."""
 
 import logging
 import os
@@ -7,7 +7,7 @@ import unittest
 
 import __main__ as main
 
-import anmad_yaml
+import anmad.yaml
 
 class TestYaml(unittest.TestCase):
     """Tests for anmad_buttons module."""
@@ -29,66 +29,66 @@ class TestYaml(unittest.TestCase):
 
     def test_find_yaml_files(self):
         """Test find_yaml_files func."""
-        yamlfiles = anmad_yaml.find_yaml_files(self.logger, self.playbookroot)
+        yamlfiles = anmad.yaml.find_yaml_files(self.logger, self.playbookroot)
         self.assertIsNotNone(yamlfiles)
         self.assertEqual(len(yamlfiles), 9)
         self.assertEqual(yamlfiles, self.testyamlfiles_parent)
 
     def test_verify_yaml_missingfile(self):
         """Test verify_yaml with missing file."""
-        verify = anmad_yaml.verify_yaml_file(self.logger, 'tests/missing.yml')
+        verify = anmad.yaml.verify_yaml_file(self.logger, 'test/missing.yml')
         self.assertFalse(verify)
 
     def test_verify_yaml_is_empty_directory(self):
         """Test verify_yaml with empty dir."""
-        verify = anmad_yaml.verify_yaml_file(self.logger, 'empty_dir')
+        verify = anmad.yaml.verify_yaml_file(self.logger, 'empty_dir')
         self.assertFalse(verify)
 
     def test_verify_yaml_is_directory(self):
         """Test verify_yaml with a dir containing stuff."""
-        verify = anmad_yaml.verify_yaml_file(self.logger, 'samples')
+        verify = anmad.yaml.verify_yaml_file(self.logger, 'samples')
         self.assertTrue(verify)
 
     def test_verify_yaml_is_bad_directory(self):
         """Test verify_yaml_file with a dir containing bad yaml."""
-        verify = anmad_yaml.verify_yaml_file(self.logger, 'tests')
+        verify = anmad.yaml.verify_yaml_file(self.logger, 'test')
         self.assertFalse(verify)
 
     def test_verify_yaml_goodfile(self):
         """Test verify_yaml_file func with valid yaml."""
-        verify = anmad_yaml.verify_yaml_file(
+        verify = anmad.yaml.verify_yaml_file(
             self.logger,
             (self.playbookroot + '/' + self.playbooks[0]))
         self.assertTrue(verify)
 
     def test_verify_yaml_badfile(self):
         """Test that verify_yaml_file correctly identifies bad yaml."""
-        verify = anmad_yaml.verify_yaml_file(self.logger, 'tests/badyaml.yml')
+        verify = anmad.yaml.verify_yaml_file(self.logger, 'test/badyaml.yml')
         self.assertFalse(verify)
 
     def test_list_bad_yamlfiles(self):
         """Test that bad yamlfiles are listed."""
-        verify = anmad_yaml.list_bad_yamlfiles(self.logger, ['tests'])
-        self.assertEqual(verify, ['tests'])
+        verify = anmad.yaml.list_bad_yamlfiles(self.logger, ['test'])
+        self.assertEqual(verify, ['test'])
 
     def test_list_bad_yamlfiles_allgood(self):
         """Test that list_bad_yamlfiles returns empty string when it should."""
-        verify = anmad_yaml.list_bad_yamlfiles(self.logger, ['samples'])
+        verify = anmad.yaml.list_bad_yamlfiles(self.logger, ['samples'])
         self.assertEqual(verify, [])
 
     def test_list_missing_files(self):
         """Test missing files func."""
         testfiles = ['samples/' + x for x in self.playbooks]
-        verify = anmad_yaml.list_bad_yamlfiles(self.logger, testfiles)
+        verify = anmad.yaml.list_bad_yamlfiles(self.logger, testfiles)
         self.assertEqual(verify, [])
-        verify = anmad_yaml.list_bad_yamlfiles(self.logger, ['tests/missing.yml'])
-        self.assertEqual(verify, ['tests/missing.yml'])
+        verify = anmad.yaml.list_bad_yamlfiles(self.logger, ['test/missing.yml'])
+        self.assertEqual(verify, ['test/missing.yml'])
 
     def test_verify_config_file(self):
         """Test the verify_config_file func."""
-        verify = anmad_yaml.verify_config_file('tests/bad-inventory')
+        verify = anmad.yaml.verify_config_file('test/bad-inventory')
         self.assertFalse(verify)
-        verify = anmad_yaml.verify_config_file('samples/inventory-internal')
+        verify = anmad.yaml.verify_config_file('samples/inventory-internal')
         self.assertTrue(verify)
 
 

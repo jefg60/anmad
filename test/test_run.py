@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Tests for anmad_playbook module."""
+"""Tests for anmad.run module."""
 
 import logging
 import os
@@ -8,10 +8,10 @@ import subprocess
 
 import __main__ as main
 
-import anmad_playbook
+import anmad.run
 
 class TestPlaybook(unittest.TestCase):
-    """Tests for anmad_playbook module."""
+    """Tests for anmad.run module."""
 
 
     def setUp(self):
@@ -25,7 +25,7 @@ class TestPlaybook(unittest.TestCase):
         self.ansible_playbook_cmd = './venv/bin/ansible-playbook'
         self.vaultpw = './vaultpassword'
         self.timeout = 2
-        self.playbookobject = anmad_playbook.AnmadRun(
+        self.playbookobject = anmad.run.AnmadRun(
             self.logger,
             self.testinv,
             self.ansible_playbook_cmd)
@@ -53,7 +53,7 @@ class TestPlaybook(unittest.TestCase):
 
     def test_ansible_playbook_vault_syn(self):
         """Test run_playbook with vault."""
-        playbookobject = anmad_playbook.AnmadRun(
+        playbookobject = anmad.run.AnmadRun(
             self.logger,
             self.testinv,
             self.ansible_playbook_cmd,
@@ -73,7 +73,7 @@ class TestPlaybook(unittest.TestCase):
     def test_ansible_playbook_timeout(self):
         """Test run_playbook with timeout. must set vault_password_file
         if also setting timeout"""
-        playbookobject = anmad_playbook.AnmadRun(
+        playbookobject = anmad.run.AnmadRun(
             self.logger,
             self.testinv,
             self.ansible_playbook_cmd,

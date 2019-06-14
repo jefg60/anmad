@@ -5,7 +5,7 @@ import os
 import subprocess
 from flask import abort
 
-import anmad_yaml
+import anmad.yaml
 
 def buttonlist(playbooks, prerun=None):
     """Get a list of allowed playbook buttons."""
@@ -17,7 +17,7 @@ def buttonlist(playbooks, prerun=None):
 
 def extraplays(logger, playbook_root_dir, playbooks, prerun=None):
     """Get a list of yaml files in root dir that arent in buttonlist()."""
-    yamlfiles = anmad_yaml.find_yaml_files(logger, playbook_root_dir)
+    yamlfiles = anmad.yaml.find_yaml_files(logger, playbook_root_dir)
     yamlbasenames = []
     for yml in yamlfiles:
         yamlbasenames.append(os.path.basename(yml))

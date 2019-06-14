@@ -6,7 +6,7 @@ import configargparse
 import mod_wsgi
 import __main__ as main
 
-import anmad_version
+import anmad.version
 
 def parse_args():
     """Read arguments from command line."""
@@ -17,7 +17,7 @@ def parse_args():
         process_name = os.path.basename(main.__file__)
 
     default_configfile = '/etc/anmad/conf.d/' + process_name
-    __version__ = anmad_version.VERSION
+    __version__ = anmad.version.VERSION
 
     home = expanduser("~")
 

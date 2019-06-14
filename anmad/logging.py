@@ -2,8 +2,8 @@
 import logging
 import logging.handlers
 
-import anmad_args
-import anmad_queues
+import anmad.args
+import anmad.queues
 
 class AnmadInfoHandler(logging.handlers.QueueHandler):
     """Override QueueHandler enqueue method to work with hotqueue."""
@@ -13,9 +13,9 @@ class AnmadInfoHandler(logging.handlers.QueueHandler):
 
 def logsetup():
     """Set up anmad logging."""
-    args = anmad_args.parse_args()
+    args = anmad.args.parse_args()
     logger = logging.getLogger(args.process_name)
-    queues = anmad_queues.AnmadQueues('prerun', 'playbooks', 'info')
+    queues = anmad.queues.AnmadQueues('prerun', 'playbooks', 'info')
 
     syslog_formatter = logging.Formatter(
         '%(name)s - [%(levelname)s] - %(message)s')
@@ -48,4 +48,4 @@ def logsetup():
 
 if __name__ == '__main__':
     LOGGER = logsetup()
-    LOGGER.debug("anmad_logging test ok")
+    LOGGER.debug("anmad.logging test ok")

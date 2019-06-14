@@ -35,12 +35,23 @@ class AnmadRun:
         ansible_playbook_cmd.extend(['--inventory', inventory, playbook])
 
         self.logger.info("Running %s", str(ansible_playbook_cmd))
-        ret = subprocess.run(
-            ansible_playbook_cmd,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            text=True,
-            timeout=self.timeout)
+        try:
+            ret = subprocess.run(
+                ansible_playbook_cmd,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+                timeout=self.timeout)
+        except subprocess.TimeoutExpired:
+            self.logger.error(
+                "Timed out waiting %s seconds for %s",
+                self.timeout, ansible_playbook_cmd)
+            # create a dummy completedProcess obj with a bad return code
+            ret = subprocess.CompletedProcess(
+                ansible_playbook_cmd,
+                255)
+            return ret
+
         if 'WARNING' in (ret.stdout, ret.stderr):
             self.logger.warning(
                 "Warnings found in ansible output: %s %s",

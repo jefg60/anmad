@@ -79,8 +79,8 @@ class TestPlaybook(unittest.TestCase):
             self.ansible_playbook_cmd,
             self.vaultpw,
             self.timeout)
-        self.assertRaises(subprocess.TimeoutExpired,
-            lambda: playbookobject.run_playbook(self.timedplay))
+        returned = playbookobject.run_playbook(self.timedplay)
+        self.assertEqual(returned.returncode, 255)
         returned = playbookobject.run_playbook(self.timedplay, syncheck = True)
         self.assertEqual(returned.returncode, 0)
 

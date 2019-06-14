@@ -73,7 +73,8 @@ class AnmadMulti:
             self.logger,
             self.maininventory,
             self.ansible_playbook_cmd,
-            self.vault_password_file)
+            self.vault_password_file,
+            self.timeout)
 
         output = []
         pool = Pool(self.concurrency)

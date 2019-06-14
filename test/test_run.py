@@ -23,7 +23,7 @@ class TestPlaybook(unittest.TestCase):
         self.badplay = 'samples/deploy3.yaml'
         self.testinv = 'samples/inventory-internal'
         self.ansible_playbook_cmd = './venv/bin/ansible-playbook'
-        self.vaultpw = './vaultpassword'
+        self.vaultpw = 'test/vaultpassword'
         self.timeout = 2
         self.playbookobject = anmad.run.AnmadRun(
             self.logger,

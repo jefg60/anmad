@@ -26,7 +26,7 @@ class TestMulti(unittest.TestCase):
         self.badplay = 'samples/deploy3.yaml'
         self.testinv = 'samples/inventory-internal'
         self.ansible_playbook_cmd = './venv/bin/ansible-playbook'
-        self.vaultpw = './vaultpassword'
+        self.vaultpw = 'test/vaultpassword'
         self.checkdir = './samples'
         self.multiobj = anmad.multi.AnmadMulti(
             self.logger,

@@ -1,7 +1,7 @@
 Anmad
 =============================
 
-Creates buttons / simple api for running ansible playbooks.
+Creates a simple api and a browser interface for running ansible playbooks.
 
 Part of jefg60/ansible-master
 

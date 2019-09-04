@@ -1,12 +1,12 @@
 setup () {
-  source venv/bin/activate
+  source ~/venv/bin/activate
 }
 teardown() {
   deactivate
 }
 
-export printvault=./print_vault_value.py
+export printvault=/vagrant/print_vault_value.py
 export pylint="pylint"
-export program=./anmad_buttons.py
-export version=0.15.4
-source venv/bin/activate
+export program=/vagrant/anmad_buttons.py
+export version=0.16.0
+source ~/venv/bin/activate

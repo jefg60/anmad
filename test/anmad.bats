@@ -12,13 +12,13 @@ load test_helper
 }
 
 @test "unit test of args" {
-  run python test_args.py --configfile test/configtest.ini
+  run python /vagrant/test_args.py --configfile /vagrant/test/configtest.ini
   [[ "$output" != *"error"* ]]
   [ "$status" -eq 0 ]
 }
 
 @test "unit test of logging" {
-  run python test_logging.py --configfile test/configtest.ini
+  run python /vagrant/test_logging.py --configfile /vagrant/test/configtest.ini
   [[ "$output" != *"error"* ]]
   [ "$status" -eq 0 ]
   [[ "$output" = *"anmad.logging test ok" ]]
@@ -40,18 +40,18 @@ load test_helper
 }
 
 @test "run with incorrect args, print help" {
-  run "$program" -i samples/inventory-internal --debug --no-syslog
+  run "$program" -i /vagrant/samples/inventory-internal --debug --no-syslog
   [[ "$output" = *"error: the following arguments are required:"* ]]
 }
 
 @test "run without --debug" {
-  run "$program" -p deploy.yaml deploy2.yaml -i samples/inventory-internal samples/inventory-internal --no-syslog --dry-run --playbook_root_dir samples
+  run "$program" -p /vagrant/deploy.yaml /vagrant/deploy2.yaml -i /vagrant/samples/inventory-internal /vagrant/samples/inventory-internal --no-syslog --dry-run --playbook_root_dir /vagrant/samples
   [[ "$output" != *"error"* ]]
   [ "$status" -eq 0 ]
 }
 
 @test "run without --no-syslog but with --debug, using conf file" {
-  run "$program" -c test/configtest.ini
+  run "$program" -c /vagrant/test/configtest.ini
   [[ "$output" != *"error"* ]]
 }
 
@@ -66,12 +66,12 @@ load test_helper
 }
 
 @test "able to decrypt testvault" {
-  run "$printvault" --vaultfile test/testvault --yaml_key master_ansible_user_ssh_phrase --vault_password_file test/vaultpassword
+  run "$printvault" --vaultfile /vagrant/test/testvault --yaml_key master_ansible_user_ssh_phrase --vault_password_file /vagrant/test/vaultpassword
   [[ "$output" == "1234567890abc321" ]]
 }
 
 @test "pylint a*.py" {
-  run $pylint ./a*.py
+  run $pylint /vagrant/a*.py
   [[ "$status" -eq 0 ]]
 }
 

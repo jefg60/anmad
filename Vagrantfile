@@ -13,7 +13,7 @@ Vagrant.configure("2") do |config|
      apt-get install -y python3.7 python3.7-dev virtualenv apache2-dev bats redis
    SHELL
   config.vm.provision "shell" do |s|
-     s.inline = 
+     s.inline =
        "virtualenv -p python3.7 ~/venv
         ~/venv/bin/pip install configargparse mod_wsgi hotqueue redis ssh_agent_setup pyyaml flask ansible_vault pylint
         bats /vagrant/test/anmad.bats"

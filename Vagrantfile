@@ -9,7 +9,7 @@ Vagrant.configure("2") do |config|
   config.vm.box = "ubuntu/bionic64"
   config.vm.network "forwarded_port", guest: 9999, host: 9999, id: "flaskdev"
   config.vm.provision "shell", inline: <<-SHELL
-     echo 'Acquire::http { Proxy "http://192.168.1.174:3142"; }' > /etc/apt/apt.conf.d/proxy
+     cp /vagrant/vagrant_proxy /etc/apt/apt.conf.d/proxy
      apt-get update
      apt-get install -y python3.7 python3.7-dev virtualenv apache2-dev bats redis
    SHELL

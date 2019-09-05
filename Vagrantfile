@@ -16,7 +16,7 @@ Vagrant.configure("2") do |config|
   config.vm.provision "shell" do |s|
      s.inline =
        "virtualenv -p python3.7 ~/venv
-        ~/venv/bin/pip install configargparse mod_wsgi hotqueue redis ssh_agent_setup pyyaml flask ansible_vault pylint
+        ~/venv/bin/pip install configargparse mod_wsgi hotqueue redis ssh_agent_setup pyyaml flask ansible_vault pylint psutil
         bats /vagrant/test/anmad.bats"
      s.privileged = false
   end

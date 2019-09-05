@@ -3,6 +3,7 @@
 import datetime
 import mod_wsgi
 from flask import Flask, render_template, redirect
+import psutil
 
 import anmad.button_funcs
 import anmad.queues
@@ -60,6 +61,21 @@ def log():
         }
     APP.config['logger'].debug("Rendering log page")
     return render_template('log.html', **template_data)
+
+@APP.route(BASEURL + "jobs")
+def jobs():
+    """Display running jobs (like ps -ef | grep ansible-playbook)."""
+    time_string = datetime.datetime.utcnow()
+    template_data = {
+        'title' : 'anmad - ansible-playbook processes',
+        'time': time_string,
+        'version': VERSION,
+        'jobs': [p.info for p in
+                 psutil.process_iter(attrs=['pid', 'name', 'cmdline'])
+                 if 'ansible-playbook' in p.info['name']],
+        }
+    APP.config['logger'].debug("Rendering job page")
+    return render_template('job.html', **template_data)
 
 
 @APP.route(BASEURL + "otherplays")

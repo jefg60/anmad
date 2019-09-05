@@ -7,7 +7,7 @@
 {% if jobs|length > 0 %}
 <h2>Found {{ jobs|length }} jobs currently running:</h2>
 {% for job in jobs %}
-  <h4>{{ job }}</h4>
+<h4>PID {{ job.pid }} cmdlime={{ job.cmdline }}<a href="/kill?pid={{ job.pid }}"</a>(KILL)</h4>
 {% endfor %}
 {% else %}
   <h3>No running jobs found</h3>

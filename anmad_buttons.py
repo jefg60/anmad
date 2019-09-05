@@ -2,7 +2,7 @@
 """Control interface for anmad."""
 import datetime
 import mod_wsgi
-from flask import Flask, render_template, redirect
+from flask import Flask, render_template, redirect, request
 import psutil
 
 import anmad.button_funcs
@@ -76,6 +76,25 @@ def jobs():
         }
     APP.config['logger'].debug("Rendering job page")
     return render_template('job.html', **template_data)
+
+@APP.route(BASEURL + "kill")
+def kill():
+    """Here be dragons. route to kill a proc by PID.
+    Hopefully a PID thats verified by psutil to be an ansible-playbook!"""
+    jobs = [p.info for p in
+            psutil.process_iter(attrs=['pid', 'name'])
+            if 'ansible-playbook' in p.info['name']]
+    pids = [li['pid'] for li in jobs]
+    requestedpid = int(request.args.get('pid'))
+    if requestedpid in pids:
+        process = psutil.Process(requestedpid)
+        process.kill()
+        APP.config['logger'].warning("KILLED pid %s on request", requestedpid)
+    else:
+        APP.config['logger'].critical(
+            "got request to kill PID %s which doesnt look like ansible-playbook!!!",
+            requestedpid)
+    return redirect(BASEURL + "jobs")
 
 
 @APP.route(BASEURL + "otherplays")

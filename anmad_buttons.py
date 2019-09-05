@@ -85,7 +85,7 @@ def kill():
             psutil.process_iter(attrs=['pid', 'name'])
             if 'ansible-playbook' in p.info['name']]
     pids = [li['pid'] for li in jobs]
-    requestedpid = int(request.args.get('pid'))
+    requestedpid = request.args.get('pid', type = int)
     if requestedpid in pids:
         process = psutil.Process(requestedpid)
         process.kill()

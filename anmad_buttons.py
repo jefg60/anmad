@@ -48,7 +48,6 @@ def mainpage():
     return render_template('main.html',
                            **template_data)
 
-
 @APP.route(BASEURL + "log")
 def log():
     """Display info queues."""
@@ -97,7 +96,6 @@ def kill():
             requestedpid)
     return redirect(BASEURL + "jobs")
 
-
 @APP.route(BASEURL + "otherplays")
 def otherplaybooks():
     """Display other playbooks."""
@@ -114,7 +112,6 @@ def otherplaybooks():
     APP.config['logger'].debug("Rendering other playbooks page")
     return render_template('other.html', **template_data)
 
-
 @APP.route(BASEURL + "clearqueues")
 def clearqueues():
     """Clear redis queues."""
@@ -122,7 +119,6 @@ def clearqueues():
     APP.config['queues'].clear()
     APP.config['queues'].update_job_lists()
     return redirect(BASEURL)
-
 
 @APP.route(BASEURL + "runall")
 def runall():
@@ -145,7 +141,6 @@ def runall():
     APP.config['logger'].debug("Redirecting to control page")
     return redirect(BASEURL)
 
-
 @APP.route(BASEURL + 'playbooks/<path:playbook>')
 def configuredplaybook(playbook):
     """Runs one playbook, if its one of the configured ones."""
@@ -158,7 +153,6 @@ def configuredplaybook(playbook):
     APP.config['queues'].update_job_lists()
     APP.config['logger'].debug("Redirecting to control page")
     return redirect(BASEURL)
-
 
 @APP.route(BASEURL + 'otherplaybooks/<path:playbook>')
 def otherplaybook(playbook):
@@ -174,7 +168,6 @@ def otherplaybook(playbook):
     APP.config['logger'].debug("Redirecting to others page")
     APP.config['queues'].update_job_lists()
     return redirect(BASEURL + 'otherplays')
-
 
 @APP.route(BASEURL + "ara")
 def ara_redirect():

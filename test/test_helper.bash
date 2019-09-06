@@ -8,5 +8,5 @@ teardown() {
 export printvault=/vagrant/print_vault_value.py
 export pylint="pylint"
 export program=/vagrant/anmad_buttons.py
-export version=0.16.0
+export version=0.16.1
 source ~/venv/bin/activate

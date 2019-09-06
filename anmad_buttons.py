@@ -188,6 +188,15 @@ def ara_redirect():
     APP.config['logger'].debug("Redirecting to ARA reports page")
     return redirect(APP.config['ara_url'])
 
+@APP.route(BASEURL + "ansiblelog")
+def ansiblelog():
+    """Display ansible.log."""
+    APP.config['logger'].debug("Displaying ansible.log")
+    text = open('/var/log/ansible/ansible.log', 'r+')
+    content = text.read()
+    text.close()
+    return render_template('ansiblelog.html', text=content)
+
 # Try accessing mod_wsgi process group, to see if we are running in wsgi.
 try:
     PROCESS_NAME = mod_wsgi.process_group

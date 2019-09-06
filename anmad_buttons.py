@@ -96,6 +96,19 @@ def kill():
             requestedpid)
     return redirect(BASEURL + "jobs")
 
+@APP.route(BASEURL + "killall")
+def killall():
+    """equivalent to killall ansible-playbook."""
+    jobs = [p.info for p in
+            psutil.process_iter(attrs=['pid', 'name'])
+            if 'ansible-playbook' in p.info['name']]
+    pids = [li['pid'] for li in jobs]
+    for requestedpid in pids:
+        process = psutil.Process(requestedpid)
+        process.kill()
+        APP.config['logger'].warning("KILLED pid %s via killall", requestedpid)
+    return redirect(BASEURL + "jobs")
+
 @APP.route(BASEURL + "otherplays")
 def otherplaybooks():
     """Display other playbooks."""

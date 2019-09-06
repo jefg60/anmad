@@ -81,10 +81,10 @@ def jobs():
 def kill():
     """Here be dragons. route to kill a proc by PID.
     Hopefully a PID thats verified by psutil to be an ansible-playbook!"""
-    joblist = [p.info for p in
+    proclist = [p.info for p in
                psutil.process_iter(attrs=['pid', 'name'])
                if 'ansible-playbook' in p.info['name']]
-    pids = [li['pid'] for li in joblist]
+    pids = [li['pid'] for li in proclist]
     requestedpid = request.args.get('pid', type=int)
     if requestedpid in pids:
         process = psutil.Process(requestedpid)
@@ -99,10 +99,10 @@ def kill():
 @APP.route(BASEURL + "killall")
 def killall():
     """equivalent to killall ansible-playbook."""
-    joblist = [p.info for p in
+    proclist = [p.info for p in
                psutil.process_iter(attrs=['pid', 'name'])
                if 'ansible-playbook' in p.info['name']]
-    pids = [li['pid'] for li in joblist]
+    pids = [li['pid'] for li in proclist]
     for requestedpid in pids:
         process = psutil.Process(requestedpid)
         process.kill()

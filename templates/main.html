@@ -1,7 +1,8 @@
 {% include 'header.html' %}
 <body>
-  <h1>Version {{ version }}
-    {{ daemon_status["service"] }} 
+  <h1>Version {{ version }}</h1>
+  <h1>
+    {{ daemon_status["service"] }} service is 
     {% if daemon_status["active_state"] != 'active' or daemon_status["sub_state"] != 'running' %}
     <span style="color:red">
     {% else %}

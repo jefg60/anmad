@@ -4,6 +4,7 @@ import datetime
 import mod_wsgi
 from flask import Flask, render_template, redirect, request
 import psutil
+import socket
 
 import anmad.button_funcs
 import anmad.queues
@@ -14,7 +15,7 @@ import anmad.yaml
 
 APP = Flask(__name__)
 BASEURL = "/"
-VERSION = anmad.version.VERSION
+VERSION = anmad.version.VERSION + " on " + socket.getfqdn()
 
 def configure_app():
     """Fetch required args into config dict."""

@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """Control interface for anmad."""
 import datetime
+import socket
 import mod_wsgi
 from flask import Flask, render_template, redirect, request
 import psutil
-import socket
 
 import anmad.button_funcs
 import anmad.queues
@@ -81,11 +81,11 @@ def jobs():
 def kill():
     """Here be dragons. route to kill a proc by PID.
     Hopefully a PID thats verified by psutil to be an ansible-playbook!"""
-    jobs = [p.info for p in
-            psutil.process_iter(attrs=['pid', 'name'])
-            if 'ansible-playbook' in p.info['name']]
-    pids = [li['pid'] for li in jobs]
-    requestedpid = request.args.get('pid', type = int)
+    joblist = [p.info for p in
+               psutil.process_iter(attrs=['pid', 'name'])
+               if 'ansible-playbook' in p.info['name']]
+    pids = [li['pid'] for li in joblist]
+    requestedpid = request.args.get('pid', type=int)
     if requestedpid in pids:
         process = psutil.Process(requestedpid)
         process.kill()
@@ -99,10 +99,10 @@ def kill():
 @APP.route(BASEURL + "killall")
 def killall():
     """equivalent to killall ansible-playbook."""
-    jobs = [p.info for p in
-            psutil.process_iter(attrs=['pid', 'name'])
-            if 'ansible-playbook' in p.info['name']]
-    pids = [li['pid'] for li in jobs]
+    joblist = [p.info for p in
+               psutil.process_iter(attrs=['pid', 'name'])
+               if 'ansible-playbook' in p.info['name']]
+    pids = [li['pid'] for li in joblist]
     for requestedpid in pids:
         process = psutil.Process(requestedpid)
         process.kill()

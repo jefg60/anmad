@@ -2,9 +2,9 @@
 """Control interface for anmad."""
 import datetime
 import socket
-import mod_wsgi
-import psutil
 import fnmatch
+import psutil
+import mod_wsgi
 from flask import Flask, render_template, redirect, request
 
 import anmad.button_funcs
@@ -32,8 +32,8 @@ def configure_app():
 def get_ansible_playbook_procs():
     """Get list of processes that match *ansible-playbook."""
     proclist = [p.info for p in
-             psutil.process_iter(attrs=['pid', 'name', 'cmdline'])
-             if fnmatch.filter(p.info['name'], '*ansible-playbook')]
+                psutil.process_iter(attrs=['pid', 'name', 'cmdline'])
+                if fnmatch.filter(p.info['name'], '*ansible-playbook')]
     return proclist
 
 @APP.route(BASEURL)

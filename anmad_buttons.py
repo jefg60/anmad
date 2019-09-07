@@ -3,8 +3,9 @@
 import datetime
 import socket
 import mod_wsgi
-from flask import Flask, render_template, redirect, request
 import psutil
+import fnmatch
+from flask import Flask, render_template, redirect, request
 
 import anmad.button_funcs
 import anmad.queues
@@ -27,6 +28,13 @@ def configure_app():
     APP.config['run_list'] = anmad.args.parse_args().run_list
     APP.config['logger'] = anmad.logging.logsetup()
     APP.config['queues'] = anmad.queues.AnmadQueues('prerun', 'playbooks', 'info')
+
+def get_ansible_playbook_procs():
+    """Get list of processes that match *ansible-playbook."""
+    proclist = [p.info for p in
+             psutil.process_iter(attrs=['pid', 'name', 'cmdline'])
+             if fnmatch.filter(p.info['name'], '*ansible-playbook')]
+    return proclist
 
 @APP.route(BASEURL)
 def mainpage():
@@ -70,9 +78,7 @@ def jobs():
         'title' : 'anmad - ansible-playbook processes',
         'time': time_string,
         'version': VERSION,
-        'jobs': [p.info for p in
-                 psutil.process_iter(attrs=['pid', 'name', 'cmdline'])
-                 if 'ansible-playbook' in p.info['name']],
+        'jobs': get_ansible_playbook_procs()
         }
     APP.config['logger'].debug("Rendering job page")
     return render_template('job.html', **template_data)
@@ -81,9 +87,7 @@ def jobs():
 def kill():
     """Here be dragons. route to kill a proc by PID.
     Hopefully a PID thats verified by psutil to be an ansible-playbook!"""
-    proclist = [p.info for p in
-               psutil.process_iter(attrs=['pid', 'name'])
-               if 'ansible-playbook' in p.info['name']]
+    proclist = get_ansible_playbook_procs()
     pids = [li['pid'] for li in proclist]
     requestedpid = request.args.get('pid', type=int)
     if requestedpid in pids:
@@ -99,9 +103,7 @@ def kill():
 @APP.route(BASEURL + "killall")
 def killall():
     """equivalent to killall ansible-playbook."""
-    proclist = [p.info for p in
-               psutil.process_iter(attrs=['pid', 'name'])
-               if 'ansible-playbook' in p.info['name']]
+    proclist = get_ansible_playbook_procs()
     pids = [li['pid'] for li in proclist]
     for requestedpid in pids:
         process = psutil.Process(requestedpid)

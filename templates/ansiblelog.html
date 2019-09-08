@@ -4,8 +4,15 @@
   {% include 'refreshtime.html' %}
   {% include 'backbutton.html' %}
 
+  {% if pid is defined %}
+  ansible.log for PID {{ pid }}:
+  {% else %}
+  entire ansible.log (may take some time to load):
+  {% endif %}
   <pre>
-  {{ text }}
+  {% for line in text -%}
+  {{ line }}
+  {%- endfor %}
   </pre>
 
 </body>

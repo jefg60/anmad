@@ -199,6 +199,21 @@ def ansiblelog():
     text.close()
     return render_template('ansiblelog.html', text=content)
 
+@APP.route(BASEURL + "ansiblelogperproc")
+def ansiblelogperproc():
+    """Display ansible.log for a given PID."""
+    requestedpid = request.args.get('pid', type=int)
+    APP.config['logger'].debug("Displaying ansible.log for PID %s ",
+            requestedpid)
+    content = []
+    substr = "p=" + str(requestedpid)
+    print(substr)
+    for line in open('/var/log/ansible/ansible.log', 'r'):
+        if substr in line:
+            content.append(line)
+            print(line)
+    return render_template('ansiblelog.html', text=content, pid=requestedpid)
+
 # Try accessing mod_wsgi process group, to see if we are running in wsgi.
 try:
     PROCESS_NAME = mod_wsgi.process_group

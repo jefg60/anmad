@@ -5,12 +5,12 @@
   {% include 'backbutton.html' %}
 
 {% if jobs|length > 0 %}
-<h2>Found {{ jobs|length }} jobs currently running:</h2>
+<h2>Found {{ jobs|length }} processes currently running (matching *ansible-playbook):</h2>
 {% for job in jobs %}
 <h4>PID {{ job.pid }} cmdlime={{ job.cmdline }}<a href="/kill?pid={{ job.pid }}">(KILL)</a></h4>
 {% endfor %}
 {% else %}
-  <h3>No running jobs found</h3>
+  <h3>No running ansible-playbook processes found</h3>
 {% endif %}
 
 {% include 'killall.html' %}

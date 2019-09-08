@@ -33,7 +33,7 @@ def get_ansible_playbook_procs():
     """Get list of processes that match *ansible-playbook."""
     proclist = [p.info for p in
                 psutil.process_iter(attrs=['pid', 'name', 'cmdline'])
-                if fnmatch.filter(p.info['name'], '*ansible-playbook')]
+                if fnmatch.filter(p.info['cmdline'], '*ansible-playbook*')]
     return proclist
 
 @APP.route(BASEURL)

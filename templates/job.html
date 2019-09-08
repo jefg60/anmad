@@ -8,10 +8,10 @@
 <h2>Found {{ jobs|length }} processes currently running</h2>
 <h2>(cmdline matching *ansible-playbook*):</h2>
 {% for job in jobs %}
-<h4>PID {{ job.pid }} playbook {{ job.cmdline|last }}<a href="/kill?pid={{ job.pid }}">(KILL)</a></h4>
+<pre class="tab">PID {{ job.pid }} playbook {{ job.cmdline|last }}     <a href="/kill?pid={{ job.pid }}">(KILL)</a>   <a href="/ansiblelogperproc?pid={{ job.pid }}">ansible.log</a> </pre>
 {% endfor %}
 {% else %}
-  <h3>No running ansible-playbook processes found</h3>
+  <h2>No running ansible-playbook processes found</h2>
 {% endif %}
 
 {% include 'killall.html' %}

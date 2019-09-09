@@ -2,6 +2,7 @@
 """Control interface for anmad."""
 import datetime
 import re
+import os
 import socket
 import fnmatch
 import psutil
@@ -19,6 +20,9 @@ APP = Flask(__name__)
 BASEURL = "/"
 VERSION = anmad.version.VERSION + " on " + socket.getfqdn()
 
+def basename(path):
+    return os.path.basename(path)
+
 def configure_app():
     """Fetch required args into config dict."""
     APP.config['ara_url'] = anmad.args.parse_args().ara_url
@@ -29,6 +33,7 @@ def configure_app():
     APP.config['run_list'] = anmad.args.parse_args().run_list
     APP.config['logger'] = anmad.logging.logsetup()
     APP.config['queues'] = anmad.queues.AnmadQueues('prerun', 'playbooks', 'info')
+    APP.add_template_filter(basename)
 
 def get_ansible_playbook_procs():
     """Get list of processes that match *ansible-playbook."""

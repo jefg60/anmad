@@ -160,7 +160,7 @@ def parse_args():
     # First inventory is the one that plays run against
     myargs.maininventory = os.path.abspath(myargs.inventories[0])
 
-    myargs.ansible_playbook_cmd = myargs.venv + '/bin/ansible-playbook'
+    myargs.ansible_playbook_cmd = myargs.venv + '/bin/ansible-playbook-wrapper'
     myargs.process_name = process_name
     myargs.default_configfile = default_configfile
     myargs.version = __version__

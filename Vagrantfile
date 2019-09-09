@@ -12,11 +12,16 @@ Vagrant.configure("2") do |config|
      cp /vagrant/vagrant_proxy /etc/apt/apt.conf.d/proxy
      apt-get update
      apt-get install -y python3.7 python3.7-dev virtualenv apache2-dev bats redis
+     mkdir /var/log/ansible
+     ln -s /vagrant/ansible.log /var/log/ansible/deploy.yaml.log
+     ln -s /vagrant/ansible.log /var/log/ansible/deploy2.yaml.log
    SHELL
   config.vm.provision "shell" do |s|
      s.inline =
        "virtualenv -p python3.7 ~/venv
         ~/venv/bin/pip install configargparse mod_wsgi hotqueue redis ssh_agent_setup pyyaml flask ansible_vault pylint psutil
+        bash /vagrant/dummy-ansible-playbook.sh
+        ~/venv/bin/python /vagrant/anmad_buttons.py --configfile /vagrant/test/configtest.nodry.ini &
         bats /vagrant/test/anmad.bats"
      s.privileged = false
   end

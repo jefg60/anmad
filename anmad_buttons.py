@@ -81,7 +81,7 @@ def jobs():
     """Display running jobs (like ps -ef | grep ansible-playbook)."""
     time_string = datetime.datetime.utcnow()
     template_data = {
-        'title' : 'anmad - ansible-playbook processes',
+        'title' : 'ansible-playbook processes',
         'time': time_string,
         'version': VERSION,
         'jobs': get_ansible_playbook_procs()
@@ -207,7 +207,7 @@ def ansiblelog():
     content = text.read()
     text.close()
     template_data = {
-        'title' : 'anmad others',
+        'title' : 'ansible log for ' + requestedlog,
         'time': time_string,
         'version': VERSION,
         'log': requestedlog,

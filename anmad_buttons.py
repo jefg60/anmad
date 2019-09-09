@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Control interface for anmad."""
 import datetime
+import re
 import socket
 import fnmatch
 import psutil
@@ -211,7 +212,15 @@ def ansiblelogperproc():
     for line in open('/var/log/ansible/ansible.log', 'r'):
         if substr in line:
             content.append(line)
-            print(line)
+            continue
+        # regex should match only lines that start like
+        # "2019-09-06 13:58:19,925 blah"
+        # (currently its only looking for yyyy-mm-dd)
+        match = re.search(r'\d{4}-\d{2}-\d{2}', line)
+        try:
+            date = datetime.datetime.strptime(match.group(), '%Y-%m-%d').date()
+        except AttributeError:
+            content.append(line)
     return render_template('ansiblelog.html', text=content, pid=requestedpid)
 
 # Try accessing mod_wsgi process group, to see if we are running in wsgi.

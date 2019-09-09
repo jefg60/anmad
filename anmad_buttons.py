@@ -200,33 +200,20 @@ def ara_redirect():
 def ansiblelog():
     """Display ansible.log."""
     APP.config['logger'].debug("Displaying ansible.log")
-    text = open('/var/log/ansible/ansible.log', 'r+')
+    time_string = datetime.datetime.utcnow()
+    requestedlog = request.args.get('play')
+    logfile = '/var/log/ansible/' + requestedlog
+    text = open(logfile, 'r+')
     content = text.read()
     text.close()
-    return render_template('ansiblelog.html', text=content)
-
-@APP.route(BASEURL + "ansiblelogperproc")
-def ansiblelogperproc():
-    """Display ansible.log for a given PID."""
-    requestedpid = request.args.get('pid', type=int)
-    APP.config['logger'].debug("Displaying ansible.log for PID %s ",
-            requestedpid)
-    content = []
-    substr = "p=" + str(requestedpid)
-    print(substr)
-    for line in open('/var/log/ansible/ansible.log', 'r'):
-        if substr in line:
-            content.append(line)
-            continue
-        # regex should match only lines that start like
-        # "2019-09-06 13:58:19,925 blah"
-        # (currently its only looking for yyyy-mm-dd)
-        match = re.search(r'\d{4}-\d{2}-\d{2}', line)
-        try:
-            date = datetime.datetime.strptime(match.group(), '%Y-%m-%d').date()
-        except AttributeError:
-            content.append(line)
-    return render_template('ansiblelog.html', text=content, pid=requestedpid)
+    template_data = {
+        'title' : 'anmad others',
+        'time': time_string,
+        'version': VERSION,
+        'log': requestedlog,
+        'text': content
+        }
+    return render_template('ansiblelog.html', **template_data)
 
 # Try accessing mod_wsgi process group, to see if we are running in wsgi.
 try:

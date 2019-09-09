@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Control interface for anmad."""
 import datetime
-import re
 import os
 import socket
 import fnmatch
@@ -21,6 +20,7 @@ BASEURL = "/"
 VERSION = anmad.version.VERSION + " on " + socket.getfqdn()
 
 def basename(path):
+    """Simple func to be used as jinja2 filter."""
     return os.path.basename(path)
 
 def configure_app():

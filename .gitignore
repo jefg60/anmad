@@ -5,3 +5,4 @@ samples/*.retry
 *.pyc
 .vagrant
 *.log
+roles

@@ -12,9 +12,9 @@ Vagrant.configure("2") do |config|
      cp /vagrant/vagrant_proxy /etc/apt/apt.conf.d/proxy
      apt-get update
      apt-get install -y python3.7 python3.7-dev virtualenv apache2-dev bats redis
-     mkdir /var/log/ansible
-     ln -s /vagrant/ansible.log /var/log/ansible/deploy.yaml.log
-     ln -s /vagrant/ansible.log /var/log/ansible/deploy2.yaml.log
+     mkdir /var/log/ansible || true
+     ln -s /vagrant/ansible.log /var/log/ansible/deploy.yaml.log || true
+     ln -s /vagrant/ansible.log /var/log/ansible/deploy2.yaml.log || true
    SHELL
   config.vm.provision "shell" do |s|
      s.inline =

@@ -8,3 +8,4 @@ Part of jefg60/ansible-master
 Screenshot:
 
 ![Main page](/../screenshots/screenshots/main.png?raw=true)
+

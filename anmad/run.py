@@ -38,8 +38,6 @@ class AnmadRun:
         try:
             ret = subprocess.run(
                 ansible_playbook_cmd,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
                 text=True,
                 timeout=self.timeout)
         except subprocess.TimeoutExpired:
@@ -52,10 +50,6 @@ class AnmadRun:
                 255)
             return ret
 
-        if 'WARNING' in (ret.stdout, ret.stderr):
-            self.logger.warning(
-                "Warnings found in ansible output: %s %s",
-                ret.stdout, ret.stderr)
         if ret.returncode == 0:
             self.logger.info(
                 "ansible-playbook %s return code: %s",

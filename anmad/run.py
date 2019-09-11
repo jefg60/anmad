@@ -37,16 +37,16 @@ class AnmadRun:
         ansible_playbook_cmd.extend(['--inventory', inventory, playbook])
 
         my_env = os.environ.copy()
-        my_env['ANSIBLE_LOG_PATH'] =
-            '/var/log/anmad/playbook/' + playbook + '.log'
+        my_env['ANSIBLE_LOG_PATH'] = (
+            '/var/log/anmad/playbook/' + os.path.basename(playbook) + '.log')
 
         self.logger.info(
             "Running %s and logging to %s",
             str(ansible_playbook_cmd), str(my_env['ANSIBLE_LOG_PATH']))
         try:
             ret = subprocess.run(
-                env=my_env,
                 ansible_playbook_cmd,
+                env=my_env,
                 timeout=self.timeout)
         except subprocess.TimeoutExpired:
             # create a dummy completedProcess obj with a bad return code

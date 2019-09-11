@@ -25,7 +25,7 @@ class TestMulti(unittest.TestCase):
         self.timeout = 2
         self.badplay = 'samples/deploy3.yaml'
         self.testinv = 'samples/inventory-internal'
-        self.ansible_playbook_cmd = '/vagrant/ansible-playbook-wrapper'
+        self.ansible_playbook_cmd = '/vagrant/ansible-playbook'
         self.vaultpw = 'test/vaultpassword'
         self.checkdir = '/vagrant/samples'
         self.multiobj = anmad.multi.AnmadMulti(

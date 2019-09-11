@@ -36,12 +36,12 @@ class TestYaml(unittest.TestCase):
 
     def test_verify_yaml_missingfile(self):
         """Test verify_yaml with missing file."""
-        verify = anmad.yaml.verify_yaml_file(self.logger, 'test/missing.yml')
+        verify = anmad.yaml.verify_yaml_file(self.logger, '/vagrant/test/missing.yml')
         self.assertFalse(verify)
 
     def test_verify_yaml_is_empty_directory(self):
         """Test verify_yaml with empty dir."""
-        verify = anmad.yaml.verify_yaml_file(self.logger, 'empty_dir')
+        verify = anmad.yaml.verify_yaml_file(self.logger, '/vagrant/empty_dir')
         self.assertFalse(verify)
 
     def test_verify_yaml_is_directory(self):
@@ -63,7 +63,7 @@ class TestYaml(unittest.TestCase):
 
     def test_verify_yaml_badfile(self):
         """Test that verify_yaml_file correctly identifies bad yaml."""
-        verify = anmad.yaml.verify_yaml_file(self.logger, 'test/badyaml.yml')
+        verify = anmad.yaml.verify_yaml_file(self.logger, '/vagrant/test/badyaml.yml')
         self.assertFalse(verify)
 
     def test_list_bad_yamlfiles(self):
@@ -81,12 +81,12 @@ class TestYaml(unittest.TestCase):
         testfiles = ['/vagrant/samples/' + x for x in self.playbooks]
         verify = anmad.yaml.list_bad_yamlfiles(self.logger, testfiles)
         self.assertEqual(verify, [])
-        verify = anmad.yaml.list_bad_yamlfiles(self.logger, ['test/missing.yml'])
-        self.assertEqual(verify, ['test/missing.yml'])
+        verify = anmad.yaml.list_bad_yamlfiles(self.logger, ['/vagrant/test/missing.yml'])
+        self.assertEqual(verify, ['/vagrant/test/missing.yml'])
 
     def test_verify_config_file(self):
         """Test the verify_config_file func."""
-        verify = anmad.yaml.verify_config_file('test/bad-inventory')
+        verify = anmad.yaml.verify_config_file('/vagrant/test/bad-inventory')
         self.assertFalse(verify)
         verify = anmad.yaml.verify_config_file('/vagrant/samples/inventory-internal')
         self.assertTrue(verify)

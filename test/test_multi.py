@@ -19,15 +19,15 @@ class TestMulti(unittest.TestCase):
         """Set up multi arg tests."""
         self.logger = logging.getLogger(os.path.basename(main.__file__))
         # Change logging.ERROR to INFO, to see log messages during testing.
-        self.logger.setLevel(logging.CRITICAL)
+        self.logger.setLevel(logging.DEBUG)
         self.testplay = 'samples/deploy.yaml'
         self.timedplay = 'samples/deploy6.yaml'
         self.timeout = 2
         self.badplay = 'samples/deploy3.yaml'
         self.testinv = 'samples/inventory-internal'
-        self.ansible_playbook_cmd = './venv/bin/ansible-playbook'
+        self.ansible_playbook_cmd = '/vagrant/ansible-playbook-wrapper'
         self.vaultpw = 'test/vaultpassword'
-        self.checkdir = './samples'
+        self.checkdir = '/vagrant/samples'
         self.multiobj = anmad.multi.AnmadMulti(
             self.logger,
             self.testinv,
@@ -69,7 +69,7 @@ class TestMulti(unittest.TestCase):
         because there are 2 bad playbooks in there, or 255 for missing dir."""
         output = self.multiobj.syncheck_dir(self.checkdir)
         self.assertEqual(output, 2)
-        output = self.multiobj.syncheck_dir('asdkjagdkjasgd')
+        output = self.multiobj.syncheck_dir('/asdkjagdkjasgd')
         self.assertEqual(output, 255)
 
     def test_runplaybooks(self):

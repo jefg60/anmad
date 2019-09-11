@@ -75,6 +75,11 @@ load test_helper
   [[ "$status" -eq 0 ]]
 }
 
+@test "pylint anmad modules /vagrant/anmad/*.py" {
+  run $pylint /vagrant/anmad/*.py
+  [[ "$status" -eq 0 ]]
+}
+
 @test "pylint $printvault" {
   run $pylint "$printvault"
   [[ "$status" -eq 0 ]]

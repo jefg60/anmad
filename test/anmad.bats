@@ -25,7 +25,7 @@ load test_helper
 }
 
 @test "unit test other python modules" {
-  run python -m unittest discover
+  run "cd /vagrant && python -m unittest discover"
   [ "$status" -eq 0 ]
 }
 

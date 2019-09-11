@@ -2,6 +2,8 @@
 import os
 import subprocess
 
+import anmad.process
+
 class AnmadRun:
     """Ansible-playbook operations class."""
     # pylint: disable=too-many-arguments
@@ -34,20 +36,31 @@ class AnmadRun:
             ansible_playbook_cmd.extend(['--check', '--diff'])
         ansible_playbook_cmd.extend(['--inventory', inventory, playbook])
 
-        self.logger.info("Running %s", str(ansible_playbook_cmd))
+        my_env = os.environ.copy()
+        my_env['ANSIBLE_LOG_PATH'] =
+            '/var/log/anmad/playbook/' + playbook + '.log'
+
+        self.logger.info(
+            "Running %s and logging to %s",
+            str(ansible_playbook_cmd), str(my_env['ANSIBLE_LOG_PATH']))
         try:
             ret = subprocess.run(
+                env=my_env,
                 ansible_playbook_cmd,
-                text=True,
                 timeout=self.timeout)
         except subprocess.TimeoutExpired:
-            self.logger.error(
-                "Timed out waiting %s seconds for %s",
-                self.timeout, ansible_playbook_cmd)
             # create a dummy completedProcess obj with a bad return code
             ret = subprocess.CompletedProcess(
                 ansible_playbook_cmd,
                 255)
+            # killall ansible-playbook procs to tidy up after
+            # killing the main one
+            killedpids = anmad.process.killall(playtokill=playbook)
+            self.logger.error(
+                "Timed out waiting %s seconds for %s",
+                self.timeout, ansible_playbook_cmd)
+            for pid in killedpids:
+                self.logger.warning("KILLED pid %s due to timeout", pid)
             return ret
 
         if ret.returncode == 0:

@@ -20,11 +20,11 @@ class TestMulti(unittest.TestCase):
         self.logger = logging.getLogger(os.path.basename(main.__file__))
         # Change logging.ERROR to INFO, to see log messages during testing.
         self.logger.setLevel(logging.DEBUG)
-        self.testplay = 'samples/deploy.yaml'
-        self.timedplay = 'samples/deploy6.yaml'
+        self.testplay = '/vagrant/samples/deploy.yaml'
+        self.timedplay = '/vagrant/samples/deploy6.yaml'
         self.timeout = 2
-        self.badplay = 'samples/deploy3.yaml'
-        self.testinv = 'samples/inventory-internal'
+        self.badplay = '/vagrant/samples/deploy3.yaml'
+        self.testinv = '/vagrant/samples/inventory-internal'
         self.ansible_playbook_cmd = '/home/vagrant/venv/bin/ansible-playbook'
         self.vaultpw = 'test/vaultpassword'
         self.checkdir = '/vagrant/samples'
@@ -65,7 +65,7 @@ class TestMulti(unittest.TestCase):
         self.assertNotEqual(output, 0)
 
     def test_syncheck_dir(self):
-        """Test syncheck_dir func against samples/. should return 2
+        """Test syncheck_dir func against /vagrant/samples/. should return 2
         because there are 2 bad playbooks in there, or 255 for missing dir."""
         output = self.multiobj.syncheck_dir(self.checkdir)
         self.assertEqual(output, 2)

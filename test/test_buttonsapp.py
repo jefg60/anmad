@@ -20,7 +20,7 @@ class TestButtonApp(unittest.TestCase):
     def setUp(self):
         self.playbooks = ['deploy.yaml', 'deploy2.yaml']
         self.pre_run_playbooks = ['deploy4.yaml']
-        self.playbookroot = 'samples'
+        self.playbookroot = '/vagrant/samples'
         self.version = anmad.version.VERSION
         self.logger = logging.getLogger(os.path.basename(main.__file__))
         # Change logging.ERROR to INFO, to see log messages during testing.

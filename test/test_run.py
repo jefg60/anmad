@@ -18,10 +18,10 @@ class TestPlaybook(unittest.TestCase):
         """Set up playbook tests."""
         self.logger = logging.getLogger(os.path.basename(main.__file__))
         self.logger.setLevel(logging.CRITICAL)
-        self.testplay = 'samples/deploy.yaml'
-        self.timedplay = 'samples/deploy2.yaml'
-        self.badplay = 'samples/deploy3.yaml'
-        self.testinv = 'samples/inventory-internal'
+        self.testplay = '/vagrant/samples/deploy.yaml'
+        self.timedplay = '/vagrant/samples/deploy2.yaml'
+        self.badplay = '/vagrant/samples/deploy3.yaml'
+        self.testinv = '/vagrant/samples/inventory-internal'
         self.ansible_playbook_cmd = '/home/vagrant/venv/bin/ansible-playbook'
         self.vaultpw = 'test/vaultpassword'
         self.timeout = 2

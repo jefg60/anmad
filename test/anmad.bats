@@ -26,7 +26,7 @@ load test_helper
 
 @test "unit test other python modules" {
   run "$python" -m unittest discover -s /vagrant
-  [[ "${lines[-2]}" == *"Ran 37 tests in"* ]]
+  [[ "$output" == *"Ran 37 tests in"* ]]
   [ "$status" -eq 0 ]
   [ "$output" != "FAILED" ]
 }

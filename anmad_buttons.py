@@ -1,10 +1,7 @@
 #!/usr/bin/env python3
 """Control interface for anmad."""
 import datetime
-import os
 import socket
-import fnmatch
-import psutil
 import mod_wsgi
 from flask import Flask, render_template, redirect, request
 
@@ -14,14 +11,11 @@ import anmad.version
 import anmad.args
 import anmad.logging
 import anmad.yaml
+import anmad.process
 
 APP = Flask(__name__)
 BASEURL = "/"
 VERSION = anmad.version.VERSION + " on " + socket.getfqdn()
-
-def basename(path):
-    """Simple func to be used as jinja2 filter."""
-    return os.path.basename(path)
 
 def configure_app():
     """Fetch required args into config dict."""
@@ -33,14 +27,7 @@ def configure_app():
     APP.config['run_list'] = anmad.args.parse_args().run_list
     APP.config['logger'] = anmad.logging.logsetup()
     APP.config['queues'] = anmad.queues.AnmadQueues('prerun', 'playbooks', 'info')
-    APP.add_template_filter(basename)
-
-def get_ansible_playbook_procs():
-    """Get list of processes that match *ansible-playbook."""
-    proclist = [p.info for p in
-                psutil.process_iter(attrs=['pid', 'name', 'cmdline'])
-                if fnmatch.filter(p.info['cmdline'], '*ansible-playbook*')]
-    return proclist
+    APP.add_template_filter(anmad.button_funcs.basename)
 
 @APP.route(BASEURL)
 def mainpage():
@@ -84,7 +71,7 @@ def jobs():
         'title' : 'ansible-playbook processes',
         'time': time_string,
         'version': VERSION,
-        'jobs': get_ansible_playbook_procs()
+        'jobs': anmad.process.get_ansible_playbook_procs()
         }
     APP.config['logger'].debug("Rendering job page")
     return render_template('job.html', **template_data)
@@ -93,12 +80,11 @@ def jobs():
 def kill():
     """Here be dragons. route to kill a proc by PID.
     Hopefully a PID thats verified by psutil to be an ansible-playbook!"""
-    proclist = get_ansible_playbook_procs()
+    proclist = anmad.process.get_ansible_playbook_procs()
     pids = [li['pid'] for li in proclist]
     requestedpid = request.args.get('pid', type=int)
     if requestedpid in pids:
-        process = psutil.Process(requestedpid)
-        process.kill()
+        anmad.process.kill(requestedpid)
         APP.config['logger'].warning("KILLED pid %s on request", requestedpid)
     else:
         APP.config['logger'].critical(
@@ -109,12 +95,9 @@ def kill():
 @APP.route(BASEURL + "killall")
 def killall():
     """equivalent to killall ansible-playbook."""
-    proclist = get_ansible_playbook_procs()
-    pids = [li['pid'] for li in proclist]
-    for requestedpid in pids:
-        process = psutil.Process(requestedpid)
-        process.kill()
-        APP.config['logger'].warning("KILLED pid %s via killall", requestedpid)
+    killedpids = anmad.process.killall()
+    for pid in killedpids:
+        APP.config['logger'].warning("KILLED pid %s via killall", pid)
     return redirect(BASEURL + "jobs")
 
 @APP.route(BASEURL + "otherplays")

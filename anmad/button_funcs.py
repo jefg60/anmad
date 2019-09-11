@@ -63,3 +63,7 @@ def service_status(service):
             "active_state": active_state,
             "sub_state": sub_state,
             "state_change_timestamp": state_change_timestamp}
+
+def basename(path):
+    """Simple func to be used as jinja2 filter."""
+    return os.path.basename(path)

@@ -24,13 +24,6 @@ load test_helper
   [[ "$output" = *"anmad.logging test ok" ]]
 }
 
-@test "unit test other python modules" {
-  run "$python" -m unittest discover -s /vagrant
-  [[ "$output" == *"Ran 37 tests in"* ]]
-  [ "$status" -eq 0 ]
-  [ "$output" != "FAILED" ]
-}
-
 @test "test --help option" {
   run "$python" "$program" --help
   [[ "$output" = *"usage"* ]]

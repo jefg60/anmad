@@ -11,7 +11,7 @@ Vagrant.configure("2") do |config|
   config.vm.provision "shell", inline: <<-SHELL
      cp /vagrant/vagrant_proxy /etc/apt/apt.conf.d/proxy
      apt-get update
-     apt-get install -y python3.7 python3.7-dev virtualenv apache2-dev bats redis
+     apt-get install -y python3.7 python3.7-dev virtualenv apache2-dev redis
      mkdir /var/log/ansible || true
    SHELL
   config.vm.provision "shell" do |s|
@@ -22,6 +22,10 @@ Vagrant.configure("2") do |config|
         sudo mkdir -p /var/log/anmad/playbook
         sudo chmod -R 0777 /var/log/anmad
         ~/venv/bin/python /vagrant/anmad_buttons.py --configfile /vagrant/test/configtest.nodry.ini &> /var/log/anmad/anmad_buttons.log &
+        git clone https://github.com/bats-core/bats-core.git
+        cd bats-core
+        sudo ./install.sh /usr/local
+        /home/vagrant/venv/bin/python -m unittest discover -s /vagrant &&\
         bats /vagrant/test/anmad.bats"
      s.privileged = false
   end

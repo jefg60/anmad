@@ -19,7 +19,7 @@ class TestMulti(unittest.TestCase):
         """Set up multi arg tests."""
         self.logger = logging.getLogger(os.path.basename(main.__file__))
         # Change logging.ERROR to INFO, to see log messages during testing.
-        self.logger.setLevel(logging.DEBUG)
+        self.logger.setLevel(logging.CRITICAL)
         self.testplay = '/vagrant/samples/deploy.yaml'
         self.timedplay = '/vagrant/samples/deploy6.yaml'
         self.timeout = 2

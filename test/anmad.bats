@@ -84,3 +84,7 @@ load test_helper
   run $pylint "$printvault"
   [[ "$status" -eq 0 ]]
 }
+
+@test "deploy9.yml.log exists" {
+  [[ -s /var/log/anmad/playbook/deploy9.yml.log ]]
+}

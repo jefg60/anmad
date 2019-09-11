@@ -21,7 +21,9 @@ Vagrant.configure("2") do |config|
        "virtualenv -p python3.7 ~/venv
         ~/venv/bin/pip install configargparse mod_wsgi hotqueue redis ssh_agent_setup pyyaml flask ansible_vault pylint psutil
         bash /vagrant/dummy-ansible-playbook.sh
-        ~/venv/bin/python /vagrant/anmad_buttons.py --configfile /vagrant/test/configtest.nodry.ini &
+        sudo mkdir -p /var/log/anmad /var/log/ansible
+        sudo chmod 0777 /var/log/anmad /var/log/ansible
+        ~/venv/bin/python /vagrant/anmad_buttons.py --configfile /vagrant/test/configtest.nodry.ini &> /var/log/anmad/anmad_buttons.log &
         bats /vagrant/test/anmad.bats"
      s.privileged = false
   end

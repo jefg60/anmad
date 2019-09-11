@@ -1,6 +1,7 @@
 """Functions to run ansible playbooks."""
 import os
 import subprocess
+import copy
 
 import anmad.process
 
@@ -29,12 +30,12 @@ class AnmadRun:
         with --check --diff"""
         playbook = os.path.abspath(playbook)
         inventory = os.path.abspath(self.inventory)
-        ansible_playbook_cmd = self.ansible_playbook_cmd
+        my_ansible_playbook_cmd = copy.deepcopy(self.ansible_playbook_cmd)
         if syncheck:
-            ansible_playbook_cmd.extend(['--syntax-check'])
+            my_ansible_playbook_cmd.extend(['--syntax-check'])
         if checkmode:
-            ansible_playbook_cmd.extend(['--check', '--diff'])
-        ansible_playbook_cmd.extend(['--inventory', inventory, playbook])
+            my_ansible_playbook_cmd.extend(['--check', '--diff'])
+        my_ansible_playbook_cmd.extend(['--inventory', inventory, playbook])
 
         my_env = os.environ.copy()
         my_env['ANSIBLE_LOG_PATH'] = (
@@ -42,23 +43,23 @@ class AnmadRun:
 
         self.logger.info(
             "Running %s and logging to %s",
-            str(ansible_playbook_cmd), str(my_env['ANSIBLE_LOG_PATH']))
+            str(my_ansible_playbook_cmd), str(my_env['ANSIBLE_LOG_PATH']))
         try:
             ret = subprocess.run(
-                ansible_playbook_cmd,
+                my_ansible_playbook_cmd,
                 env=my_env,
                 timeout=self.timeout)
         except subprocess.TimeoutExpired:
             # create a dummy completedProcess obj with a bad return code
             ret = subprocess.CompletedProcess(
-                ansible_playbook_cmd,
+                my_ansible_playbook_cmd,
                 255)
             # killall ansible-playbook procs to tidy up after
             # killing the main one
             killedpids = anmad.process.killall(playtokill=playbook)
             self.logger.error(
                 "Timed out waiting %s seconds for %s",
-                self.timeout, ansible_playbook_cmd)
+                self.timeout, my_ansible_playbook_cmd)
             for pid in killedpids:
                 self.logger.warning("KILLED pid %s due to timeout", pid)
             return ret

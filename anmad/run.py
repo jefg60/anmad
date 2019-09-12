@@ -59,10 +59,10 @@ class AnmadRun:
             # killing the main one
             killedprocs = anmad.process.killall(playtokill=' '.join(my_ansible_playbook_cmd))
             self.logger.error(
-                "Timed out waiting %s seconds for %s",
+                "Timed out waiting %s seconds for '%s'",
                 self.timeout, ' '.join(my_ansible_playbook_cmd))
             for proc in killedprocs:
-                self.logger.warning("KILLED %s due to timeout", str(proc))
+                self.logger.warning("KILLED '%s' due to timeout", ' '.join(proc['cmdline']))
             return ret
 
         if ret.returncode == 0:

@@ -56,10 +56,10 @@ class AnmadRun:
                 255)
             # killall ansible-playbook procs to tidy up after
             # killing the main one
-            killedprocs = anmad.process.killall(playtokill=playbook)
+            killedprocs = anmad.process.killall(playtokill=*my_ansible_playbook_cmd)
             self.logger.error(
                 "Timed out waiting %s seconds for %s",
-                self.timeout, my_ansible_playbook_cmd)
+                self.timeout, *my_ansible_playbook_cmd)
             for proc in killedprocs:
                 self.logger.warning("KILLED %s due to timeout", str(proc))
             return ret

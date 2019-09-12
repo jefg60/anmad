@@ -40,6 +40,7 @@ class AnmadRun:
         my_env = os.environ.copy()
         my_env['ANSIBLE_LOG_PATH'] = (
             '/var/log/anmad/playbook/' + os.path.basename(playbook) + '.log')
+        #my_env['ANSIBLE_TRANSFORM_INVALID_GROUP_CHARS'] = 'silently'
 
         self.logger.info(
             "Running %s and logging to %s",
@@ -56,10 +57,10 @@ class AnmadRun:
                 255)
             # killall ansible-playbook procs to tidy up after
             # killing the main one
-            killedprocs = anmad.process.killall(playtokill=*my_ansible_playbook_cmd)
+            killedprocs = anmad.process.killall(playtokill=' '.join(my_ansible_playbook_cmd))
             self.logger.error(
                 "Timed out waiting %s seconds for %s",
-                self.timeout, *my_ansible_playbook_cmd)
+                self.timeout, ' '.join(my_ansible_playbook_cmd))
             for proc in killedprocs:
                 self.logger.warning("KILLED %s due to timeout", str(proc))
             return ret

@@ -95,9 +95,9 @@ def kill():
 @APP.route(BASEURL + "killall")
 def killall():
     """equivalent to killall ansible-playbook."""
-    killedpids = anmad.process.killall()
-    for pid in killedpids:
-        APP.config['logger'].warning("KILLED pid %s via killall", pid)
+    killedprocs = anmad.process.killall()
+    for proc in killedprocs:
+        APP.config['logger'].warning("KILLED process '%s' via killall", ' '.join(proc['cmdline']))
     return redirect(BASEURL + "jobs")
 
 @APP.route(BASEURL + "otherplays")

@@ -26,7 +26,8 @@ def configure_app():
     APP.config['prerun_list'] = anmad.args.parse_args().prerun_list
     APP.config['run_list'] = anmad.args.parse_args().run_list
     APP.config['logger'] = anmad.logging.logsetup()
-    APP.config['queues'] = anmad.queues.AnmadQueues('prerun', 'playbooks', 'info')
+    APP.config['queues'] = anmad.queues.AnmadQueues(
+        'prerun', 'playbooks', 'info')
     APP.add_template_filter(anmad.button_funcs.basename)
 
 @APP.route(BASEURL)
@@ -90,8 +91,7 @@ def kill():
             if proc['pid'] == requestedpid:
                 cmdline = ' '.join(proc['cmdline'])
                 APP.config['logger'].warning(
-                        "pid %s had cmdline '%s'",
-                        requestedpid, cmdline)
+                    "pid %s had cmdline '%s'", requestedpid, cmdline)
     else:
         APP.config['logger'].critical(
             "got request to kill PID %s which doesnt look like ansible-playbook!!!",
@@ -103,7 +103,8 @@ def killall():
     """equivalent to killall ansible-playbook."""
     killedprocs = anmad.process.killall()
     for proc in killedprocs:
-        APP.config['logger'].warning("KILLED process '%s' via killall", ' '.join(proc['cmdline']))
+        APP.config['logger'].warning(
+            "KILLED process '%s' via killall", ' '.join(proc['cmdline']))
     return redirect(BASEURL + "jobs")
 
 @APP.route(BASEURL + "otherplays")
@@ -133,7 +134,9 @@ def clearqueues():
 @APP.route(BASEURL + "runall")
 def runall():
     """Run all playbooks after verifying that files exist."""
-    problemfile = anmad.yaml.list_missing_files(APP.config['logger'], APP.config['prerun_list'])
+    problemfile = anmad.yaml.list_missing_files(
+        APP.config['logger'],
+        APP.config['prerun_list'])
     if problemfile:
         APP.config['logger'].info("Invalid files: %s", str(problemfile))
         return redirect(BASEURL)
@@ -158,7 +161,9 @@ def configuredplaybook(playbook):
         APP.config['logger'],
         APP.config['queues'],
         playbook,
-        anmad.button_funcs.buttonlist(APP.config['pre_run_playbooks'], APP.config['playbooks']),
+        anmad.button_funcs.buttonlist(
+            APP.config['pre_run_playbooks'],
+            APP.config['playbooks']),
         APP.config['playbook_root_dir'])
     APP.config['queues'].update_job_lists()
     APP.config['logger'].debug("Redirecting to control page")

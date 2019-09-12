@@ -6,7 +6,8 @@ def get_ansible_playbook_procs(cmdline_search='ansible-playbook'):
     """Get list of processes that match *ansible-playbook."""
     proclist = [p.info for p in
                 psutil.process_iter(attrs=['pid', 'name', 'cmdline'])
-                if fnmatch.filter(p.info['cmdline'], '*' + cmdline_search + '*')]
+                if fnmatch.filter(
+                    p.info['cmdline'], '*' + cmdline_search + '*')]
     return proclist
 
 def kill(pid):

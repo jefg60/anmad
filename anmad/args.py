@@ -153,9 +153,11 @@ def parse_args():
 
     if myargs.pre_run_playbooks:
         myargs.pre_run_playbooks = list(filter(None, myargs.pre_run_playbooks))
-        myargs.prerun_list = prepend_rootdir(myargs.playbook_root_dir, myargs.pre_run_playbooks)
+        myargs.prerun_list = prepend_rootdir(
+            myargs.playbook_root_dir, myargs.pre_run_playbooks)
 
-    myargs.run_list = prepend_rootdir(myargs.playbook_root_dir, myargs.playbooks)
+    myargs.run_list = prepend_rootdir(
+        myargs.playbook_root_dir, myargs.playbooks)
 
     # First inventory is the one that plays run against
     myargs.maininventory = os.path.abspath(myargs.inventories[0])

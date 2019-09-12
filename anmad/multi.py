@@ -44,8 +44,8 @@ class AnmadMulti:
             return 1
         for my_inventory in self.inventories:
             if not anmad.yaml.verify_yaml_file(self.logger, my_inventory):
-                # check the 'bad yaml' isnt actually a valid ini style inventory,
-                # before reporting it bad.
+                # check the 'bad yaml' isnt actually a valid ini style
+                # inventory, before reporting it bad.
                 if not anmad.yaml.verify_config_file(my_inventory):
                     self.logger.error(
                         "Unable to verify file %s", str(my_inventory))
@@ -79,9 +79,11 @@ class AnmadMulti:
         output = []
         pool = Pool(self.concurrency)
         if syncheck:
-            completed_processes = pool.map(playbookobj.syncheck_playbook, listofplaybooks)
+            completed_processes = pool.map(
+                playbookobj.syncheck_playbook, listofplaybooks)
         else:
-            completed_processes = pool.map(playbookobj.run_playbook, listofplaybooks)
+            completed_processes = pool.map(
+                playbookobj.run_playbook, listofplaybooks)
         pool.close()
         pool.join()
 

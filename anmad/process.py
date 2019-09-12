@@ -21,4 +21,4 @@ def killall(**kwargs):
     pids = [li['pid'] for li in proclist]
     for pid in pids:
         kill(pid)
-    return pids
+    return proclist

@@ -1,3 +1,16 @@
+<script>
+  function AreYouSurePid(p) {
+    message=`Are You SURE you want to kill PID ${p} ?`
+    var result = confirm(message);
+    if (result == true) {
+      self.location.href=`/kill?pid=${p}`
+    }
+    else {
+      self.location.href='/jobs'
+    }
+  }
+</script>
+
 {% include 'header.html' %}
 <body>
   <h1>Version {{ version }}</h1>
@@ -8,7 +21,7 @@
 <h2>Found {{ jobs|length }} processes currently running</h2>
 <h2>(cmdline matching *ansible-playbook*):</h2>
 {% for job in jobs %}
-<pre class="tab">PID {{ job.pid }} playbook {{ job.cmdline|last }}     <a href="/kill?pid={{ job.pid }}">(KILL)</a>   <a href="/ansiblelog?play={{ job.cmdline|last|basename }}.log">ansible.log</a> </pre>
+<pre class="tab">PID {{ job.pid }} playbook {{ job.cmdline|last }}  <button onclick="AreYouSurePid({{ job.pid }})">KILL PID {{ job.pid }}</button>  <a href="/ansiblelog?play={{ job.cmdline|last|basename }}.log">ansible log for {{ job.cmdline|last|basename }}</a> </pre>
 {% endfor %}
 {% else %}
   <h2>No running ansible-playbook processes found</h2>

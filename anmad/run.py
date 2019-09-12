@@ -40,7 +40,7 @@ class AnmadRun:
         my_env = os.environ.copy()
         my_env['ANSIBLE_LOG_PATH'] = (
             '/var/log/anmad/playbook/' + os.path.basename(playbook) + '.log')
-        #my_env['ANSIBLE_TRANSFORM_INVALID_GROUP_CHARS'] = 'silently'
+        my_env['ANSIBLE_TRANSFORM_INVALID_GROUP_CHARS'] = 'always'
 
         self.logger.info(
             "Running %s and logging to %s",

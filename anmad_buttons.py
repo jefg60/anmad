@@ -86,6 +86,12 @@ def kill():
     if requestedpid in pids:
         anmad.process.kill(requestedpid)
         APP.config['logger'].warning("KILLED pid %s on request", requestedpid)
+        for proc in proclist:
+            if proc['pid'] == requestedpid:
+                cmdline = ' '.join(proc['cmdline'])
+                APP.config['logger'].warning(
+                        "pid %s had cmdline '%s'",
+                        requestedpid, cmdline)
     else:
         APP.config['logger'].critical(
             "got request to kill PID %s which doesnt look like ansible-playbook!!!",

@@ -44,7 +44,7 @@ class AnmadRun:
 
         self.logger.info(
             "Running %s and logging to %s",
-            str(my_ansible_playbook_cmd), str(my_env['ANSIBLE_LOG_PATH']))
+            ' '.join(my_ansible_playbook_cmd), str(my_env['ANSIBLE_LOG_PATH']))
         try:
             ret = subprocess.run(
                 my_ansible_playbook_cmd,

@@ -19,7 +19,7 @@ Vagrant.configure("2") do |config|
        "virtualenv -p python3.7 ~/venv
         ~/venv/bin/pip install configargparse mod_wsgi hotqueue redis ssh_agent_setup pyyaml flask ansible_vault pylint psutil
         bash /vagrant/dummy-ansible-playbook.sh
-        sudo mkdir -p /var/log/anmad/playbook
+        sudo mkdir -p /var/log/ansible/playbook
         sudo chmod -R 0777 /var/log/anmad
         ~/venv/bin/python /vagrant/anmad_buttons.py --configfile /vagrant/test/configtest.nodry.ini &> /var/log/anmad/anmad_buttons.log &
         git clone https://github.com/bats-core/bats-core.git

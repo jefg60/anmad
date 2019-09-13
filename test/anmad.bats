@@ -81,5 +81,5 @@ load test_helper
 }
 
 @test "deploy9.yml.log exists" {
-  [[ -s /var/log/anmad/playbook/deploy9.yml.log ]]
+  [[ -s /var/log/ansible/playbook/deploy9.yml.log ]]
 }

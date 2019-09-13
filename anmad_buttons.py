@@ -196,7 +196,7 @@ def ansiblelog():
     APP.config['logger'].debug("Displaying ansible.log")
     time_string = datetime.datetime.utcnow()
     requestedlog = request.args.get('play')
-    logfile = '/var/log/ansible/' + requestedlog
+    logfile = '/var/log/ansible/playbook/' + requestedlog
     text = open(logfile, 'r+')
     content = text.read()
     text.close()

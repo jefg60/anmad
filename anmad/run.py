@@ -43,7 +43,7 @@ class AnmadRun:
         my_env['ANSIBLE_TRANSFORM_INVALID_GROUP_CHARS'] = 'always'
 
         self.logger.info(
-            "Running %s and logging to %s",
+            "Running '%s' and logging to '%s'",
             ' '.join(my_ansible_playbook_cmd), str(my_env['ANSIBLE_LOG_PATH']))
         try:
             ret = subprocess.run(

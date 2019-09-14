@@ -19,7 +19,7 @@ class TestPlaybook(unittest.TestCase):
         self.logger = logging.getLogger(os.path.basename(main.__file__))
         self.logger.setLevel(logging.CRITICAL)
         self.testplay = '/vagrant/samples/deploy.yaml'
-        self.timedplay = '/vagrant/samples/deploy2.yaml'
+        self.timedplay = '/vagrant/samples/deploy6.yaml'
         self.badplay = '/vagrant/samples/deploy3.yaml'
         self.testinv = '/vagrant/samples/inventory-internal'
         self.ansible_playbook_cmd = '/home/vagrant/venv/bin/ansible-playbook'

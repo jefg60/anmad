@@ -2,6 +2,7 @@
 """Control interface for anmad."""
 import datetime
 import socket
+import glob
 import mod_wsgi
 from flask import Flask, render_template, redirect, request
 
@@ -196,6 +197,13 @@ def ansiblelog():
     APP.config['logger'].debug("Displaying ansible.log")
     time_string = datetime.datetime.utcnow()
     if request.args.get('play') = 'list':
+        loglist = glob.glob('/var/log/ansible/playbook/' '*.log')
+        template_data = {
+            'title' : 'ansible playbook logs',
+            'time': time_string,
+            'version': VERSION,
+            'logs': loglist,
+            }
         return render_template('playbooklogs.html', **template_data)
     else:
         requestedlog = request.args.get('play')

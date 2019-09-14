@@ -31,9 +31,10 @@ Vagrant.configure("2") do |config|
         /home/vagrant/venv/bin/pylint /vagrant/!(test_*).py &&\
         /home/vagrant/venv/bin/pylint /vagrant/anmad/*.py &&\
         /home/vagrant/venv/bin/python -m unittest discover -s /vagrant &&\
-        bats /vagrant/test/anmad.bats &&\
         bash /vagrant/dummy-ansible-playbook.sh
-        ~/venv/bin/python /vagrant/anmad_buttons.py --configfile /vagrant/test/configtest.nodry.ini &> /var/log/anmad/anmad_buttons.log &"
+        nc -z localhost 9999 ||\
+        ~/venv/bin/python /vagrant/anmad_buttons.py --configfile /vagrant/test/configtest.nodry.ini &> /var/log/anmad/anmad_buttons.log &
+        bats /vagrant/test/anmad.bats"
      s.privileged = false
   end
 end

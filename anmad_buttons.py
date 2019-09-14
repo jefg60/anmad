@@ -196,7 +196,8 @@ def ansiblelog():
     """Display ansible.log."""
     APP.config['logger'].debug("Displaying ansible.log")
     time_string = datetime.datetime.utcnow()
-    if request.args.get('play') is 'list':
+    requestedlog = request.args.get('play')
+    if requestedlog == 'list':
         loglist = glob.glob('/var/log/ansible/playbook/' '*.log')
         template_data = {
             'title' : 'ansible playbook logs',
@@ -205,20 +206,18 @@ def ansiblelog():
             'logs': loglist,
             }
         return render_template('playbooklogs.html', **template_data)
-    else:
-        requestedlog = request.args.get('play')
-        logfile = '/var/log/ansible/playbook/' + requestedlog
-        text = open(logfile, 'r+')
-        content = text.read()
-        text.close()
-        template_data = {
-            'title' : 'ansible log for ' + requestedlog,
-            'time': time_string,
-            'version': VERSION,
-            'log': requestedlog,
-            'text': content
-            }
-        return render_template('ansiblelog.html', **template_data)
+    logfile = '/var/log/ansible/playbook/' + requestedlog
+    text = open(logfile, 'r+')
+    content = text.read()
+    text.close()
+    template_data = {
+        'title' : 'ansible log for ' + requestedlog,
+        'time': time_string,
+        'version': VERSION,
+        'log': requestedlog,
+        'text': content
+        }
+    return render_template('ansiblelog.html', **template_data)
 
 # Try accessing mod_wsgi process group, to see if we are running in wsgi.
 try:

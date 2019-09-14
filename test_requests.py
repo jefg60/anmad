@@ -4,9 +4,6 @@
 import unittest
 import requests
 
-import __main__ as main
-
-
 class TestReturnCodes(unittest.TestCase):
     """Test http return codes."""
 
@@ -26,6 +23,7 @@ class TestReturnCodes(unittest.TestCase):
 
     def test_runall_button(self):
         """Test the runall button."""
+        # pylint: disable=C0301
         requests.get(self.baseurl + 'clearqueues')
         output = requests.get(self.baseurl + 'runall')
         self.assertEqual(200, output.status_code)

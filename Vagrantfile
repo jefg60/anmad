@@ -27,14 +27,14 @@ Vagrant.configure("2") do |config|
           cd bats-core
           sudo ./install.sh /usr/local
         fi
-        shopt -s extglob
-        /home/vagrant/venv/bin/pylint /vagrant/!(test_*).py &&\
-        /home/vagrant/venv/bin/pylint /vagrant/anmad/*.py &&\
-        /home/vagrant/venv/bin/python -m unittest discover -s /vagrant &&\
+        /home/vagrant/venv/bin/pylint /vagrant/*.py || exit 1
+        /home/vagrant/venv/bin/pylint /vagrant/anmad/*.py || exit 2
+        /home/vagrant/venv/bin/python -m unittest discover -s /vagrant || exit 3
         bash /vagrant/dummy-ansible-playbook.sh
         nc -z localhost 9999 ||\
         ~/venv/bin/python /vagrant/anmad_buttons.py --configfile /vagrant/test/configtest.nodry.ini &> /var/log/anmad/anmad_buttons.log &
-        bats /vagrant/test/anmad.bats"
+        bats /vagrant/test/anmad.bats || exit 4
+        /home/vagrant/venv/bin/python /vagrant/test_requests.py"
      s.privileged = false
   end
 end

@@ -68,3 +68,11 @@ load test_helper
 @test "deploy9.yml.log exists" {
   [[ -s /var/log/ansible/playbook/deploy9.yml.log ]]
 }
+
+@test "anmad_buttons control page has correct version $version" {
+    curl http://localhost:9999/ | grep "$version"
+}
+
+@test "anmad_buttons control page has a deploy2.yaml button" {
+    curl http://localhost:9999/ | grep 'deploy2.yaml'
+}

@@ -65,21 +65,6 @@ load test_helper
   [[ "$output" == "1234567890abc321" ]]
 }
 
-@test "pylint a*.py" {
-  run "$python" "$pylint" /vagrant/a*.py
-  [[ "$status" -eq 0 ]]
-}
-
-@test "pylint anmad modules /vagrant/anmad/*.py" {
-  run "$python" "$pylint" /vagrant/anmad/*.py
-  [[ "$status" -eq 0 ]]
-}
-
-@test "pylint $printvault" {
-  run "$python" "$pylint" "$printvault"
-  [[ "$status" -eq 0 ]]
-}
-
 @test "deploy9.yml.log exists" {
   [[ -s /var/log/ansible/playbook/deploy9.yml.log ]]
 }

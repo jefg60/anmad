@@ -13,7 +13,9 @@ Vagrant.configure("2") do |config|
        cp /vagrant/vagrant_proxy /etc/apt/apt.conf.d/proxy &&\
        apt-get update &&\
        apt-get install -y python3.7 python3.7-dev virtualenv apache2-dev redis &&\
-       mkdir /var/log/ansible
+       mkdir -p /var/log/anmad /var/log/ansible/playbook
+       chmod -R 0777 /var/log/ansible
+       chmod -R 0777 /var/log/anmad
      fi
    SHELL
   config.vm.provision "shell" do |s|
@@ -21,8 +23,6 @@ Vagrant.configure("2") do |config|
        "if [ ! -d ~/venv ] ; then
           virtualenv -p python3.7 ~/venv &&\
           ~/venv/bin/pip install configargparse mod_wsgi hotqueue redis ssh_agent_setup pyyaml flask ansible_vault pylint psutil
-          sudo mkdir -p /var/log/ansible/playbook
-          sudo chmod -R 0777 /var/log/ansible
           git clone https://github.com/bats-core/bats-core.git
           cd bats-core
           sudo ./install.sh /usr/local

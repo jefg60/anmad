@@ -196,7 +196,7 @@ def ansiblelog():
     """Display ansible.log."""
     APP.config['logger'].debug("Displaying ansible.log")
     time_string = datetime.datetime.utcnow()
-    if request.args.get('play') = 'list':
+    if request.args.get('play') is 'list':
         loglist = glob.glob('/var/log/ansible/playbook/' '*.log')
         template_data = {
             'title' : 'ansible playbook logs',

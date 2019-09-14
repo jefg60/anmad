@@ -5,6 +5,6 @@
       debug:
         msg: "deploy6.yaml was called sucessfully"
 
-    - name: pause 5 sec to test timeout params
+    - name: pause 3 sec to test timeout params
       pause:
-        seconds: 5
+        seconds: 3

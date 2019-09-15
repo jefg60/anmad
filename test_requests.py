@@ -39,6 +39,17 @@ class TestReturnCodes(unittest.TestCase):
         self.assertIn("run deploy9.yml", output.text)
         self.assertIn("Back to main interface", output.text)
 
+    def test_jobs(self):
+        """Test tnhe jobs / processes page."""
+        output = requests.get(self.baseurl + 'jobs')
+        self.assertEqual(200, output.status_code)
+        self.assertIn("playbook /srv/config/deploy.yaml", output.text)
+        self.assertIn("playbook /srv/config/deploy2.yaml", output.text)
+        self.assertIn("ansible log for deploy.yaml", output.text)
+        self.assertIn("ansible log for deploy2.yaml", output.text)
+        self.assertIn("Back to main interface", output.text)
+        self.assertIn("KILL PID", output.text)
+        self.assertIn("KILL ALL", output.text)
 
 if __name__ == '__main__':
     unittest.main()

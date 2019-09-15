@@ -2,9 +2,10 @@
 """Test http return codes."""
 
 import unittest
-import requests
 import re
 import datetime
+
+import requests
 
 class TestReturnCodes(unittest.TestCase):
     """Test http return codes."""
@@ -14,7 +15,8 @@ class TestReturnCodes(unittest.TestCase):
         self.dateformat = "%Y-%m-%d %H:%M:%S"
 
     def check_for_valid_date(self, text):
-        dateline = re.search("document.write\(moment\(*.*\)", text)
+        """checks date string was passed to template."""
+        dateline = re.search(r"document.write\(moment\(*.*\)", text)
         datestring = re.search(r'(\d+\-\d+\-\d+\ \d+\:\d+\:\d+)', dateline.group(0))
         self.assertIsNotNone(datestring)
         self.assertTrue(datetime.datetime.strptime(datestring.group(0), self.dateformat))

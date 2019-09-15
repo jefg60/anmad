@@ -21,7 +21,7 @@ class TestReturnCodes(unittest.TestCase):
         self.assertIsNotNone(datestring)
         self.assertTrue(datetime.datetime.strptime(datestring.group(0), self.dateformat))
 
-    def test_ara_button(self):
+    def test_ara_button_exists(self):
         """Test the ara button."""
         output = requests.get(self.baseurl)
         self.assertIn('/ara', output.text)

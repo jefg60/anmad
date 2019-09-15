@@ -40,7 +40,7 @@ class TestReturnCodes(unittest.TestCase):
         self.assertIn("Back to main interface", output.text)
 
     def test_jobs(self):
-        """Test tnhe jobs / processes page."""
+        """Test the jobs / processes page."""
         output = requests.get(self.baseurl + 'jobs')
         self.assertEqual(200, output.status_code)
         self.assertIn("playbook /srv/config/deploy.yaml", output.text)
@@ -50,6 +50,13 @@ class TestReturnCodes(unittest.TestCase):
         self.assertIn("Back to main interface", output.text)
         self.assertIn("KILL PID", output.text)
         self.assertIn("KILL ALL", output.text)
+
+    def test_log(self):
+        """Test the log page."""
+        output = requests.get(self.baseurl + 'log')
+        self.assertEqual(200, output.status_code)
+        self.assertIn("for full logs, check syslog", output.text)
+        self.assertIn("messages (newest first):", output.text)
 
 if __name__ == '__main__':
     unittest.main()

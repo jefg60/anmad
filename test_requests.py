@@ -13,6 +13,12 @@ class TestReturnCodes(unittest.TestCase):
         self.baseurl = "http://localhost:9999/"
         self.dateformat = "%Y-%m-%d %H:%M:%S"
 
+    def check_for_valid_date(self, text):
+        dateline = re.search("document.write\(moment\(*.*\)", text)
+        datestring = re.search(r'(\d+\-\d+\-\d+\ \d+\:\d+\:\d+)', dateline.group(0))
+        self.assertIsNotNone(datestring)
+        self.assertTrue(datetime.datetime.strptime(datestring.group(0), self.dateformat))
+
     def test_ara_button(self):
         """Test the ara button."""
         output = requests.get(self.baseurl)
@@ -23,11 +29,7 @@ class TestReturnCodes(unittest.TestCase):
         output = requests.get(self.baseurl + 'clearqueues')
         self.assertEqual(200, output.status_code)
         self.assertIn('Clear redis queues requested.', output.text)
-        dateline = re.search("document.write\(moment\(*.*\)", output.text)
-        print("PRINTING dateline group 0:" + dateline.group(0))
-        datestring = re.search(r'(\d+\-\d+\-\d+\ \d+\:\d+\:\d+)', dateline.group(0))
-        self.assertIsNotNone(datestring)
-        self.assertTrue(datetime.datetime.strptime(datestring.group(0), self.dateformat))
+        self.check_for_valid_date(output.text)
 
     def test_runall_button(self):
         """Test the runall button."""
@@ -38,6 +40,7 @@ class TestReturnCodes(unittest.TestCase):
         self.assertIn("<h2>Queued Jobs:</h2>\n\t<h3>(multiples between [] will be concurrently run)</h3>\n\t\n\t\n\t<h3>[&#39;/vagrant/samples/deploy.yaml&#39;, &#39;/vagrant/samples/deploy2.yaml&#39;]</h3>", output.text)
         self.assertIn(
             "<h3>[&#39;/vagrant/samples/deploy4.yaml&#39;]</h3>", output.text)
+        self.check_for_valid_date(output.text)
 
     def test_otherplays(self):
         """Test the otherplays page."""
@@ -46,6 +49,7 @@ class TestReturnCodes(unittest.TestCase):
         self.assertIn("run deploy6.yaml", output.text)
         self.assertIn("run deploy9.yml", output.text)
         self.assertIn("Back to main interface", output.text)
+        self.check_for_valid_date(output.text)
 
     def test_jobs(self):
         """Test the jobs / processes page."""
@@ -58,6 +62,7 @@ class TestReturnCodes(unittest.TestCase):
         self.assertIn("Back to main interface", output.text)
         self.assertIn("KILL PID", output.text)
         self.assertIn("KILL ALL", output.text)
+        self.check_for_valid_date(output.text)
 
     def test_log(self):
         """Test the log page."""
@@ -65,6 +70,7 @@ class TestReturnCodes(unittest.TestCase):
         self.assertEqual(200, output.status_code)
         self.assertIn("for full logs, check syslog", output.text)
         self.assertIn("messages (newest first):", output.text)
+        self.check_for_valid_date(output.text)
 
 if __name__ == '__main__':
     unittest.main()

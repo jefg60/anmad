@@ -3,12 +3,15 @@
 
 import unittest
 import requests
+import re
+import datetime
 
 class TestReturnCodes(unittest.TestCase):
     """Test http return codes."""
 
     def setUp(self):
         self.baseurl = "http://localhost:9999/"
+        self.dateformat = "%Y-%m-%d %H:%M:%S"
 
     def test_ara_button(self):
         """Test the ara button."""
@@ -20,6 +23,11 @@ class TestReturnCodes(unittest.TestCase):
         output = requests.get(self.baseurl + 'clearqueues')
         self.assertEqual(200, output.status_code)
         self.assertIn('Clear redis queues requested.', output.text)
+        dateline = re.search("document.write\(moment\(*.*\)", output.text)
+        print("PRINTING dateline group 0:" + dateline.group(0))
+        datestring = re.search(r'(\d+\-\d+\-\d+\ \d+\:\d+\:\d+)', dateline.group(0))
+        self.assertIsNotNone(datestring)
+        self.assertTrue(datetime.datetime.strptime(datestring.group(0), self.dateformat))
 
     def test_runall_button(self):
         """Test the runall button."""

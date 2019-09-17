@@ -1,0 +1,14 @@
+{% include 'header.html' %}
+<body>
+  <h1>Anmad {{ version }}</h1>
+  {% include 'refreshtime.html' %}
+  {% include 'backbutton.html' %}
+
+{% for log in logs -%}
+<h3>
+<a href="/ansiblelog?play={{ log|basename }}">ansible log for {{ log|basename }}</a>
+</h3>
+{%- endfor %}
+
+</body>
+</html>

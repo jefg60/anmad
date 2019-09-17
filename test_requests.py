@@ -74,5 +74,13 @@ class TestReturnCodes(unittest.TestCase):
         self.assertIn("messages (newest first):", output.text)
         self.check_for_valid_date(output.text)
 
+    def test_log_list(self):
+        """Test the log list page."""
+        output = requests.get(self.baseurl + 'ansiblelog?play=list')
+        self.assertEqual(200, output.status_code)
+        self.check_for_valid_date(output.text)
+        self.assertIn("ansible log for deploy.yaml.log", output.text)
+        self.assertIn("ansible log for deploy9.yml.log", output.text)
+
 if __name__ == '__main__':
     unittest.main()

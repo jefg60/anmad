@@ -39,9 +39,11 @@ class TestReturnCodes(unittest.TestCase):
         requests.get(self.baseurl + 'clearqueues')
         output = requests.get(self.baseurl + 'runall')
         self.assertEqual(200, output.status_code)
-        self.assertIn("<h2>Queued Jobs:</h2>\n\t<h3>(multiples between [] will be concurrently run)</h3>\n\t\n\t\n\t<h3>[&#39;/vagrant/samples/deploy.yaml&#39;, &#39;/vagrant/samples/deploy2.yaml&#39;]</h3>", output.text)
+        self.assertIn("Queued Jobs:</h2>", output.text)
+        self.assertIn("(multiples between [] will be concurrently run)</h3>", output.text)
+        self.assertIn("/vagrant/samples/deploy.yaml&#39;, &#39;/vagrant/samples/deploy2.yaml&#39;]</h3>", output.text)
         self.assertIn(
-            "<h3>[&#39;/vagrant/samples/deploy4.yaml&#39;]</h3>", output.text)
+            "[&#39;/vagrant/samples/deploy4.yaml&#39;]</h3>", output.text)
         self.check_for_valid_date(output.text)
 
     def test_otherplays(self):

@@ -199,6 +199,7 @@ def ansiblelog():
     requestedlog = request.args.get('play')
     if requestedlog == 'list':
         loglist = glob.glob('/var/log/ansible/playbook/' + '*.log')
+        loglist.sort()
         template_data = {
             'title' : 'ansible playbook logs',
             'time': time_string,

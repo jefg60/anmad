@@ -1,16 +1,29 @@
 {% include 'header.html' %}
-<body>
   <h1>Anmad {{ version }}</h1>
   {% include 'refreshtime.html' %}
   {% include 'backbutton.html' %}
 
-  <pre>
+<pre>
 {{ log }}:
 
 {% for line in text -%}
+{% if 'ok:' in line %}
+<span style="color:green">
+{% elif 'skipping:' in line %}
+<span style="color:teal">
+{% elif 'changed:' in line %}
+<span style="color:yellow">
+{% elif 'WARNING]:' in line %}
+<span style="color:purple">
+{% elif 'ERROR!' in line %}
+<span style="color:red">
+{% else %}
+<span>
+{% endif %}
 {{ line }}
+</span>
 {%- endfor %}
-  </pre>
+</pre>
 
 </body>
 </html>

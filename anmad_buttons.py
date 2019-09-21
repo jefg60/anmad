@@ -209,7 +209,7 @@ def ansiblelog():
         return render_template('playbooklogs.html', **template_data)
     logfile = '/var/log/ansible/playbook/' + requestedlog
     text = open(logfile, 'r+')
-    content = text.read()
+    content = text.readlines()
     text.close()
     template_data = {
         'title' : 'ansible log for ' + requestedlog,

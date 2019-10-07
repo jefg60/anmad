@@ -3,18 +3,26 @@ h1 {
   font-size: 100%;
   color: black;
 }
+
 h2 {
   font-family: Arial, Helvetica, sans-serif;
   font-size: 80%;
 }
+
 h3 {
   font-family: Arial, Helvetica, sans-serif;
   font-size: 68%;
 }
+
 h4 {
   font-family: Arial, Helvetica, sans-serif;
   font-size: 60%;
 }
+
+.simplebutton {
+  background-color: silver;
+}
+
 .button {
   background-color: silver;
   color: black;

@@ -57,7 +57,7 @@ if __name__ == '__main__':
     OUTPUT = get_yaml_vault_data()
     if OUTPUT is not None:
         print(OUTPUT)
-        exit(0)
-    else:
-        print("ERROR: no data found in yaml key", ARGS.yaml_key)
-        exit(1)
+        raise SystemExit(0)
+
+    print("ERROR: no data found in yaml key", ARGS.yaml_key)
+    raise SystemExit(1)

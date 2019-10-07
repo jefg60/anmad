@@ -49,7 +49,8 @@ def service_status(service):
          service],
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
-        text=True)
+        text=True,
+        check=False)
 
     lines = servicestatus.stdout.splitlines()
     active_state = lines[0]

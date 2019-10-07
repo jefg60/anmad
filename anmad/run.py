@@ -49,7 +49,8 @@ class AnmadRun:
             ret = subprocess.run(
                 my_ansible_playbook_cmd,
                 env=my_env,
-                timeout=self.timeout)
+                timeout=self.timeout,
+                check=False)
         except subprocess.TimeoutExpired:
             # create a dummy completedProcess obj with a bad return code
             ret = subprocess.CompletedProcess(

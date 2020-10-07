@@ -21,8 +21,8 @@ def add_ssh_key_to_agent(logger, key_file, ssh_askpass=None):
                        stdout=subprocess.DEVNULL,
                        stderr=subprocess.DEVNULL
                        )
-    except subprocess.CalledProcessError:
+    except subprocess.CalledProcessError as failed_to_add_sshkey:
         logger.exception("Exception adding ssh key, shutting down")
-        raise Exception
+        raise Exception from failed_to_add_sshkey
     else:
         logger.info("SSH key loaded")

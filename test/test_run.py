@@ -24,7 +24,7 @@ class TestPlaybook(unittest.TestCase):
         self.testinv = '/vagrant/samples/inventory-internal'
         self.ansible_playbook_cmd = '/home/vagrant/venv/bin/ansible-playbook'
         self.vaultpw = '/vagrant/test/vaultpassword'
-        self.timeout = 2
+        self.timeout = 3
         self.playbookobject = anmad.run.AnmadRun(
             self.logger,
             self.testinv,

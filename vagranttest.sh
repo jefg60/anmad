@@ -1,6 +1,6 @@
 #!/bin/bash
 if [ ! -d ~/venv ] ; then
-    virtualenv -p python3.7 ~/venv &&\
+    virtualenv -p python3 ~/venv &&\
     ~/venv/bin/pip install configargparse mod_wsgi hotqueue redis ssh_agent_setup pyyaml flask 'ansible==2.9.14' ansible_vault pylint psutil requests
     git clone https://github.com/bats-core/bats-core.git
     cd bats-core

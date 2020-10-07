@@ -6,9 +6,9 @@ load test_helper
   [[ 1 = 1 ]]
 }
 
-@test "running in python3.7" {
+@test "running in python3.8" {
   run "$python" --version
-  [[ "$output" == *"3.7."* ]]
+  [[ "$output" == *"3.8."* ]]
 }
 
 @test "unit test of args" {

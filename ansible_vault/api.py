@@ -23,6 +23,8 @@ try:
 except ImportError:
     # Ansible<2.0
     from ansible.utils.vault import VaultLib
+
+#to fix version issues with ansible 2.10
 from pkg_resources import parse_version
 
 _ansible_ver = float('.'.join(ansible.__version__.split('.')[:2]))
@@ -38,6 +40,7 @@ class Vault(object):
         self.vault = VaultLib(self._make_secrets(self.secret))
 
     def _make_secrets(self, secret):
+        # one line changed to fix version issues with ansible 2.10
         if parse_version(ansible.__version__) < parse_version('2.4'):
             return secret
 

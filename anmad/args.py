@@ -8,8 +8,13 @@ import __main__ as main
 
 import anmad.version
 
+def prepend_rootdir(myrootdir, mylist):
+    """Prepends a path to each item in a list."""
+    ret = [myrootdir + '/' + str(x) for x in mylist]
+    return ret
+
 def parse_args():
-    """Read arguments from command line."""
+    """Read arguments from command line or config file."""
 
     try:
         process_name = mod_wsgi.process_group
@@ -168,8 +173,3 @@ def parse_args():
     myargs.version = __version__
 
     return myargs
-
-def prepend_rootdir(myrootdir, mylist):
-    """Prepends a path to each item in a list."""
-    ret = [myrootdir + '/' + str(x) for x in mylist]
-    return ret

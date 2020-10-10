@@ -13,65 +13,66 @@ import anmad.logging
 import anmad.yaml
 import anmad.process
 
-class AnmadConfig:
-    """Anmad configuration class."""
-    def __init__(self, appname):
-        """Fetch required args into config dict."""
-        self.baseurl = "/"
-        self.version = anmad.version.VERSION + " on " + socket.getfqdn()
-        self.flaskapp = Flask(appname)
-        self.config = anmad.args.parse_args()
-        self.flaskapp.add_template_filter(anmad.button_funcs.basename)
+config = {
+    "args": anmad.args.parse_args(),
+    "version": anmad.version.VERSION + " on " + socket.getfqdn(),
+    "baseurl": "/",
+    "queues": anmad.queues.AnmadQueues('prerun', 'playbooks', 'info'),
+}
 
-app = AnmadConfig(__name__)
+config["logger"] = anmad.logging.logsetup(config["args"])
 
-@app.flaskapp.route(app.baseurl)
+flaskapp = Flask(__name__)
+flaskapp.add_template_filter(anmad.button_funcs.basename)
+
+@flaskapp.route(config["baseurl"])
 def mainpage():
     """Render main page."""
-    app.config['queues'].update_job_lists()
+    config["queues"].update_job_lists()
     time_string = datetime.datetime.utcnow()
     template_data = {
         'title' : 'anmad',
         'time': time_string,
-        'version': app.version,
+        'version': config["version"],
         'daemon_status': anmad.button_funcs.service_status('anmad_run'),
-        'preq_message': app.config['queues'].prequeue_list,
-        'queue_message': app.config['queues'].queue_list,
-        'messages': app.config['queues'].info_list[0:3],
-        'playbooks': app.config['playbooks'],
-        'prerun': app.config['pre_run_playbooks'],
+        'preq_message': config["queues"].prequeue_list,
+        'queue_message': config["queues"].queue_list,
+        'messages': config["queues"].info_list[0:3],
+        'playbooks': config["args"].playbooks,
+        'prerun': config["args"].pre_run_playbooks,
         }
-    app.config['logger'].debug("Rendering control page")
+    config["logger"].debug("Rendering control page")
     return render_template('main.html',
                            **template_data)
-@app.flaskapp.route(app.baseurl + "log")
+
+@flaskapp.route(config["baseurl"] + "log")
 def log():
     """Display info queues."""
-    app.config['queues'].update_job_lists()
+    config["queues"].update_job_lists()
     time_string = datetime.datetime.utcnow()
     template_data = {
         'title' : 'anmad log',
         'time': time_string,
-        'version': app.version,
-        'messages': app.config['queues'].info_list,
+        'version': config["version"],
+        'messages': config["queues"].info_list,
         }
-    app.config['logger'].debug("Rendering log page")
+    config["logger"].debug("Rendering log page")
     return render_template('log.html', **template_data)
 
-@app.flaskapp.route(app.baseurl + "jobs")
+@flaskapp.route(config["baseurl"] + "jobs")
 def jobs():
     """Display running jobs (like ps -ef | grep ansible-playbook)."""
     time_string = datetime.datetime.utcnow()
     template_data = {
         'title' : 'ansible-playbook processes',
         'time': time_string,
-        'version': app.version,
+        'version': config["version"],
         'jobs': anmad.process.get_ansible_playbook_procs()
         }
-    app.config['logger'].debug("Rendering job page")
+    config["logger"].debug("Rendering job page")
     return render_template('job.html', **template_data)
 
-@app.flaskapp.route(app.baseurl + "kill")
+@flaskapp.route(config["baseurl"] + "kill")
 def kill():
     """Here be dragons. route to kill a proc by PID.
     Hopefully a PID thats verified by psutil to be an ansible-playbook!"""
@@ -80,114 +81,114 @@ def kill():
     requestedpid = request.args.get('pid', type=int)
     if requestedpid in pids:
         anmad.process.kill(requestedpid)
-        app.config['logger'].warning("KILLED pid %s on request", requestedpid)
+        config["logger"].warning("KILLED pid %s on request", requestedpid)
         for proc in proclist:
             if proc['pid'] == requestedpid:
                 cmdline = ' '.join(proc['cmdline'])
-                app.config['logger'].warning(
+                config["logger"].warning(
                     "pid %s had cmdline '%s'", requestedpid, cmdline)
     else:
-        app.config['logger'].critical(
+        config["logger"].critical(
             "got request to kill PID %s which doesnt look like ansible-playbook!!!",
             requestedpid)
-    return redirect(app.baseurl + "jobs")
+    return redirect(config["baseurl"] + "jobs")
 
-@app.flaskapp.route(app.baseurl + "killall")
+@flaskapp.route(config["baseurl"] + "killall")
 def killall():
     """equivalent to killall ansible-playbook."""
     killedprocs = anmad.process.killall()
     for proc in killedprocs:
-        app.config['logger'].warning(
+        config["logger"].warning(
             "KILLED process '%s' via killall", ' '.join(proc['cmdline']))
-    return redirect(app.baseurl + "jobs")
+    return redirect(config["baseurl"] + "jobs")
 
-@app.flaskapp.route(app.baseurl + "otherplays")
+@flaskapp.route(config["baseurl"] + "otherplays")
 def otherplaybooks():
     """Display other playbooks."""
     time_string = datetime.datetime.utcnow()
     template_data = {
         'title' : 'anmad others',
         'time': time_string,
-        'version': app.version,
+        'version': config["version"],
         'extras': anmad.button_funcs.extraplays(
-            app.config['logger'],
-            app.config['playbook_root_dir'],
-            app.config['playbooks'])
+            config["logger"],
+            config["args"].playbook_root_dir,
+            config["args"].playbooks)
         }
-    app.config['logger'].debug("Rendering other playbooks page")
+    config["logger"].debug("Rendering other playbooks page")
     return render_template('other.html', **template_data)
 
-@app.flaskapp.route(app.baseurl + "clearqueues")
+@flaskapp.route(config["baseurl"] + "clearqueues")
 def clearqueues():
     """Clear redis queues."""
-    app.config['logger'].info("Clear redis queues requested.")
-    app.config['queues'].clear()
-    app.config['queues'].update_job_lists()
-    return redirect(app.baseurl)
+    config["logger"].info("Clear redis queues requested.")
+    config["queues"].clear()
+    config["queues"].update_job_lists()
+    return redirect(config["baseurl"])
 
-@app.flaskapp.route(app.baseurl + "runall")
+@flaskapp.route(config["baseurl"] + "runall")
 def runall():
     """Run all playbooks after verifying that files exist."""
     problemfile = anmad.yaml.list_missing_files(
-        app.config['logger'],
-        app.config['prerun_list'])
+        config["logger"],
+        config["args"].prerun_list)
     if problemfile:
-        app.config['logger'].info("Invalid files: %s", str(problemfile))
-        return redirect(app.baseurl)
+        config["logger"].info("Invalid files: %s", str(problemfile))
+        return redirect(config["baseurl"])
 
-    if app.config['pre_run_playbooks'] is not None:
-        for play in app.config['prerun_list']:
-            if [play] not in app.config['queues'].prequeue_list:
-                app.config['logger'].info("Pre-Queueing %s", str(play))
-                app.config['queues'].prequeue_job(play)
+    if config["args"].pre_run_playbooks is not None:
+        for play in config["args"].prerun_list:
+            if [play] not in config["queues"].prequeue_list:
+                config["logger"].info("Pre-Queueing %s", str(play))
+                config["queues"].prequeue_job(play)
 
-    app.config['logger'].info("Queueing %s", str(app.config['run_list']))
-    app.config['queues'].queue_job(app.config['run_list'])
-    app.config['queues'].update_job_lists()
+    config["logger"].info("Queueing %s", str(config["args"].run_list))
+    config["queues"].queue_job(config["args"].run_list)
+    config["queues"].update_job_lists()
 
-    app.config['logger'].debug("Redirecting to control page")
-    return redirect(app.baseurl)
+    config["logger"].debug("Redirecting to control page")
+    return redirect(config["baseurl"])
 
-@app.flaskapp.route(app.baseurl + 'playbooks/<path:playbook>')
+@flaskapp.route(config["baseurl"] + 'playbooks/<path:playbook>')
 def configuredplaybook(playbook):
     """Runs one playbook, if its one of the configured ones."""
     anmad.button_funcs.oneplaybook(
-        app.config['logger'],
-        app.config['queues'],
+        config["logger"],
+        config["queues"],
         playbook,
         anmad.button_funcs.buttonlist(
-            app.config['pre_run_playbooks'],
-            app.config['playbooks']),
-        app.config['playbook_root_dir'])
-    app.config['queues'].update_job_lists()
-    app.config['logger'].debug("Redirecting to control page")
-    return redirect(app.baseurl)
+            config["args"].pre_run_playbooks,
+            config["args"].playbooks),
+        config["args"].playbook_root_dir)
+    config["queues"].update_job_lists()
+    config["logger"].debug("Redirecting to control page")
+    return redirect(config["baseurl"])
 
-@app.flaskapp.route(app.baseurl + 'otherplaybooks/<path:playbook>')
+@flaskapp.route(config["baseurl"] + 'otherplaybooks/<path:playbook>')
 def otherplaybook(playbook):
     """Runs one playbook, if its one of the other ones found by extraplays."""
     anmad.button_funcs.oneplaybook(
-        app.config['logger'],
-        app.config['queues'],
+        config["logger"],
+        config["queues"],
         playbook,
         anmad.button_funcs.extraplays(
-            app.config['logger'], app.config['playbook_root_dir'],
-            app.config['playbooks'], app.config['pre_run_playbooks']),
-        app.config['playbook_root_dir'])
-    app.config['logger'].debug("Redirecting to others page")
-    app.config['queues'].update_job_lists()
-    return redirect(app.baseurl + 'otherplays')
+            config["logger"], config["args"].playbook_root_dir,
+            config["args"].playbooks, config["args"].pre_run_playbooks),
+        config["args"].playbook_root_dir)
+    config["logger"].debug("Redirecting to others page")
+    config["queues"].update_job_lists()
+    return redirect(config["baseurl"] + 'otherplays')
 
-@app.flaskapp.route(app.baseurl + "ara")
+@flaskapp.route(config["baseurl"] + "ara")
 def ara_redirect():
     """Redirect to ARA reports page."""
-    app.config['logger'].debug("Redirecting to ARA reports page")
-    return redirect(app.config['ara_url'])
+    config["logger"].debug("Redirecting to ARA reports page")
+    return redirect(config["args"].ara_url)
 
-@app.flaskapp.route(app.baseurl + "ansiblelog")
+@flaskapp.route(config["baseurl"] + "ansiblelog")
 def ansiblelog():
     """Display ansible.log."""
-    app.config['logger'].debug("Displaying ansible.log")
+    config["logger"].debug("Displaying ansible.log")
     time_string = datetime.datetime.utcnow()
     requestedlog = request.args.get('play')
     if requestedlog == 'list':
@@ -196,7 +197,7 @@ def ansiblelog():
         template_data = {
             'title' : 'ansible playbook logs',
             'time': time_string,
-            'version': app.version,
+            'version': config["version"],
             'logs': loglist,
             }
         return render_template('playbooklogs.html', **template_data)
@@ -207,7 +208,7 @@ def ansiblelog():
     template_data = {
         'title' : 'ansible log for ' + requestedlog,
         'time': time_string,
-        'version': app.version,
+        'version': config["version"],
         'log': requestedlog,
         'text': content
         }

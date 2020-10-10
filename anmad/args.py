@@ -21,10 +21,10 @@ def parse_args():
     except AttributeError:
         process_name = os.path.basename(main.__file__)
 
-    default_configfile = '/etc/anmad/conf.d/' + process_name
-    __version__ = anmad.version.VERSION
-
     home = expanduser("~")
+    default_configfile = '/etc/anmad/conf.d/' + process_name
+    alternate_configfile = home + '/' + process_name + '.conf'
+    __version__ = anmad.version.VERSION
 
     try:
         ansible_home = os.path.dirname(
@@ -36,9 +36,15 @@ def parse_args():
     parser = configargparse.ArgParser(
         default_config_files=[
             default_configfile,
-            home + '/' + process_name + '.conf'
+            alternate_configfile
             ]
         )
+
+    print('Parsing args, trying config files \n'
+            + default_configfile
+            + '\n' + alternate_configfile
+            + '\n END OF LIST' + '\n')
+
     parser.add_argument(
         "-v",
         "-V",
@@ -149,7 +155,8 @@ def parse_args():
         )
 
     parser.set_defaults(debug=False, syslog=True, dryrun=False)
-    myargs = parser.parse_args()
+    myargs, unknown = parser.parse_known_args()
+    print('Ignoring unknown args: ' + str(unknown))
     # filter list args to remove empty strings that may have been passed from
     # the config file
     myargs.inventories = list(filter(None, myargs.inventories))

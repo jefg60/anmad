@@ -3,8 +3,6 @@ import shutil
 import os
 from os.path import expanduser
 import configargparse
-import mod_wsgi
-import __main__ as main
 
 import anmad.version
 
@@ -16,14 +14,9 @@ def prepend_rootdir(myrootdir, mylist):
 def parse_args():
     """Read arguments from command line or config file."""
 
-    try:
-        process_name = mod_wsgi.process_group
-    except AttributeError:
-        process_name = os.path.basename(main.__file__)
-
     home = expanduser("~")
-    default_configfile = '/etc/anmad/conf.d/' + process_name
-    alternate_configfile = home + '/' + process_name + '.conf'
+    default_configfile = '/etc/anmad.conf'
+    alternate_configfile = home + '/.anmad.conf'
     __version__ = anmad.version.VERSION
 
     try:
@@ -173,9 +166,8 @@ def parse_args():
 
     # First inventory is the one that plays run against
     myargs.maininventory = os.path.abspath(myargs.inventories[0])
-
+    myargs.process_name = 'anmad'
     myargs.ansible_playbook_cmd = myargs.venv + '/bin/ansible-playbook'
-    myargs.process_name = process_name
     myargs.default_configfile = default_configfile
     myargs.version = __version__
 

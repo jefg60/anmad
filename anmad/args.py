@@ -33,11 +33,6 @@ def parse_args():
             ]
         )
 
-    print('Parsing args, trying config files \n'
-            + default_configfile
-            + '\n' + alternate_configfile
-            + '\n END OF LIST' + '\n')
-
     parser.add_argument(
         "-v",
         "-V",

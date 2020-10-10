@@ -20,17 +20,7 @@ class AnmadConfig:
         self.baseurl = "/"
         self.version = anmad.version.VERSION + " on " + socket.getfqdn()
         self.flaskapp = Flask(appname)
-        self.config = {
-            'ara_url': anmad.args.parse_args().ara_url,
-            'playbook_root_dir': anmad.args.parse_args().playbook_root_dir,
-            'playbooks': anmad.args.parse_args().playbooks,
-            'pre_run_playbooks': anmad.args.parse_args().pre_run_playbooks,
-            'prerun_list': anmad.args.parse_args().prerun_list,
-            'run_list': anmad.args.parse_args().run_list,
-            'logger': anmad.logging.logsetup(),
-            'queues': anmad.queues.AnmadQueues(
-                'prerun', 'playbooks', 'info')
-        }
+        self.config = anmad.args.parse_args()
         self.flaskapp.add_template_filter(anmad.button_funcs.basename)
 
 app = AnmadConfig(__name__)

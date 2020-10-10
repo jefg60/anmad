@@ -12,7 +12,7 @@ import anmad.version
 
 QUEUES = anmad.queues.AnmadQueues('prerun', 'playbooks', 'info')
 ARGS = anmad.args.parse_args()
-LOGGER = anmad.logging.logsetup()
+LOGGER = anmad.logging.logsetup(ARGS)
 MULTIOBJ = anmad.multi.AnmadMulti(
     LOGGER,
     ARGS.inventories,

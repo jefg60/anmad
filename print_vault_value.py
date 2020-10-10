@@ -8,7 +8,6 @@ from ansible_vault import Vault
 
 import anmad.version
 
-# Functions
 def parse_args():
     """Read arguments from command line."""
     home = expanduser("~")

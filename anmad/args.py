@@ -3,23 +3,21 @@ import shutil
 import os
 from os.path import expanduser
 import configargparse
-import mod_wsgi
-import __main__ as main
 
 import anmad.version
 
+def prepend_rootdir(myrootdir, mylist):
+    """Prepends a path to each item in a list."""
+    ret = [myrootdir + '/' + str(x) for x in mylist]
+    return ret
+
 def parse_args():
-    """Read arguments from command line."""
-
-    try:
-        process_name = mod_wsgi.process_group
-    except AttributeError:
-        process_name = os.path.basename(main.__file__)
-
-    default_configfile = '/etc/anmad/conf.d/' + process_name
-    __version__ = anmad.version.VERSION
+    """Read arguments from command line or config file."""
 
     home = expanduser("~")
+    default_configfile = '/etc/anmad.conf'
+    alternate_configfile = home + '/.anmad.conf'
+    __version__ = anmad.version.VERSION
 
     try:
         ansible_home = os.path.dirname(
@@ -31,9 +29,15 @@ def parse_args():
     parser = configargparse.ArgParser(
         default_config_files=[
             default_configfile,
-            '~/.' + process_name + '.conf'
+            alternate_configfile
             ]
         )
+
+    print('Parsing args, trying config files \n'
+            + default_configfile
+            + '\n' + alternate_configfile
+            + '\n END OF LIST' + '\n')
+
     parser.add_argument(
         "-v",
         "-V",
@@ -144,7 +148,8 @@ def parse_args():
         )
 
     parser.set_defaults(debug=False, syslog=True, dryrun=False)
-    myargs = parser.parse_args()
+    myargs, unknown = parser.parse_known_args()
+    print('Ignoring unknown args: ' + str(unknown))
     # filter list args to remove empty strings that may have been passed from
     # the config file
     myargs.inventories = list(filter(None, myargs.inventories))
@@ -161,15 +166,9 @@ def parse_args():
 
     # First inventory is the one that plays run against
     myargs.maininventory = os.path.abspath(myargs.inventories[0])
-
+    myargs.process_name = 'anmad'
     myargs.ansible_playbook_cmd = myargs.venv + '/bin/ansible-playbook'
-    myargs.process_name = process_name
     myargs.default_configfile = default_configfile
     myargs.version = __version__
 
     return myargs
-
-def prepend_rootdir(myrootdir, mylist):
-    """Prepends a path to each item in a list."""
-    ret = [myrootdir + '/' + str(x) for x in mylist]
-    return ret

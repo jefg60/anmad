@@ -33,11 +33,6 @@ def parse_args():
             ]
         )
 
-    print('Parsing args, trying config files \n'
-            + default_configfile
-            + '\n' + alternate_configfile
-            + '\n END OF LIST' + '\n')
-
     parser.add_argument(
         "-v",
         "-V",
@@ -149,7 +144,9 @@ def parse_args():
 
     parser.set_defaults(debug=False, syslog=True, dryrun=False)
     myargs, unknown = parser.parse_known_args()
-    print('Ignoring unknown args: ' + str(unknown))
+    if len(unknown) > 0:
+        print('Ignoring unknown args: ' + str(unknown))
+
     # filter list args to remove empty strings that may have been passed from
     # the config file
     myargs.inventories = list(filter(None, myargs.inventories))

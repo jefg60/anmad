@@ -11,9 +11,9 @@ class AnmadInfoHandler(logging.handlers.QueueHandler):
     def enqueue(self, record):
         self.queue.put(record.message)
 
-def logsetup(args):
+def logsetup(args, name):
     """Set up anmad logging."""
-    logger = logging.getLogger(args.process_name)
+    logger = logging.getLogger(name)
     queues = anmad.queues.AnmadQueues('prerun', 'playbooks', 'info')
 
     syslog_formatter = logging.Formatter(

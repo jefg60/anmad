@@ -20,7 +20,7 @@ config = {
     "queues": anmad.queues.AnmadQueues('prerun', 'playbooks', 'info'),
 }
 
-config["logger"] = anmad.logging.logsetup(config["args"])
+config["logger"] = anmad.logging.logsetup(config["args"], 'Interface')
 
 flaskapp = Flask(__name__)
 flaskapp.add_template_filter(anmad.button_funcs.basename)

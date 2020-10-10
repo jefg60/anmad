@@ -36,7 +36,7 @@ def parse_args():
     parser = configargparse.ArgParser(
         default_config_files=[
             default_configfile,
-            '~/.' + process_name + '.conf'
+            home + '/' + process_name + '.conf'
             ]
         )
     parser.add_argument(

@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+"""Run dev test server."""
 import anmad.buttons
 application = anmad.buttons.app.flaskapp
 

@@ -29,16 +29,6 @@ load test_helper
   [[ "$output" = *"usage"* ]]
 }
 
-@test "run without args, print help" {
-  run "$python" "$program"
-  [[ "$output" = *"error: the following arguments are required:"* ]]
-}
-
-@test "run with incorrect args, print help" {
-  run "$python" "$program" -i /vagrant/samples/inventory-internal --debug --no-syslog
-  [[ "$output" = *"error: the following arguments are required:"* ]]
-}
-
 @test "run without --debug" {
   run "$python" "$program" -p /vagrant/deploy.yaml /vagrant/deploy2.yaml -i /vagrant/samples/inventory-internal /vagrant/samples/inventory-internal --no-syslog --dry-run --playbook_root_dir /vagrant/samples
   [[ "$output" != *"error"* ]]

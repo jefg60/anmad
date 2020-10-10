@@ -5,7 +5,8 @@ if [ ! -d ~/venv ] ; then
     git clone https://github.com/bats-core/bats-core.git
     cd bats-core
     sudo ./install.sh /usr/local
-    /usr/bin/screen -d -m -S anmaddev /home/vagrant/venv/bin/python /vagrant/anmad_buttons.py --configfile /vagrant/test/configtest.nodry.ini
+    ln -s /vagrant/test/configtest.nodry.ini /home/vagrant/.anmad.conf
+    /usr/bin/screen -d -m -S anmaddev /home/vagrant/venv/bin/python /vagrant/anmad_buttons.py
 fi
 
 /vagrant/dummy-ansible-playbook.sh &&\

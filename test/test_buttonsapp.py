@@ -32,18 +32,17 @@ class TestButtonApp(unittest.TestCase):
         self.testextras.extend(['deploy9.yml'])
         self.queues = anmad.queues.AnmadQueues(
             'test_prerun', 'test_playbooks', 'test_info')
-        self.app = anmad_buttons.APP.test_client()
-        anmad_buttons.APP.config['ara_url'] = 'ara'
-        anmad_buttons.APP.config['playbook_root_dir'] =  self.playbookroot
-        anmad_buttons.APP.config['playbooks'] =  self.playbooks
-        anmad_buttons.APP.config['pre_run_playbooks'] =  self.pre_run_playbooks
-        anmad_buttons.APP.config['prerun_list'] =  anmad.args.prepend_rootdir(
+        self.app = anmad_buttons.application.test_client()
+        anmad.buttons.config['ara_url'] = 'ara'
+        anmad.buttons.config['playbook_root_dir'] =  self.playbookroot
+        anmad.buttons.config['playbooks'] =  self.playbooks
+        anmad.buttons.config['pre_run_playbooks'] =  self.pre_run_playbooks
+        anmad.buttons.config['prerun_list'] =  anmad.args.prepend_rootdir(
             self.playbookroot, self.pre_run_playbooks)
-        anmad_buttons.APP.config['run_list'] =  anmad.args.prepend_rootdir(
+        anmad.buttons.config['run_list'] =  anmad.args.prepend_rootdir(
             self.playbookroot, self.playbooks)
-        anmad_buttons.APP.config['logger'] = self.logger
-        anmad_buttons.APP.config['queues'] = self.queues
-
+        anmad.buttons.config['logger'] = self.logger
+        anmad.buttons.config['queues'] = self.queues
 
     def tearDown(self):
         self.playbooks = None

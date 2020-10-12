@@ -45,6 +45,12 @@ def mainpage():
     return render_template('main.html',
                            **template_data)
 
+@flaskapp.route(config["baseurl"] + "ara")
+def ara_redirect():
+    """Redirect to ARA reports page."""
+    config["logger"].debug("Redirecting to ARA reports page")
+    return redirect(config["args"].ara_url)
+
 @flaskapp.route(config["baseurl"] + "log")
 def log():
     """Display info queues."""
@@ -71,6 +77,51 @@ def jobs():
         }
     config["logger"].debug("Rendering job page")
     return render_template('job.html', **template_data)
+
+@flaskapp.route(config["baseurl"] + "otherplays")
+def otherplaybooks():
+    """Display other playbooks."""
+    time_string = datetime.datetime.utcnow()
+    template_data = {
+        'title' : 'anmad others',
+        'time': time_string,
+        'version': config["version"],
+        'extras': anmad.button_funcs.extraplays(
+            config["logger"],
+            config["args"].playbook_root_dir,
+            config["args"].playbooks)
+        }
+    config["logger"].debug("Rendering other playbooks page")
+    return render_template('other.html', **template_data)
+
+@flaskapp.route(config["baseurl"] + "ansiblelog")
+def ansiblelog():
+    """Display ansible.log."""
+    config["logger"].debug("Displaying ansible.log")
+    time_string = datetime.datetime.utcnow()
+    requestedlog = request.args.get('play')
+    if requestedlog == 'list':
+        loglist = glob.glob('/var/log/ansible/playbook/' + '*.log')
+        loglist.sort()
+        template_data = {
+            'title' : 'ansible playbook logs',
+            'time': time_string,
+            'version': config["version"],
+            'logs': loglist,
+            }
+        return render_template('playbooklogs.html', **template_data)
+    logfile = '/var/log/ansible/playbook/' + requestedlog
+    text = open(logfile, 'r+')
+    content = text.readlines()
+    text.close()
+    template_data = {
+        'title' : 'ansible log for ' + requestedlog,
+        'time': time_string,
+        'version': config["version"],
+        'log': requestedlog,
+        'text': content
+        }
+    return render_template('ansiblelog.html', **template_data)
 
 @flaskapp.route(config["baseurl"] + "kill")
 def kill():
@@ -101,22 +152,6 @@ def killall():
         config["logger"].warning(
             "KILLED process '%s' via killall", ' '.join(proc['cmdline']))
     return redirect(config["baseurl"] + "jobs")
-
-@flaskapp.route(config["baseurl"] + "otherplays")
-def otherplaybooks():
-    """Display other playbooks."""
-    time_string = datetime.datetime.utcnow()
-    template_data = {
-        'title' : 'anmad others',
-        'time': time_string,
-        'version': config["version"],
-        'extras': anmad.button_funcs.extraplays(
-            config["logger"],
-            config["args"].playbook_root_dir,
-            config["args"].playbooks)
-        }
-    config["logger"].debug("Rendering other playbooks page")
-    return render_template('other.html', **template_data)
 
 @flaskapp.route(config["baseurl"] + "clearqueues")
 def clearqueues():
@@ -178,38 +213,3 @@ def otherplaybook(playbook):
     config["logger"].debug("Redirecting to others page")
     config["queues"].update_job_lists()
     return redirect(config["baseurl"] + 'otherplays')
-
-@flaskapp.route(config["baseurl"] + "ara")
-def ara_redirect():
-    """Redirect to ARA reports page."""
-    config["logger"].debug("Redirecting to ARA reports page")
-    return redirect(config["args"].ara_url)
-
-@flaskapp.route(config["baseurl"] + "ansiblelog")
-def ansiblelog():
-    """Display ansible.log."""
-    config["logger"].debug("Displaying ansible.log")
-    time_string = datetime.datetime.utcnow()
-    requestedlog = request.args.get('play')
-    if requestedlog == 'list':
-        loglist = glob.glob('/var/log/ansible/playbook/' + '*.log')
-        loglist.sort()
-        template_data = {
-            'title' : 'ansible playbook logs',
-            'time': time_string,
-            'version': config["version"],
-            'logs': loglist,
-            }
-        return render_template('playbooklogs.html', **template_data)
-    logfile = '/var/log/ansible/playbook/' + requestedlog
-    text = open(logfile, 'r+')
-    content = text.readlines()
-    text.close()
-    template_data = {
-        'title' : 'ansible log for ' + requestedlog,
-        'time': time_string,
-        'version': config["version"],
-        'log': requestedlog,
-        'text': content
-        }
-    return render_template('ansiblelog.html', **template_data)

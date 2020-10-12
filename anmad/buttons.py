@@ -86,10 +86,7 @@ def otherplaybooks():
         'title' : 'anmad others',
         'time': time_string,
         'version': config["version"],
-        'extras': anmad.button_funcs.extraplays(
-            config["logger"],
-            config["args"].playbook_root_dir,
-            config["args"].playbooks)
+        'extras': anmad.button_funcs.extraplays(**config)
         }
     config["logger"].debug("Rendering other playbooks page")
     return render_template('other.html', **template_data)
@@ -206,10 +203,9 @@ def otherplaybook(playbook):
         config["logger"],
         config["queues"],
         playbook,
-        anmad.button_funcs.extraplays(
-            config["logger"], config["args"].playbook_root_dir,
-            config["args"].playbooks, config["args"].pre_run_playbooks),
-        config["args"].playbook_root_dir)
+        anmad.button_funcs.extraplays(**config),
+        config["args"].playbook_root_dir
+    )
     config["logger"].debug("Redirecting to others page")
     config["queues"].update_job_lists()
     return redirect(config["baseurl"] + 'otherplays')

@@ -6,5 +6,5 @@ import anmad.args
 
 if __name__ == '__main__':
     ARGS = anmad.args.parse_args()
-    LOGGER = anmad.logging.logsetup(ARGS, 'TESTING')
+    LOGGER = anmad.logging.logsetup(ARGS, __file__)
     LOGGER.debug("anmad.logging test ok")

@@ -21,7 +21,7 @@ load test_helper
   run "$python" /vagrant/test_logging.py --configfile /vagrant/test/configtest.ini
   [[ "$output" != *"error"* ]]
   [ "$status" -eq 0 ]
-  [[ "$output" = *"anmad.logging test ok" ]]
+  [[ "$output" = *"anmad.logging test ok"* ]]
 }
 
 @test "test --help option" {
@@ -42,7 +42,7 @@ load test_helper
 
 @test "$program Version is $version" {
   run "$python" "$program" --version
-  [[ "$output" = "$version" ]]
+  [[ "$output" = *"$version" ]]
 }
 
 @test "printvault Version is $version" {

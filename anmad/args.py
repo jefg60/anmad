@@ -26,10 +26,9 @@ def parse_args():
     except TypeError:
         ansible_home = os.getcwd()
 
-    print('Parsing args, trying config files \n'
-            + default_configfile
-            + '\n' + alternate_configfile
-            + '\n END OF LIST' + '\n')
+    print('\nANMAD: Parsing args, trying config files '
+            + default_configfile + ', '
+            + alternate_configfile)
 
     parser = configargparse.ArgParser(
         default_config_files=[
@@ -150,7 +149,7 @@ def parse_args():
     parser.set_defaults(debug=False, syslog=True, dryrun=False)
     myargs, unknown = parser.parse_known_args()
     if len(unknown) > 0:
-        print('Ignoring unknown args: ' + str(unknown))
+        print('ANMAD: Ignoring unknown args: ' + str(unknown))
     # filter list args to remove empty strings that may have been passed from
     # the config file
     myargs.inventories = list(filter(None, myargs.inventories))

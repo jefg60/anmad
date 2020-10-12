@@ -6,9 +6,9 @@ if [ ! -d ~/venv ] ; then
     cd bats-core
     sudo ./install.sh /usr/local
     ln -s /vagrant/test/configtest.nodry.ini /home/vagrant/.anmad.conf
-    /usr/bin/screen -d -m -S anmaddev /home/vagrant/venv/bin/python /vagrant/anmad_buttons.py
 fi
 
+/usr/bin/screen -dmS anmaddev /home/vagrant/venv/bin/python /vagrant/anmad_buttons.py
 /vagrant/dummy-ansible-playbook.sh &&\
 /home/vagrant/venv/bin/pylint /vagrant/*.py &&\
 /home/vagrant/venv/bin/pylint /vagrant/anmad/*.py &&\

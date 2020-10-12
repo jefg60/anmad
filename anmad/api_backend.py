@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Functions for anmad_buttons."""
+"""API functions."""
 
 from flask import abort, redirect
 

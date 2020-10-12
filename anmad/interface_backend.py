@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Functions for anmad_buttons."""
+"""Functions for anmad_interface."""
 
 import os
 import subprocess

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Tests for anmad_buttons module."""
+"""Tests for anmad_interface module."""
 
 import logging
 import os
@@ -7,13 +7,13 @@ import unittest
 
 import __main__ as main
 
-import anmad_buttons
+import anmad_interface
 import anmad.queues
 import anmad.args
 import anmad.version
 
-class TestButtonApp(unittest.TestCase):
-    """Tests for anmad_buttons APP."""
+class TestInterfaceApp(unittest.TestCase):
+    """Tests for anmad_interface APP."""
     # pylint: disable=too-many-instance-attributes
     # pylint: disable=duplicate-code
 
@@ -32,17 +32,17 @@ class TestButtonApp(unittest.TestCase):
         self.testextras.extend(['deploy9.yml'])
         self.queues = anmad.queues.AnmadQueues(
             'test_prerun', 'test_playbooks', 'test_info')
-        self.app = anmad_buttons.application.test_client()
-        anmad.buttons.config['ara_url'] = 'ara'
-        anmad.buttons.config['playbook_root_dir'] =  self.playbookroot
-        anmad.buttons.config['playbooks'] =  self.playbooks
-        anmad.buttons.config['pre_run_playbooks'] =  self.pre_run_playbooks
-        anmad.buttons.config['prerun_list'] =  anmad.args.prepend_rootdir(
+        self.app = anmad_interface.application.test_client()
+        anmad.interface_backend.config['ara_url'] = 'ara'
+        anmad.interface_backend.config['playbook_root_dir'] =  self.playbookroot
+        anmad.interface_backend.config['playbooks'] =  self.playbooks
+        anmad.interface_backend.config['pre_run_playbooks'] =  self.pre_run_playbooks
+        anmad.interface_backend.config['prerun_list'] =  anmad.args.prepend_rootdir(
             self.playbookroot, self.pre_run_playbooks)
-        anmad.buttons.config['run_list'] =  anmad.args.prepend_rootdir(
+        anmad.interface_backend.config['run_list'] =  anmad.args.prepend_rootdir(
             self.playbookroot, self.playbooks)
-        anmad.buttons.config['logger'] = self.logger
-        anmad.buttons.config['queues'] = self.queues
+        anmad.interface_backend.config['logger'] = self.logger
+        anmad.interface_backend.config['queues'] = self.queues
 
     def tearDown(self):
         self.playbooks = None

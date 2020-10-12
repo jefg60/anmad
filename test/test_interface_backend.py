@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Tests for anmad_buttonfuncs module."""
+"""Tests for anmad interface_backend module."""
 
 import logging
 import os
@@ -8,12 +8,13 @@ import werkzeug
 
 import __main__ as main
 
-import anmad.button_funcs
+import anmad.interface_backend
+import anmad.api_backend
 import anmad.queues
 
 from argparse import Namespace
 
-class TestButtonFuncs(unittest.TestCase):
+class TestInterfaceBackend(unittest.TestCase):
     """Tests for anmad_buttons module."""
      # pylint: disable=duplicate-code
 
@@ -52,14 +53,14 @@ class TestButtonFuncs(unittest.TestCase):
 
     def test_nopre_buttonlist(self):
         """Test buttonlist without prerun."""
-        buttons = anmad.button_funcs.buttonlist(self.config["args"].playbooks)
+        buttons = anmad.interface_backend.buttonlist(self.config["args"].playbooks)
         self.assertIsNotNone(buttons)
         self.assertEqual(len(buttons), 2)
         self.assertEqual(buttons, ['deploy.yaml', 'deploy2.yaml'])
 
     def test_prerun_buttonlist(self):
         """Test buttonlist with prerun."""
-        buttons = anmad.button_funcs.buttonlist(
+        buttons = anmad.interface_backend.buttonlist(
             self.config["args"].playbooks, self.config["args"].pre_run_playbooks)
         self.assertIsNotNone(buttons)
         self.assertEqual(len(buttons), 3)
@@ -71,18 +72,18 @@ class TestButtonFuncs(unittest.TestCase):
         adds pre_run_playbooks to expected list of extras for this test."""
         self.config["testextras"].extend(self.config["args"].pre_run_playbooks)
         self.config["testextras"].sort()
-        extraplaybooks = anmad.button_funcs.extraplays(**self.config)
+        extraplaybooks = anmad.interface_backend.extraplays(**self.config)
         self.assertEqual(extraplaybooks, self.config["testextras"])
 
     def test_pre_extraplays(self):
         """Test extraplays behavior with prerun."""
-        extraplaybooks = anmad.button_funcs.extraplays(prerun=True, **self.config)
+        extraplaybooks = anmad.interface_backend.extraplays(prerun=True, **self.config)
         self.assertEqual(extraplaybooks, self.config["testextras"])
 
     def test_oneplaybook(self):
         """Test oneplaybook func to queue one play."""
         playbook = 'deploy.yaml'
-        anmad.button_funcs.oneplaybook(
+        anmad.api_backend.oneplaybook(
             playbook,
             self.config["args"].playbooks,
             **self.config)
@@ -93,7 +94,7 @@ class TestButtonFuncs(unittest.TestCase):
         """Test that requests are denied to add playbooks not in list."""
         playbook = 'badstuff.yaml'
         with self.assertRaises(werkzeug.exceptions.NotFound):
-            anmad.button_funcs.oneplaybook(
+            anmad.api_backend.oneplaybook(
                 playbook,
                 self.config["args"].playbooks,
                 **self.config)

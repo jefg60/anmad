@@ -164,25 +164,11 @@ def runall_button():
     return anmad.button_funcs.runall(**config)
 
 @flaskapp.route(config["baseurl"] + 'playbooks/<path:playbook>')
-def configuredplaybook(playbook):
+def configuredplaybook_button(playbook):
     """Runs one playbook, if its one of the configured ones."""
-    anmad.button_funcs.oneplaybook(
-        playbook,
-        anmad.button_funcs.buttonlist(
-            config["args"].pre_run_playbooks,
-            config["args"].playbooks),
-        **config)
-    config["queues"].update_job_lists()
-    config["logger"].debug("Redirecting to control page")
-    return redirect(config["baseurl"])
+    return anmad.button_funcs.configuredplaybook(playbook, **config)
 
 @flaskapp.route(config["baseurl"] + 'otherplaybooks/<path:playbook>')
-def otherplaybook(playbook):
+def otherplaybook_button(playbook):
     """Runs one playbook, if its one of the other ones found by extraplays."""
-    anmad.button_funcs.oneplaybook(
-        playbook,
-        anmad.button_funcs.extraplays(**config),
-        **config)
-    config["logger"].debug("Redirecting to others page")
-    config["queues"].update_job_lists()
-    return redirect(config["baseurl"] + 'otherplays')
+    return anmad.button_funcs.otherplaybook(playbook, **config)

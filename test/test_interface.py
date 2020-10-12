@@ -33,16 +33,16 @@ class TestInterfaceApp(unittest.TestCase):
         self.queues = anmad.queues.AnmadQueues(
             'test_prerun', 'test_playbooks', 'test_info')
         self.app = anmad_interface.application.test_client()
-        anmad.interface_backend.config['ara_url'] = 'ara'
-        anmad.interface_backend.config['playbook_root_dir'] =  self.playbookroot
-        anmad.interface_backend.config['playbooks'] =  self.playbooks
-        anmad.interface_backend.config['pre_run_playbooks'] =  self.pre_run_playbooks
-        anmad.interface_backend.config['prerun_list'] =  anmad.args.prepend_rootdir(
+        anmad.routes.config['ara_url'] = 'ara'
+        anmad.routes.config['playbook_root_dir'] =  self.playbookroot
+        anmad.routes.config['playbooks'] =  self.playbooks
+        anmad.routes.config['pre_run_playbooks'] =  self.pre_run_playbooks
+        anmad.routes.config['prerun_list'] =  anmad.args.prepend_rootdir(
             self.playbookroot, self.pre_run_playbooks)
-        anmad.interface_backend.config['run_list'] =  anmad.args.prepend_rootdir(
+        anmad.routes.config['run_list'] =  anmad.args.prepend_rootdir(
             self.playbookroot, self.playbooks)
-        anmad.interface_backend.config['logger'] = self.logger
-        anmad.interface_backend.config['queues'] = self.queues
+        anmad.routes.config['logger'] = self.logger
+        anmad.routes.config['queues'] = self.queues
 
     def tearDown(self):
         self.playbooks = None

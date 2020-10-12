@@ -121,28 +121,14 @@ def ansiblelog():
     return render_template('ansiblelog.html', **template_data)
 
 @flaskapp.route(config["baseurl"] + "kill")
-def kill():
-    """Here be dragons. route to kill a proc by PID.
+def kill_route():
+    """Route to kill a proc by PID.
     Hopefully a PID thats verified by psutil to be an ansible-playbook!"""
-    proclist = anmad.process.get_ansible_playbook_procs()
-    pids = [li['pid'] for li in proclist]
     requestedpid = request.args.get('pid', type=int)
-    if requestedpid in pids:
-        anmad.process.kill(requestedpid)
-        config["logger"].warning("KILLED pid %s on request", requestedpid)
-        for proc in proclist:
-            if proc['pid'] == requestedpid:
-                cmdline = ' '.join(proc['cmdline'])
-                config["logger"].warning(
-                    "pid %s had cmdline '%s'", requestedpid, cmdline)
-    else:
-        config["logger"].critical(
-            "got request to kill PID %s which doesnt look like ansible-playbook!!!",
-            requestedpid)
-    return redirect(config["baseurl"] + "jobs")
+    return anmad.button_funcs.kill(requestedpid, **config)
 
 @flaskapp.route(config["baseurl"] + "killall")
-def killall():
+def killall_route():
     """equivalent to killall ansible-playbook."""
     killedprocs = anmad.process.killall()
     for proc in killedprocs:
@@ -151,7 +137,7 @@ def killall():
     return redirect(config["baseurl"] + "jobs")
 
 @flaskapp.route(config["baseurl"] + "clearqueues")
-def clearqueues():
+def clearqueues_route():
     """Clear redis queues."""
     config["logger"].info("Clear redis queues requested.")
     config["queues"].clear()

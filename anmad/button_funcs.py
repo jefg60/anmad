@@ -115,3 +115,22 @@ def otherplaybook(playbook, **config):
     config["logger"].debug("Redirecting to others page")
     config["queues"].update_job_lists()
     return redirect(config["baseurl"] + 'otherplays')
+
+def kill(requestedpid, **config):
+    """Kill a proc by PID.
+    Hopefully a PID thats verified by psutil to be an ansible-playbook!"""
+    proclist = anmad.process.get_ansible_playbook_procs()
+    pids = [li['pid'] for li in proclist]
+    if requestedpid in pids:
+        anmad.process.kill(requestedpid)
+        config["logger"].warning("KILLED pid %s on request", requestedpid)
+        for proc in proclist:
+            if proc['pid'] == requestedpid:
+                cmdline = ' '.join(proc['cmdline'])
+                config["logger"].warning(
+                    "pid %s had cmdline '%s'", requestedpid, cmdline)
+    else:
+        config["logger"].critical(
+            "got request to kill PID %s which doesnt look like ansible-playbook!!!",
+            requestedpid)
+    return redirect(config["baseurl"] + "jobs")

@@ -5,7 +5,8 @@ import socket
 import glob
 from flask import Flask, render_template, redirect, request
 
-import anmad.button_funcs
+import anmad.interface_backend
+import anmad.api_backend
 import anmad.queues
 import anmad.version
 import anmad.args
@@ -23,7 +24,7 @@ config = {
 config["logger"] = anmad.logging.logsetup(config["args"], 'Interface')
 
 flaskapp = Flask(__name__)
-flaskapp.add_template_filter(anmad.button_funcs.basename)
+flaskapp.add_template_filter(anmad.interface_backend.basename)
 
 @flaskapp.route(config["baseurl"])
 def mainpage():
@@ -34,7 +35,7 @@ def mainpage():
         'title' : 'anmad',
         'time': time_string,
         'version': config["version"],
-        'daemon_status': anmad.button_funcs.service_status('anmad_run'),
+        'daemon_status': anmad.interface_backend.service_status('anmad_run'),
         'preq_message': config["queues"].prequeue_list,
         'queue_message': config["queues"].queue_list,
         'messages': config["queues"].info_list[0:3],
@@ -86,7 +87,7 @@ def otherplaybooks_page():
         'title' : 'anmad others',
         'time': time_string,
         'version': config["version"],
-        'extras': anmad.button_funcs.extraplays(**config)
+        'extras': anmad.interface_backend.extraplays(**config)
         }
     config["logger"].debug("Rendering other playbooks page")
     return render_template('other.html', **template_data)
@@ -125,7 +126,7 @@ def kill_route():
     """Route to kill a proc by PID.
     Hopefully a PID thats verified by psutil to be an ansible-playbook!"""
     requestedpid = request.args.get('pid', type=int)
-    return anmad.button_funcs.kill(requestedpid, **config)
+    return anmad.api_backend.kill(requestedpid, **config)
 
 @flaskapp.route(config["baseurl"] + "killall")
 def killall_route():
@@ -147,14 +148,14 @@ def clearqueues_route():
 @flaskapp.route(config["baseurl"] + "runall")
 def runall_button():
     """Run all playbooks after verifying that files exist."""
-    return anmad.button_funcs.runall(**config)
+    return anmad.api_backend.runall(**config)
 
 @flaskapp.route(config["baseurl"] + 'playbooks/<path:playbook>')
 def configuredplaybook_button(playbook):
     """Runs one playbook, if its one of the configured ones."""
-    return anmad.button_funcs.configuredplaybook(playbook, **config)
+    return anmad.api_backend.configuredplaybook(playbook, **config)
 
 @flaskapp.route(config["baseurl"] + 'otherplaybooks/<path:playbook>')
 def otherplaybook_button(playbook):
     """Runs one playbook, if its one of the other ones found by extraplays."""
-    return anmad.button_funcs.otherplaybook(playbook, **config)
+    return anmad.api_backend.otherplaybook(playbook, **config)

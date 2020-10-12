@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Tests for anmad_buttons module."""
+"""Tests for anmad_buttonfuncs module."""
 
 import logging
 import os
@@ -11,36 +11,48 @@ import __main__ as main
 import anmad.button_funcs
 import anmad.queues
 
+from argparse import Namespace
+
 class TestButtonFuncs(unittest.TestCase):
     """Tests for anmad_buttons module."""
      # pylint: disable=duplicate-code
 
     def setUp(self):
-        self.playbooks = ['deploy.yaml', 'deploy2.yaml']
-        self.pre_run_playbooks = ['deploy4.yaml']
-        self.playbookroot = '/vagrant/samples'
-        self.logger = logging.getLogger(os.path.basename(main.__file__))
+        self.maxDiff = None
+        if 'unittest.util' in __import__('sys').modules:
+            # Show full diff in self.assertEqual.
+            __import__('sys').modules['unittest.util']._MAX_LENGTH = 999999999
+
+        self.args = Namespace(
+            playbooks = ['deploy.yaml', 'deploy2.yaml'],
+            pre_run_playbooks = ['deploy4.yaml'],
+            playbook_root_dir = '/vagrant/samples'
+        )
+        self.config = {
+            "args": self.args,
+            "logger": logging.getLogger(os.path.basename(main.__file__)),
+            "queues": anmad.queues.AnmadQueues(
+                'test_prerun', 'test_playbooks', 'test_info'),
+            "testextras": ['deploy3.yaml']
+        }
         # Change logging.ERROR to INFO, to see log messages during testing.
-        self.logger.setLevel(logging.CRITICAL)
-        self.testextras = ['deploy3.yaml']
+        self.config["logger"].setLevel(logging.CRITICAL)
         for num in range(5, 9):
             dnum = [('deploy' + str(num) + '.yaml')]
-            self.testextras.extend(dnum)
-        self.testextras.extend(['deploy9.yml'])
-        self.queues = anmad.queues.AnmadQueues(
-            'test_prerun', 'test_playbooks', 'test_info')
+            self.config["testextras"].extend(dnum)
+        self.config["testextras"].extend(['deploy9.yml'])
 
     def tearDown(self):
-        self.playbooks = None
-        self.pre_run_playbooks = None
-        self.playbookroot = None
-        self.testextras = None
-        self.queues.clear()
-        self.queues.clearinfo()
+        self.config["args"].playbooks = None
+        self.config["args"].pre_run_playbooks = None
+        self.config["args"].playbook_root_dir = None
+        self.config["testextras"] = None
+        self.config["queues"].clear()
+        self.config["queues"].clearinfo()
 
     def test_nopre_buttonlist(self):
         """Test buttonlist without prerun."""
-        buttons = anmad.button_funcs.buttonlist(self.playbooks)
+        buttons = anmad.button_funcs.buttonlist(self.config["args"].playbooks)
         self.assertIsNotNone(buttons)
         self.assertEqual(len(buttons), 2)
         self.assertEqual(buttons, ['deploy.yaml', 'deploy2.yaml'])
@@ -48,7 +60,7 @@ class TestButtonFuncs(unittest.TestCase):
     def test_prerun_buttonlist(self):
         """Test buttonlist with prerun."""
         buttons = anmad.button_funcs.buttonlist(
-            self.playbooks, self.pre_run_playbooks)
+            self.config["args"].playbooks, self.config["args"].pre_run_playbooks)
         self.assertIsNotNone(buttons)
         self.assertEqual(len(buttons), 3)
         self.assertEqual(
@@ -57,45 +69,40 @@ class TestButtonFuncs(unittest.TestCase):
     def test_nopre_extraplays(self):
         """Test extraplays behavior without prerun.
         adds pre_run_playbooks to expected list of extras for this test."""
-        self.testextras.extend(self.pre_run_playbooks)
-        self.testextras.sort()
-        extraplaybooks = anmad.button_funcs.extraplays(
-            self.logger, self.playbookroot, self.playbooks)
-        self.assertEqual(extraplaybooks, self.testextras)
+        self.config["testextras"].extend(self.config["args"].pre_run_playbooks)
+        self.config["testextras"].sort()
+        extraplaybooks = anmad.button_funcs.extraplays(**self.config)
+        self.assertEqual(extraplaybooks, self.config["testextras"])
 
     def test_pre_extraplays(self):
         """Test extraplays behavior with prerun."""
-        extraplaybooks = anmad.button_funcs.extraplays(
-            self.logger,
-            self.playbookroot,
-            self.playbooks,
-            self.pre_run_playbooks)
-        self.assertEqual(extraplaybooks, self.testextras)
+        extraplaybooks = anmad.button_funcs.extraplays(prerun=True, **self.config)
+        self.assertEqual(extraplaybooks, self.config["testextras"])
 
     def test_oneplaybook(self):
         """Test oneplaybook func to queue one play."""
         playbook = 'deploy.yaml'
         anmad.button_funcs.oneplaybook(
-            self.logger,
-            self.queues,
+            self.config["logger"],
+            self.config["queues"],
             playbook,
-            self.playbooks,
-            self.playbookroot)
-        self.queues.update_job_lists()
-        self.assertTrue([('/vagrant/samples/' + playbook)] in self.queues.queue_list)
+            self.config["args"].playbooks,
+            self.config["args"].playbook_root_dir)
+        self.config["queues"].update_job_lists()
+        self.assertTrue([('/vagrant/samples/' + playbook)] in self.config["queues"].queue_list)
 
     def test_one_badplaybook(self):
         """Test that requests are denied to add playbooks not in list."""
         playbook = 'badstuff.yaml'
         with self.assertRaises(werkzeug.exceptions.NotFound):
             anmad.button_funcs.oneplaybook(
-                self.logger,
-                self.queues,
+                self.config["logger"],
+                self.config["queues"],
                 playbook,
-                self.playbooks,
-                self.playbookroot)
-        self.queues.update_job_lists()
-        self.assertFalse([('/vagrant/samples/' + playbook)] in self.queues.queue_list)
+                self.config["args"].playbooks,
+                self.config["args"].playbook_root_dir)
+        self.config["queues"].update_job_lists()
+        self.assertFalse([('/vagrant/samples/' + playbook)] in self.config["queues"].queue_list)
 
 
 if __name__ == '__main__':

@@ -11,7 +11,7 @@ fi
 /usr/bin/screen -dmS anmaddev /home/vagrant/venv/bin/python /vagrant/anmad_buttons.py
 /vagrant/dummy-ansible-playbook.sh &&\
 /home/vagrant/venv/bin/pylint /vagrant/*.py &&\
-/home/vagrant/venv/bin/pylint /vagrant/anmad/*.py &&\
+/home/vagrant/venv/bin/pylint /vagrant/anmad &&\
 /home/vagrant/venv/bin/python -m unittest discover -s /vagrant &&\
 bats /vagrant/test/anmad.bats &&\
 /home/vagrant/venv/bin/python /vagrant/test_requests.py 

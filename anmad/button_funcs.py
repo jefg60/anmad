@@ -31,14 +31,15 @@ def extraplays(prerun=None, **config):
     extraplaybooks.sort()
     return extraplaybooks
 
-def oneplaybook(logger, queues, playbook, playbooklist, playbook_root_dir):
+#def oneplaybook(logger, queues, playbook, playbooklist, playbook_root_dir):
+def oneplaybook(playbook, playbooklist, **config):
     """Queues one playbook, only if its in the playbooklist."""
     if playbook not in playbooklist:
-        logger.warning("API request for %s DENIED", str(playbook))
+        config["logger"].warning("API request for %s DENIED", str(playbook))
         abort(404)
-    my_runlist = [playbook_root_dir + '/' + playbook]
-    logger.info("Queueing %s", str(my_runlist))
-    queues.queue_job(my_runlist)
+    my_runlist = [config["args"].playbook_root_dir + '/' + playbook]
+    config["logger"].info("Queueing %s", str(my_runlist))
+    config["queues"].queue_job(my_runlist)
 
 def service_status(service):
     """Check a service status."""

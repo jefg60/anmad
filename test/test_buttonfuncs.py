@@ -83,11 +83,9 @@ class TestButtonFuncs(unittest.TestCase):
         """Test oneplaybook func to queue one play."""
         playbook = 'deploy.yaml'
         anmad.button_funcs.oneplaybook(
-            self.config["logger"],
-            self.config["queues"],
             playbook,
             self.config["args"].playbooks,
-            self.config["args"].playbook_root_dir)
+            **self.config)
         self.config["queues"].update_job_lists()
         self.assertTrue([('/vagrant/samples/' + playbook)] in self.config["queues"].queue_list)
 
@@ -96,11 +94,9 @@ class TestButtonFuncs(unittest.TestCase):
         playbook = 'badstuff.yaml'
         with self.assertRaises(werkzeug.exceptions.NotFound):
             anmad.button_funcs.oneplaybook(
-                self.config["logger"],
-                self.config["queues"],
                 playbook,
                 self.config["args"].playbooks,
-                self.config["args"].playbook_root_dir)
+                **self.config)
         self.config["queues"].update_job_lists()
         self.assertFalse([('/vagrant/samples/' + playbook)] in self.config["queues"].queue_list)
 

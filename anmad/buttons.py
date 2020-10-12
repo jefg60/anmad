@@ -52,7 +52,7 @@ def ara_redirect():
     return redirect(config["args"].ara_url)
 
 @flaskapp.route(config["baseurl"] + "log")
-def log():
+def log_page():
     """Display info queues."""
     config["queues"].update_job_lists()
     time_string = datetime.datetime.utcnow()
@@ -66,7 +66,7 @@ def log():
     return render_template('log.html', **template_data)
 
 @flaskapp.route(config["baseurl"] + "jobs")
-def jobs():
+def jobs_page():
     """Display running jobs (like ps -ef | grep ansible-playbook)."""
     time_string = datetime.datetime.utcnow()
     template_data = {
@@ -79,7 +79,7 @@ def jobs():
     return render_template('job.html', **template_data)
 
 @flaskapp.route(config["baseurl"] + "otherplays")
-def otherplaybooks():
+def otherplaybooks_page():
     """Display other playbooks."""
     time_string = datetime.datetime.utcnow()
     template_data = {
@@ -92,7 +92,7 @@ def otherplaybooks():
     return render_template('other.html', **template_data)
 
 @flaskapp.route(config["baseurl"] + "ansiblelog")
-def ansiblelog():
+def ansiblelog_page():
     """Display ansible.log."""
     config["logger"].debug("Displaying ansible.log")
     time_string = datetime.datetime.utcnow()

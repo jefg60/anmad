@@ -15,16 +15,19 @@ def buttonlist(playbooks, prerun=None):
         my_buttonlist = (playbooks)
     return my_buttonlist
 
-def extraplays(logger, playbook_root_dir, playbooks, prerun=None):
+#def extraplays(logger, playbook_root_dir, playbooks, prerun=None):
+def extraplays(**config):
     """Get a list of yaml files in root dir that arent in buttonlist()."""
-    yamlfiles = anmad.yaml.find_yaml_files(logger, playbook_root_dir)
+    yamlfiles = anmad.yaml.find_yaml_files(
+        config["logger"], config["args"].playbook_root_dir)
     yamlbasenames = []
     for yml in yamlfiles:
         yamlbasenames.append(os.path.basename(yml))
-    if prerun is None:
-        my_buttonlist = buttonlist(playbooks)
+    if config["args"].pre_run_playbooks is None:
+        my_buttonlist = buttonlist(config["args"].playbooks)
     else:
-        my_buttonlist = buttonlist(playbooks, prerun)
+        my_buttonlist = buttonlist(config["args"].playbooks,
+            config["args"].pre_run_playbooks)
     extraplaybooks = list(set(yamlbasenames) - set(my_buttonlist))
     extraplaybooks.sort()
     return extraplaybooks

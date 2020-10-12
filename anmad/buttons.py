@@ -159,39 +159,19 @@ def clearqueues():
     return redirect(config["baseurl"])
 
 @flaskapp.route(config["baseurl"] + "runall")
-def runall():
+def runall_button():
     """Run all playbooks after verifying that files exist."""
-    problemfile = anmad.yaml.list_missing_files(
-        config["logger"],
-        config["args"].prerun_list)
-    if problemfile:
-        config["logger"].info("Invalid files: %s", str(problemfile))
-        return redirect(config["baseurl"])
-
-    if config["args"].pre_run_playbooks is not None:
-        for play in config["args"].prerun_list:
-            if [play] not in config["queues"].prequeue_list:
-                config["logger"].info("Pre-Queueing %s", str(play))
-                config["queues"].prequeue_job(play)
-
-    config["logger"].info("Queueing %s", str(config["args"].run_list))
-    config["queues"].queue_job(config["args"].run_list)
-    config["queues"].update_job_lists()
-
-    config["logger"].debug("Redirecting to control page")
-    return redirect(config["baseurl"])
+    return anmad.button_funcs.runall(**config)
 
 @flaskapp.route(config["baseurl"] + 'playbooks/<path:playbook>')
 def configuredplaybook(playbook):
     """Runs one playbook, if its one of the configured ones."""
     anmad.button_funcs.oneplaybook(
-        config["logger"],
-        config["queues"],
         playbook,
         anmad.button_funcs.buttonlist(
             config["args"].pre_run_playbooks,
             config["args"].playbooks),
-        config["args"].playbook_root_dir)
+        **config)
     config["queues"].update_job_lists()
     config["logger"].debug("Redirecting to control page")
     return redirect(config["baseurl"])
@@ -200,12 +180,9 @@ def configuredplaybook(playbook):
 def otherplaybook(playbook):
     """Runs one playbook, if its one of the other ones found by extraplays."""
     anmad.button_funcs.oneplaybook(
-        config["logger"],
-        config["queues"],
         playbook,
         anmad.button_funcs.extraplays(**config),
-        config["args"].playbook_root_dir
-    )
+        **config)
     config["logger"].debug("Redirecting to others page")
     config["queues"].update_job_lists()
     return redirect(config["baseurl"] + 'otherplays')

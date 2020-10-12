@@ -3,7 +3,7 @@
 
 import os
 import subprocess
-from flask import abort
+from flask import abort, redirect
 
 import anmad.yaml
 
@@ -72,3 +72,24 @@ def service_status(service):
             "sub_state": sub_state,
             "state_change_timestamp": state_change_timestamp}
 
+def runall(**config):
+    """Run all playbooks after verifying that files exist."""
+    problemfile = anmad.yaml.list_missing_files(
+        config["logger"],
+        config["args"].prerun_list)
+    if problemfile:
+        config["logger"].info("Invalid files: %s", str(problemfile))
+        return redirect(config["baseurl"])
+
+    if config["args"].pre_run_playbooks is not None:
+        for play in config["args"].prerun_list:
+            if [play] not in config["queues"].prequeue_list:
+                config["logger"].info("Pre-Queueing %s", str(play))
+                config["queues"].prequeue_job(play)
+
+    config["logger"].info("Queueing %s", str(config["args"].run_list))
+    config["queues"].queue_job(config["args"].run_list)
+    config["queues"].update_job_lists()
+
+    config["logger"].debug("Redirecting to control page")
+    return redirect(config["baseurl"])

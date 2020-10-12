@@ -26,6 +26,11 @@ def parse_args():
     except TypeError:
         ansible_home = os.getcwd()
 
+    print('Parsing args, trying config files \n'
+            + default_configfile
+            + '\n' + alternate_configfile
+            + '\n END OF LIST' + '\n')
+
     parser = configargparse.ArgParser(
         default_config_files=[
             default_configfile,

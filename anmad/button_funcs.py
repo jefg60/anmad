@@ -7,6 +7,10 @@ from flask import abort
 
 import anmad.yaml
 
+def basename(path):
+    """Simple func to be used as jinja2 filter."""
+    return os.path.basename(path)
+
 def buttonlist(playbooks, prerun=None):
     """Get a list of allowed playbook buttons."""
     try:
@@ -68,6 +72,3 @@ def service_status(service):
             "sub_state": sub_state,
             "state_change_timestamp": state_change_timestamp}
 
-def basename(path):
-    """Simple func to be used as jinja2 filter."""
-    return os.path.basename(path)

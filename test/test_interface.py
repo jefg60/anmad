@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Tests for anmad_interface module."""
+"""Tests for anmad.interface module."""
 
 import logging
 import os
@@ -8,12 +8,13 @@ import unittest
 import __main__ as main
 
 import anmad.interface
+from anmad.interface.routes import flaskapp
 from anmad.common.queues import AnmadQueues
 import anmad.common.args as anmadargs
 import anmad.common.version as anmadver
 
 class TestInterfaceApp(unittest.TestCase):
-    """Tests for anmad_interface APP."""
+    """Tests for anmad.interface APP."""
     # pylint: disable=too-many-instance-attributes
     # pylint: disable=duplicate-code
 
@@ -32,7 +33,7 @@ class TestInterfaceApp(unittest.TestCase):
         self.testextras.extend(['deploy9.yml'])
         self.queues = AnmadQueues(
             'test_prerun', 'test_playbooks', 'test_info')
-        self.app = anmad_interface.application.test_client()
+        self.app = flaskapp.test_client()
         anmad.interface.routes.config['ara_url'] = 'ara'
         anmad.interface.routes.config['playbook_root_dir'] =  self.playbookroot
         anmad.interface.routes.config['playbooks'] =  self.playbooks

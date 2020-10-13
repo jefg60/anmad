@@ -6,3 +6,4 @@ samples/*.retry
 .vagrant
 *.log
 roles
+*.egg-info

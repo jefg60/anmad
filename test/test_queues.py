@@ -2,7 +2,7 @@
 """Tests for anmad.queues module."""
 
 import unittest
-import anmad.queues
+from anmad.common.queues import AnmadQueues
 
 class TestQueues(unittest.TestCase):
     """Tests for anmad.queues module."""
@@ -14,7 +14,7 @@ class TestQueues(unittest.TestCase):
         self.prequeue2 = 'prequeue_test2.yml'
         self.queue1 = ['queue_test1.yml', 'queue_test2.yaml']
         self.queue2 = ['queue_test3.yml', 'queue_test4.yaml']
-        self.queues = anmad.queues.AnmadQueues('test_prerun', 'test_playbooks', 'test_info')
+        self.queues = AnmadQueues('test_prerun', 'test_playbooks', 'test_info')
         self.queues.clear()
         self.queues.clearinfo()
         self.queues.prequeue_job(self.prequeue1)

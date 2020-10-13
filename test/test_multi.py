@@ -3,12 +3,11 @@
 
 import logging
 import os
-import subprocess
 import unittest
 
 import __main__ as main
 
-import anmad.multi
+from anmad.daemon.multi import AnmadMulti
 
 class TestMulti(unittest.TestCase):
     """Tests for anmad.multi module."""
@@ -28,12 +27,12 @@ class TestMulti(unittest.TestCase):
         self.ansible_playbook_cmd = '/home/vagrant/venv/bin/ansible-playbook'
         self.vaultpw = '/vagrant/test/vaultpassword'
         self.checkdir = '/vagrant/samples'
-        self.multiobj = anmad.multi.AnmadMulti(
+        self.multiobj = AnmadMulti(
             self.logger,
             self.testinv,
             self.ansible_playbook_cmd,
             self.vaultpw)
-        self.multimultiobj = anmad.multi.AnmadMulti(
+        self.multimultiobj = AnmadMulti(
             self.logger,
             [self.testinv, self.testinv],
             self.ansible_playbook_cmd,
@@ -76,7 +75,8 @@ class TestMulti(unittest.TestCase):
         """Test that runplaybooks func returns correct num of failed playbooks
         in testing. note that timedplay should WORK unless timeout <=2
         because it runs against localhost, unlike the other plays"""
-        timedmultiobj = anmad.multi.AnmadMulti(
+        #pylint: disable=duplicate-code
+        timedmultiobj = AnmadMulti(
             self.logger,
             self.testinv,
             self.ansible_playbook_cmd,

@@ -4,15 +4,14 @@
 import logging
 import os
 import unittest
-import subprocess
 
 import __main__ as main
 
-import anmad.run
+from anmad.daemon.run import AnmadRun
 
 class TestPlaybook(unittest.TestCase):
     """Tests for anmad.run module."""
-
+    #pylint: disable=too-many-instance-attributes
 
     def setUp(self):
         """Set up playbook tests."""
@@ -25,7 +24,7 @@ class TestPlaybook(unittest.TestCase):
         self.ansible_playbook_cmd = '/home/vagrant/venv/bin/ansible-playbook'
         self.vaultpw = '/vagrant/test/vaultpassword'
         self.timeout = 3
-        self.playbookobject = anmad.run.AnmadRun(
+        self.playbookobject = AnmadRun(
             self.logger,
             self.testinv,
             self.ansible_playbook_cmd)
@@ -53,7 +52,7 @@ class TestPlaybook(unittest.TestCase):
 
     def test_ansible_playbook_vault_syn(self):
         """Test run_playbook with vault."""
-        playbookobject = anmad.run.AnmadRun(
+        playbookobject = AnmadRun(
             self.logger,
             self.testinv,
             self.ansible_playbook_cmd,
@@ -73,7 +72,8 @@ class TestPlaybook(unittest.TestCase):
     def test_ansible_playbook_timeout(self):
         """Test run_playbook with timeout. must set vault_password_file
         if also setting timeout"""
-        playbookobject = anmad.run.AnmadRun(
+        #pylint: disable=duplicate-code
+        playbookobject = AnmadRun(
             self.logger,
             self.testinv,
             self.ansible_playbook_cmd,

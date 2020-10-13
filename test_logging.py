@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """Tests for anmad.logging module."""
 
-import anmad.logging
-import anmad.args
+from anmad.common.logging import logsetup
+from anmad.common.args import parse_anmad_args
 
 if __name__ == '__main__':
-    ARGS = anmad.args.parse_args()
-    LOGGER = anmad.logging.logsetup(ARGS, __file__)
+    ARGS = parse_anmad_args()
+    LOGGER = logsetup(ARGS, __file__)
     LOGGER.debug("anmad.logging test ok")

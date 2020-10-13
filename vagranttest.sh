@@ -8,6 +8,7 @@ if [ ! -d ~/venv ] ; then
     ln -s /vagrant/test/configtest.nodry.ini /home/vagrant/.anmad.conf
 fi
 
+~/venv/bin/pip install /vagrant/anmad
 /usr/bin/screen -dmS anmaddev /home/vagrant/venv/bin/python /vagrant/anmad_interface.py
 /vagrant/dummy-ansible-playbook.sh &&\
 /home/vagrant/venv/bin/pylint /vagrant/*.py &&\

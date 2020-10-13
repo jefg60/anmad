@@ -7,10 +7,10 @@ import unittest
 
 import __main__ as main
 
-import anmad_interface
-import anmad.queues
-import anmad.args
-import anmad.version
+import anmad.interface
+from anmad.common.queues import AnmadQueues
+import anmad.common.args as anmadargs
+import anmad.common.version as anmadver
 
 class TestInterfaceApp(unittest.TestCase):
     """Tests for anmad_interface APP."""
@@ -21,7 +21,7 @@ class TestInterfaceApp(unittest.TestCase):
         self.playbooks = ['deploy.yaml', 'deploy2.yaml']
         self.pre_run_playbooks = ['deploy4.yaml']
         self.playbookroot = '/vagrant/samples'
-        self.version = anmad.version.VERSION
+        self.version = anmadver.VERSION
         self.logger = logging.getLogger(os.path.basename(main.__file__))
         # Change logging.ERROR to INFO, to see log messages during testing.
         self.logger.setLevel(logging.CRITICAL)
@@ -30,19 +30,19 @@ class TestInterfaceApp(unittest.TestCase):
             dnum = [('deploy' + str(num) + '.yaml')]
             self.testextras.extend(dnum)
         self.testextras.extend(['deploy9.yml'])
-        self.queues = anmad.queues.AnmadQueues(
+        self.queues = AnmadQueues(
             'test_prerun', 'test_playbooks', 'test_info')
         self.app = anmad_interface.application.test_client()
-        anmad.routes.config['ara_url'] = 'ara'
-        anmad.routes.config['playbook_root_dir'] =  self.playbookroot
-        anmad.routes.config['playbooks'] =  self.playbooks
-        anmad.routes.config['pre_run_playbooks'] =  self.pre_run_playbooks
-        anmad.routes.config['prerun_list'] =  anmad.args.prepend_rootdir(
+        anmad.interface.routes.config['ara_url'] = 'ara'
+        anmad.interface.routes.config['playbook_root_dir'] =  self.playbookroot
+        anmad.interface.routes.config['playbooks'] =  self.playbooks
+        anmad.interface.routes.config['pre_run_playbooks'] =  self.pre_run_playbooks
+        anmad.interface.routes.config['prerun_list'] =  anmadargs.prepend_rootdir(
             self.playbookroot, self.pre_run_playbooks)
-        anmad.routes.config['run_list'] =  anmad.args.prepend_rootdir(
+        anmad.interface.routes.config['run_list'] =  anmadargs.prepend_rootdir(
             self.playbookroot, self.playbooks)
-        anmad.routes.config['logger'] = self.logger
-        anmad.routes.config['queues'] = self.queues
+        anmad.interface.routes.config['logger'] = self.logger
+        anmad.interface.routes.config['queues'] = self.queues
 
     def tearDown(self):
         self.playbooks = None

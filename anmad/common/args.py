@@ -1,6 +1,6 @@
 """Initialize arguments for anmad."""
 from shutil import which
-import os
+from os import getcwd, cpu_count
 from os.path import expanduser, dirname, abspath
 import configargparse
 
@@ -24,7 +24,7 @@ def parse_anmad_args():
             dirname(which("ansible-playbook"))
         )
     except TypeError:
-        ansible_home = os.getcwd()
+        ansible_home = getcwd()
 
     print('\nANMAD: Parsing args, trying config files '
             + default_configfile + ', '
@@ -133,7 +133,7 @@ def parse_anmad_args():
         type=int,
         help="number of simultaneous processes to run,"
              "defaults to number of cpu reported by OS",
-        default=os.cpu_count()
+        default=cpu_count()
         )
     parser.add_argument(
         "--ara_url",

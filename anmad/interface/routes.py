@@ -7,12 +7,13 @@ from os.path import basename
 from flask import Flask, render_template, redirect, request
 
 from anmad.interface.backend import service_status, extraplays
-import anmad.api.backend as apibackend
 from anmad.common.queues import AnmadQueues
-import anmad.common.version as anmadver
 from anmad.common.args import parse_anmad_args
 from anmad.common.logging import logsetup
 from anmad.daemon.process import get_ansible_playbook_procs
+
+import anmad.api.backend as apibackend
+import anmad.common.version as anmadver
 
 config = {
     "args": parse_anmad_args(),

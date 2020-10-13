@@ -2,7 +2,7 @@
 from shutil import which
 import os
 from os.path import expanduser, dirname, abspath
-from configargparse import ArgParser
+import configargparse
 
 import anmad.common.version as anmadver
 
@@ -30,7 +30,7 @@ def parse_anmad_args():
             + default_configfile + ', '
             + alternate_configfile)
 
-    parser = ArgParser(
+    parser = configargparse.ArgParser(
         default_config_files=[
             default_configfile,
             alternate_configfile

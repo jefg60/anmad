@@ -3,7 +3,7 @@ import os
 import subprocess
 import copy
 
-import anmad.process
+from anmad.daemon.process import killall
 
 class AnmadRun:
     """Ansible-playbook operations class."""
@@ -58,7 +58,7 @@ class AnmadRun:
                 255)
             # killall ansible-playbook procs to tidy up after
             # killing the main one
-            killedprocs = anmad.process.killall(
+            killedprocs = killall(
                 playtokill=' '.join(my_ansible_playbook_cmd))
             self.logger.error(
                 "Timed out waiting %s seconds for '%s'",

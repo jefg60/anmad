@@ -1,14 +1,10 @@
 #!/usr/bin/env python3
 """Functions for anmad_interface."""
 
-import os
+from os.path import basename
 import subprocess
 
-import anmad.yaml
-
-def basename(path):
-    """Simple func to be used as jinja2 filter."""
-    return os.path.basename(path)
+from anmad.common.yaml import find_yaml_files
 
 def buttonlist(playbooks, prerun=None):
     """Get a list of allowed playbook buttons."""
@@ -20,11 +16,11 @@ def buttonlist(playbooks, prerun=None):
 
 def extraplays(prerun=None, **config):
     """Get a list of yaml files in root dir that arent in buttonlist()."""
-    yamlfiles = anmad.yaml.find_yaml_files(
+    yamlfiles = find_yaml_files(
         config["logger"], config["args"].playbook_root_dir)
     yamlbasenames = []
     for yml in yamlfiles:
-        yamlbasenames.append(os.path.basename(yml))
+        yamlbasenames.append(basename(yml))
     if prerun is None:
         my_buttonlist = buttonlist(config["args"].playbooks)
     else:

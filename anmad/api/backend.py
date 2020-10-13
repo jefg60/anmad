@@ -3,9 +3,9 @@
 
 from flask import abort, redirect
 
-from anmad.yaml import list_missing_files
-from anmad.daemon.process import get_ansible_playbook_procs, kill
 import interface.backend
+from anmad.common.yaml import list_missing_files
+from anmad.daemon.process import get_ansible_playbook_procs, kill, killall
 
 def runall(**config):
     """Run all playbooks after verifying that files exist."""
@@ -78,3 +78,18 @@ def kill_proc_by_pid(requestedpid, **config):
             "got request to kill PID %s which doesnt look like ansible-playbook!!!",
             requestedpid)
     return redirect(config["baseurl"] + "jobs")
+
+def killall_ansible(**config):
+    """equivalent to sh: killall ansible-playbook."""
+    killedprocs = killall()
+    for proc in killedprocs:
+        config["logger"].warning(
+            "KILLED process '%s' via killall", ' '.join(proc['cmdline']))
+    return redirect(config["baseurl"] + "jobs")
+
+def clearqueues(**config):
+    """Clear redis queues."""
+    config["logger"].info("Clear redis queues requested.")
+    config["queues"].clear()
+    config["queues"].update_job_lists()
+    return redirect(config["baseurl"])

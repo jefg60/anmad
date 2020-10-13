@@ -6,12 +6,12 @@ import argparse
 from os.path import expanduser
 from ansible_vault import Vault
 
-import anmad.version
+import anmad.common.version as anmadver
 
 def parse_args():
     """Read arguments from command line."""
     home = expanduser("~")
-    __version__ = anmad.version.VERSION
+    __version__ = anmadver.VERSION
 
     parser = argparse.ArgumentParser()
     parser.add_argument(

@@ -1,27 +1,27 @@
 """Initialize arguments for anmad."""
-import shutil
+from shutil import which
 import os
-from os.path import expanduser
-import configargparse
+from os.path import expanduser, dirname, abspath
+from configargparse import ArgParser
 
-import anmad.version
+import anmad.common.version as anmadver
 
 def prepend_rootdir(myrootdir, mylist):
     """Prepends a path to each item in a list."""
     ret = [myrootdir + '/' + str(x) for x in mylist]
     return ret
 
-def parse_args():
+def parse_anmad_args():
     """Read arguments from command line or config file."""
 
     home = expanduser("~")
     default_configfile = '/etc/anmad.conf'
     alternate_configfile = home + '/.anmad.conf'
-    __version__ = anmad.version.VERSION
+    __version__ = anmadver.VERSION
 
     try:
-        ansible_home = os.path.dirname(
-            os.path.dirname(shutil.which("ansible-playbook"))
+        ansible_home = dirname(
+            dirname(which("ansible-playbook"))
         )
     except TypeError:
         ansible_home = os.getcwd()
@@ -30,7 +30,7 @@ def parse_args():
             + default_configfile + ', '
             + alternate_configfile)
 
-    parser = configargparse.ArgParser(
+    parser = ArgParser(
         default_config_files=[
             default_configfile,
             alternate_configfile
@@ -165,7 +165,7 @@ def parse_args():
         myargs.playbook_root_dir, myargs.playbooks)
 
     # First inventory is the one that plays run against
-    myargs.maininventory = os.path.abspath(myargs.inventories[0])
+    myargs.maininventory = abspath(myargs.inventories[0])
     myargs.ansible_playbook_cmd = myargs.venv + '/bin/ansible-playbook'
     myargs.default_configfile = default_configfile
     myargs.version = __version__

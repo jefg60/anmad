@@ -16,4 +16,4 @@ fi
 export PYTHONPATH=/vagrant
 /home/vagrant/venv/bin/python -m unittest discover -s /vagrant &&\
 bats /vagrant/test/anmad.bats &&\
-/home/vagrant/venv/bin/python /vagrant/test_requests.py 
+/home/vagrant/venv/bin/python /vagrant/test/test_requests.py

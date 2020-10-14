@@ -25,23 +25,23 @@ load test_helper
 }
 
 @test "test --help option" {
-  run "$python" "$program" --help
+  run "$python" -m anmad.interface --help
   [[ "$output" = *"usage"* ]]
 }
 
-@test "run without --debug" {
-  run "$python" "$program" -p /vagrant/deploy.yaml /vagrant/deploy2.yaml -i /vagrant/samples/inventory-internal /vagrant/samples/inventory-internal --no-syslog --dry-run --playbook_root_dir /vagrant/samples
+@test "run without --debug using commandline args" {
+  run "$python" -m anmad.interface -p /vagrant/deploy.yaml /vagrant/deploy2.yaml -i /vagrant/samples/inventory-internal /vagrant/samples/inventory-internal --no-syslog --dry-run --playbook_root_dir /vagrant/samples
   [[ "$output" != *"error"* ]]
   [ "$status" -eq 0 ]
 }
 
 @test "run without --no-syslog but with --debug, using conf file" {
-  run "$python" "$program" -c /vagrant/test/configtest.ini
+  run "$python" -m anmad.interface -c /vagrant/test/configtest.ini
   [[ "$output" != *"error"* ]]
 }
 
 @test "$program Version is $version" {
-  run "$python" "$program" --version
+  run "$python" -m anmad.interface --version
   [[ "$output" = *"$version" ]]
 }
 

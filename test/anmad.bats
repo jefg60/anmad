@@ -40,7 +40,7 @@ load test_helper
   [[ "$output" != *"error"* ]]
 }
 
-@test "$program Version is $version" {
+@test "Version is $version" {
   run "$python" -m anmad.interface --version
   [[ "$output" = *"$version" ]]
 }
@@ -65,4 +65,14 @@ load test_helper
 
 @test "anmad_buttons control page has a deploy2.yaml button" {
     curl http://localhost:9999/ | grep 'deploy2.yaml'
+}
+
+@test "pip metadata is correct including version $version" {
+  run /home/vagrant/venv/bin/pip show anmad
+  [[ "$output" = *"Version: $version"* ]]
+  [[ "$output" = *"Summary: Creates a simple api and a browser interface for running ansible playbooks."* ]]
+  [[ "$output" = *"Home-page: https://github.com/jefg60/anmad"* ]]
+  [[ "$output" = *"Author: Jeff Hibberd"* ]]
+  [[ "$output" = *"Author-email: jeff@jeffhibberd.com"* ]]
+  [[ "$output" = *"License: GPLv3"* ]]
 }

@@ -3,7 +3,7 @@
 
 from flask import abort, redirect
 
-import interface.backend
+import anmad.interface.backend
 from anmad.common.yaml import list_missing_files
 from anmad.daemon.process import get_ansible_playbook_procs, kill, killall
 

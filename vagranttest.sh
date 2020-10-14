@@ -9,7 +9,7 @@ if [ ! -d ~/venv ] ; then
 fi
 
 ~/venv/bin/pip install /vagrant/anmad
-/usr/bin/screen -dmS anmaddev /home/vagrant/venv/bin/python /vagrant/anmad_interface.py
+/usr/bin/screen -dmS anmaddev /home/vagrant/venv/bin/python -m anmad.interface
 /vagrant/dummy-ansible-playbook.sh &&\
 /home/vagrant/venv/bin/pylint /vagrant/*.py &&\
 /home/vagrant/venv/bin/pylint /vagrant/anmad &&\

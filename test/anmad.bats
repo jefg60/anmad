@@ -12,13 +12,13 @@ load test_helper
 }
 
 @test "unit test of args" {
-  run "$python" /vagrant/test_args.py --configfile /vagrant/test/configtest.ini
+  run "$python" /vagrant/test/test_args.py --configfile /vagrant/test/configtest.ini
   [[ "$output" != *"error"* ]]
   [ "$status" -eq 0 ]
 }
 
 @test "unit test of logging" {
-  run "$python" /vagrant/test_logging.py --configfile /vagrant/test/configtest.ini
+  run "$python" /vagrant/test/test_logging.py --configfile /vagrant/test/configtest.ini
   [[ "$output" != *"error"* ]]
   [ "$status" -eq 0 ]
   [[ "$output" = *"anmad.logging test ok"* ]]

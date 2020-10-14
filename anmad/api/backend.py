@@ -3,7 +3,7 @@
 
 from flask import abort, redirect
 
-import anmad.interface.backend
+import anmad.interface.backend as intbackend
 from anmad.common.yaml import list_missing_files
 from anmad.daemon.process import get_ansible_playbook_procs, kill, killall
 
@@ -42,7 +42,7 @@ def configuredplaybook(playbook, **config):
     """Runs one playbook, if its one of the configured ones."""
     oneplaybook(
         playbook,
-        interface.backend.buttonlist(
+        intbackend.buttonlist(
             config["args"].pre_run_playbooks,
             config["args"].playbooks),
         **config)
@@ -54,7 +54,7 @@ def otherplaybook(playbook, **config):
     """Runs one playbook, if its one of the other ones found by extraplays."""
     oneplaybook(
         playbook,
-        interface.backend.extraplays(**config),
+        intbackend.extraplays(**config),
         **config)
     config["logger"].debug("Redirecting to others page")
     config["queues"].update_job_lists()

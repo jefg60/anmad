@@ -8,11 +8,12 @@ if [ ! -d ~/venv ] ; then
     ln -s /vagrant/test/configtest.nodry.ini /home/vagrant/.anmad.conf
 fi
 
-~/venv/bin/pip install /vagrant/anmad
+~/venv/bin/pip install -e /vagrant
 /usr/bin/screen -dmS anmaddev /home/vagrant/venv/bin/python -m anmad.interface
 /vagrant/dummy-ansible-playbook.sh &&\
 /home/vagrant/venv/bin/pylint /vagrant/*.py &&\
 /home/vagrant/venv/bin/pylint /vagrant/anmad &&\
+export PYTHONPATH=/vagrant
 /home/vagrant/venv/bin/python -m unittest discover -s /vagrant &&\
 bats /vagrant/test/anmad.bats &&\
 /home/vagrant/venv/bin/python /vagrant/test_requests.py 

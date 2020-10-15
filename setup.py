@@ -10,7 +10,7 @@ setup(name='anmad',
     license='GPLv3',
     install_requires=[
         'ansible',
-        'ansible-vault >=1.2.1',
+        'ansible-vault >=2.0.1',
         'configargparse',
         'cryptography >=3.1.1',
         'flask',

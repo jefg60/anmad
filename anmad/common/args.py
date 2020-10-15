@@ -168,6 +168,7 @@ def parse_anmad_args():
     myargs.maininventory = abspath(myargs.inventories[0])
     myargs.ansible_playbook_cmd = myargs.venv + '/bin/ansible-playbook'
     myargs.default_configfile = default_configfile
+    myargs.alternate_configfile = alternate_configfile
     myargs.version = __version__
 
     return myargs

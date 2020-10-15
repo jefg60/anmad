@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 setup(name='anmad',
     version='0.18.2',
     description='Creates a simple api and a browser interface for running ansible playbooks.',
-    download_url='https://github.com/jefg60/anmad',
+    url='https://github.com/jefg60/anmad',
     author='Jeff Hibberd',
     author_email='jeff@jeffhibberd.com',
     license='GPLv3',

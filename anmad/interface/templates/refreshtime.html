@@ -1,5 +1,6 @@
 <script src="{{ url_for('static', filename='moment.min.js') }}"></script>
 <h1>
+Page last refreshed at:<br />
 <script>
   document.write(moment("{{ time }} Z").format('ddd YYYY-MM-D HH:mm:ss'));
 </script>

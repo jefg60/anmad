@@ -12,7 +12,7 @@ import anmad.common.version as anmadver
 
 QUEUES = AnmadQueues('prerun', 'playbooks', 'info')
 ARGS = parse_anmad_args()
-LOGGER = logsetup(ARGS, 'ANMAD: Daemon')
+LOGGER = logsetup(ARGS, 'ANMAD Daemon')
 MULTIOBJ = AnmadMulti(
     LOGGER,
     ARGS.inventories,

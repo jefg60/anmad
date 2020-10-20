@@ -22,7 +22,7 @@ config = {
     "queues": AnmadQueues('prerun', 'playbooks', 'info'),
 }
 
-config["logger"] = logsetup(config["args"], 'ANMAD: Interface')
+config["logger"] = logsetup(config["args"], 'ANMAD Interface')
 
 flaskapp = Flask(__name__,
     root_path=config["args"].interface_root

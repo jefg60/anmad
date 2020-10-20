@@ -145,6 +145,11 @@ def parse_anmad_args():
         help="timeout in seconds before aborting playbooks",
         default=1800
         )
+    parser.add_argument(
+        "--interface_root",
+        help="parent dir of templates and static folders for flask",
+        default="/srv/anmad/anmad/interface/"
+        )
 
     parser.set_defaults(debug=False, syslog=True, dryrun=False)
     myargs, unknown = parser.parse_known_args()

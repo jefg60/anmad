@@ -38,7 +38,7 @@ def mainpage():
         'title' : 'anmad',
         'time': time_string,
         'version': config["version"],
-        'daemon_status': service_status('anmad_run'),
+        'daemon_status': service_status('anmad'),
         'preq_message': config["queues"].prequeue_list,
         'queue_message': config["queues"].queue_list,
         'messages': config["queues"].info_list[0:3],

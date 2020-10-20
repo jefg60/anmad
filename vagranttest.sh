@@ -13,7 +13,7 @@ fi
 /vagrant/dummy-ansible-playbook.sh &&\
 /home/vagrant/venv/bin/pylint /vagrant/*.py &&\
 /home/vagrant/venv/bin/pylint /vagrant/anmad &&\
-export PYTHONPATH=/vagrant
+export PYTHONPATH=/vagrant &&\
 /home/vagrant/venv/bin/python -m unittest discover -s /vagrant &&\
 bats /vagrant/test/anmad.bats &&\
 /home/vagrant/venv/bin/python /vagrant/test/test_requests.py

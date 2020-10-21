@@ -14,11 +14,17 @@
   </h1>
   {% include 'refreshtime.html' %}
 
+  <script>
+    function ReloadFunc() {
+      location.reload(true);
+    }
+  </script>
+
   <table style="width:60%">
     <tr>
       <td valign="top", width=20%, text-align="center">
-	<button class="button bluebutton" onclick="window.open('/ara','_blank')"/>
-	ARA Reports page
+	<button class="button bluebutton" onclick="ReloadFunc()"/>
+	Refresh this page
 	</button>
       </td>
       <td valign="top", width=20%, text-align="center">

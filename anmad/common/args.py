@@ -150,6 +150,12 @@ def parse_anmad_args():
         help="parent dir of templates and static folders for flask",
         default="/srv/anmad/anmad/interface/"
         )
+    parser.add_argument(
+        "--messagelist_size",
+        help="number of messages to display on homepage",
+        type=int,
+        default=4
+        )
 
     parser.set_defaults(debug=False, syslog=True, dryrun=False)
     myargs, unknown = parser.parse_known_args()

@@ -41,7 +41,7 @@ def mainpage():
         'daemon_status': service_status('anmad'),
         'preq_message': config["queues"].prequeue_list,
         'queue_message': config["queues"].queue_list,
-        'messages': config["queues"].info_list[0:3],
+        'messages': config["queues"].info_list[0:config["args"].messagelist_size],
         'playbooks': config["args"].playbooks,
         'prerun': config["args"].pre_run_playbooks,
         }

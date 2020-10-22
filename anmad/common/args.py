@@ -26,6 +26,8 @@ def parse_anmad_args():
     except TypeError:
         ansible_home = getcwd()
 
+    # This is here so we see if we are re-parsing args unecessarily
+    # It should only print once per module import / invocation
     print('\nANMAD: Parsing args, trying config files '
             + default_configfile + ', '
             + alternate_configfile)
@@ -34,7 +36,8 @@ def parse_anmad_args():
         default_config_files=[
             default_configfile,
             alternate_configfile
-            ]
+            ],
+        formatter_class=configargparse.ArgumentDefaultsHelpFormatter
         )
 
     parser.add_argument(
@@ -48,7 +51,9 @@ def parse_anmad_args():
         "-c",
         "--configfile",
         is_config_file=True,
-        help="override default config file " + default_configfile
+        help="override default config files ("
+            + default_configfile + ","
+            + alternate_configfile + ")"
         )
     parser.add_argument(
         "--venv",
@@ -57,12 +62,12 @@ def parse_anmad_args():
         )
     parser.add_argument(
         "--ssh_id",
-        help="ssh id file to use, default ~/.ssh/id_rsa",
+        help="ssh id file to use",
         default=home + "/.ssh/id_rsa"
         )
     parser.add_argument(
         "--vault_password_file",
-        help="vault password file, default ~/.vaultpw",
+        help="vault password file",
         default=home + "/.vaultpw"
         )
     parser.add_argument(
@@ -134,11 +139,6 @@ def parse_anmad_args():
         help="number of simultaneous processes to run,"
              "defaults to number of cpu reported by OS",
         default=cpu_count()
-        )
-    parser.add_argument(
-        "--ara_url",
-        help="ARA URL to display after starting jobs",
-        default='http://ara/'
         )
     parser.add_argument(
         "--timeout",

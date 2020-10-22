@@ -4,7 +4,7 @@ import datetime
 from socket import getfqdn
 from glob import glob
 from os.path import basename
-from flask import Flask, render_template, redirect, request
+from flask import Flask, render_template, request
 
 from anmad.interface.backend import service_status, extraplays
 from anmad.common.queues import AnmadQueues

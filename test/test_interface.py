@@ -34,7 +34,6 @@ class TestInterfaceApp(unittest.TestCase):
         self.queues = AnmadQueues(
             'test_prerun', 'test_playbooks', 'test_info')
         self.app = flaskapp.test_client()
-        anmad.interface.routes.config['ara_url'] = 'ara'
         anmad.interface.routes.config['playbook_root_dir'] =  self.playbookroot
         anmad.interface.routes.config['playbooks'] =  self.playbooks
         anmad.interface.routes.config['pre_run_playbooks'] =  self.pre_run_playbooks
@@ -117,13 +116,6 @@ class TestInterfaceApp(unittest.TestCase):
         self.assertEqual(response.status, '302 FOUND')
         self.assertEqual(len(self.queues.queue_list), 0)
         self.assertEqual(len(self.queues.prequeue_list), 0)
-
-    def test_ara(self):
-        """Test ara button."""
-        response = self.app.get('/ara')
-        self.assertEqual(response.status, '302 FOUND')
-        self.assertIn('ara', str(response.data))
-
 
 if __name__ == '__main__':
     unittest.main()

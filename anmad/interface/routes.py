@@ -49,12 +49,6 @@ def mainpage():
     return render_template('main.html',
                            **template_data)
 
-@flaskapp.route(config["baseurl"] + "ara")
-def ara_redirect():
-    """Redirect to ARA reports page."""
-    config["logger"].debug("Redirecting to ARA reports page")
-    return redirect(config["args"].ara_url)
-
 @flaskapp.route(config["baseurl"] + "log")
 def log_page():
     """Display info queues."""

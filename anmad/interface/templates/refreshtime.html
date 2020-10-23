@@ -1,8 +1,9 @@
-<script src="{{ url_for('static', filename='moment.min.js') }}"></script>
+{% include 'scripts.html' %}
+
 <table style="width:100%; border: 1px solid black">
   <tr>
-    <td style="width:66%">
-      <div style="height:150px; width:100%; overflow:auto; margin:0; padding:0;">
+    <td style="width:67%; border:1px solid black">
+      <div style="height:150px; width:100%; overflow:auto;">
       {% include 'messages.html' %}
       </div>
     </td>
@@ -33,10 +34,10 @@
 	</script>
 	(UTC Time)
       </h2>
-
 	<button class="button bluebutton", onclick="ReloadFunc()"/>
 	  Refresh this page
 	</button>
     </td>
   </tr>
 </table>
+<h2>ENDOFREFRESHTIME</H2>

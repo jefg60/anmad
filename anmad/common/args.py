@@ -146,11 +146,6 @@ def parse_anmad_args():
         default=1800
         )
     parser.add_argument(
-        "--interface_root",
-        help="parent dir of templates and static folders for flask",
-        default="/srv/anmad/anmad/interface/"
-        )
-    parser.add_argument(
         "--messagelist_size",
         help="number of messages to display on homepage",
         type=int,

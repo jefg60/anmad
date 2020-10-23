@@ -1,5 +1,5 @@
 <script src="{{ url_for('static', filename='moment.min.js') }}"></script>
-<h1>
+<h2 style="text-align:right">
 Page last refreshed at:<br />
 <script>
   document.write(moment("{{ time }} Z").format('ddd YYYY-MM-D HH:mm:ss'));
@@ -9,4 +9,4 @@ Page last refreshed at:<br />
   document.write(moment("{{ time }}").format('ddd YYYY-MM-D HH:mm:ss'));
 </script>
 (UTC Time)
-</h1>
+</h2>

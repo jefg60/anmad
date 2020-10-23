@@ -24,9 +24,7 @@ config = {
 
 config["logger"] = logsetup(config["args"], 'ANMAD Interface')
 
-flaskapp = Flask(__name__,
-    root_path=config["args"].interface_root
-    )
+flaskapp = Flask(__name__)
 flaskapp.add_template_filter(basename)
 
 @flaskapp.route(config["baseurl"])

@@ -1,24 +1,42 @@
 <script src="{{ url_for('static', filename='moment.min.js') }}"></script>
-<h2 style="text-align: right">Anmad {{ version }}<br />
-{{ daemon_status["service"] }} service is 
-{% if daemon_status["active_state"] != 'active' or daemon_status["sub_state"] != 'running' %}
-<span style="color:red">
-{% else %}
-<span style="color:green">
-{% endif %}
-{{ daemon_status["active_state"] }},
-{{ daemon_status["sub_state"] }} 
-</span>
-{{ daemon_status["state_change_timestamp"] }}
-<br />
-<h2 style="text-align:right">
-Page last refreshed at:<br />
-<script>
-  document.write(moment("{{ time }} Z").format('ddd YYYY-MM-D HH:mm:ss'));
-</script>
-(Local Time)<br />
-<script>
-  document.write(moment("{{ time }}").format('ddd YYYY-MM-D HH:mm:ss'));
-</script>
-(UTC Time)
-</h2>
+<table style="width:100%; border: 1px solid black">
+  <tr>
+    <td style="width:66%">
+      <div style="height:150px; width:100%; overflow:auto; margin:0; padding:0;">
+      {% include 'messages.html' %}
+      </div>
+    </td>
+
+    <td style="text-align:right; vertical-align:top; border: 1px solid black">
+      <h2>Anmad {{ version }}
+	<br />
+	{{ daemon_status["service"] }} service is 
+	{% if daemon_status["active_state"] != 'active' or daemon_status["sub_state"] != 'running' %}
+	<span style="color:red">
+	{% else %}
+	<span style="color:green">
+	{% endif %}
+	{{ daemon_status["active_state"] }},
+	{{ daemon_status["sub_state"] }} 
+	</span>
+	{{ daemon_status["state_change_timestamp"] }}
+	<br />
+	Page last refreshed at:
+	<br />
+	<script>
+	  document.write(moment("{{ time }} Z").format('ddd YYYY-MM-D HH:mm:ss'));
+	</script>
+	(Local Time)
+	<br />
+	<script>
+	  document.write(moment("{{ time }}").format('ddd YYYY-MM-D HH:mm:ss'));
+	</script>
+	(UTC Time)
+      </h2>
+
+	<button class="button bluebutton", onclick="ReloadFunc()"/>
+	  Refresh this page
+	</button>
+    </td>
+  </tr>
+</table>

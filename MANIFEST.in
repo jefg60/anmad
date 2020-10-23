@@ -1,0 +1,3 @@
+graft anmad/interface/static
+graft anmad/interface/templates
+global-exclude *.pyc

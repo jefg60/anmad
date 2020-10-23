@@ -8,6 +8,7 @@ setup(name='anmad',
     author='Jeff Hibberd',
     author_email='jeff@jeffhibberd.com',
     license='GPLv3',
+    include_package_data=True,
     install_requires=[
         'ansible',
         'ansible-vault >=2.0.1',

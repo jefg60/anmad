@@ -12,9 +12,8 @@
 </script>
 
 {% include 'header.html' %}
-  <h1>Version {{ version }}</h1>
-  {% include 'refreshtime.html' %}
-  {% include 'backbutton.html' %}
+{% include 'refreshtime.html' %}
+{% include 'backbutton.html' %}
 
 {% if jobs|length > 0 %}
 <h2>Found {{ jobs|length }} processes currently running</h2>

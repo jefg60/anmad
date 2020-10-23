@@ -1,4 +1,16 @@
 <script src="{{ url_for('static', filename='moment.min.js') }}"></script>
+<h2 style="text-align: right">Anmad {{ version }}<br />
+{{ daemon_status["service"] }} service is 
+{% if daemon_status["active_state"] != 'active' or daemon_status["sub_state"] != 'running' %}
+<span style="color:red">
+{% else %}
+<span style="color:green">
+{% endif %}
+{{ daemon_status["active_state"] }},
+{{ daemon_status["sub_state"] }} 
+</span>
+{{ daemon_status["state_change_timestamp"] }}
+<br />
 <h2 style="text-align:right">
 Page last refreshed at:<br />
 <script>

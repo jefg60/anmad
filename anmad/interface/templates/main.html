@@ -1,17 +1,4 @@
 {% include 'header.html' %}
-  <h1>Anmad {{ version }}</h1>
-  <h1>
-    {{ daemon_status["service"] }} service is 
-    {% if daemon_status["active_state"] != 'active' or daemon_status["sub_state"] != 'running' %}
-    <span style="color:red">
-    {% else %}
-    <span style="color:green">
-    {% endif %}
-    {{ daemon_status["active_state"] }},
-    {{ daemon_status["sub_state"] }} 
-    </span>
-    {{ daemon_status["state_change_timestamp"] }}
-  </h1>
   {% include 'refreshtime.html' %}
 
   <script>

@@ -11,7 +11,7 @@
     <td style="text-align:right; vertical-align:top;">
       <h3>Anmad {{ version }}
 	<br />
-	{{ daemon_status["service"] }} daemon is
+	daemon is
 	{% if daemon_status["active_state"] != 'active' or daemon_status["sub_state"] != 'running' %}
 	<span style="color:red">
 	{% else %}
@@ -34,7 +34,7 @@
 	  document.write(moment("{{ time }}").format('ddd YYYY-MM-D HH:mm:ss'));
 	</script>
 	<br />
-	(UTC Time)
+	(UTC)
       </h3>
         <button style="width:40%; padding: 3% 6%" class="button greenbutton" onclick="self.location.href='/'">
 	  Home

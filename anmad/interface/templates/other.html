@@ -2,7 +2,6 @@
 {% include 'refreshtime.html' %}
 <h2>Other playbooks in root dir</h1>
 
-{% include 'backbutton.html' %}
 {% for play in extras %}
 <button style="width:20%;padding:10px 10px" class="button orangebutton" onclick="self.location.href='/otherplaybooks/{{ play }}'">
 run {{ play }}

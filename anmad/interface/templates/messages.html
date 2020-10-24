@@ -1,5 +1,5 @@
 {% if messages|length > 0 %}
-<h2>Last {{ messages|length }} messages (newest first):</h2>
+<h3>Last {{ messages|length }} messages (newest first):</h3>
 {% for message in messages %}
   {% if '[CRITICAL]' in message %}
   <span style="color:red">

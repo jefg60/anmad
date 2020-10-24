@@ -2,8 +2,8 @@
 
 <table style="width:100%; border: 1px solid black">
   <tr>
-    <td style="width:80%; border:1px solid black">
-      <div style="height:150px; width:100%; overflow:auto;">
+    <td style="width:80%; vertical-align:top; border:1px solid black">
+      <div style="height:125px; width:100%;">
       {% include 'messages.html' %}
       </div>
     </td>
@@ -28,7 +28,6 @@
 	<script>
 	  document.write(moment("{{ time }} Z").format('ddd YYYY-MM-D HH:mm:ss'));
 	</script>
-	<br />
 	<br />
 	<br />
 	<script>

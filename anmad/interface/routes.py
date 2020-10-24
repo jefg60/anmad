@@ -57,7 +57,6 @@ def log_page():
         'time': time_string,
         'version': config["version"],
         'daemon_status': service_status('anmad'),
-        'messages': config["queues"].info_list[0:config["args"].messagelist_size],
         'messages_long': config["queues"].info_list,
         }
     config["logger"].debug("Rendering log page")

@@ -57,7 +57,8 @@ def log_page():
         'time': time_string,
         'version': config["version"],
         'daemon_status': service_status('anmad'),
-        'messages': config["queues"].info_list,
+        'messages': config["queues"].info_list[0:config["args"].messagelist_size],
+        'messages_long': config["queues"].info_list,
         }
     config["logger"].debug("Rendering log page")
     return render_template('log.html', **template_data)
@@ -71,6 +72,7 @@ def jobs_page():
         'time': time_string,
         'version': config["version"],
         'daemon_status': service_status('anmad'),
+        'messages': config["queues"].info_list[0:config["args"].messagelist_size],
         'jobs': get_ansible_playbook_procs()
         }
     config["logger"].debug("Rendering job page")
@@ -85,6 +87,7 @@ def otherplaybooks_page():
         'time': time_string,
         'version': config["version"],
         'daemon_status': service_status('anmad'),
+        'messages': config["queues"].info_list[0:config["args"].messagelist_size],
         'extras': extraplays(**config)
         }
     config["logger"].debug("Rendering other playbooks page")
@@ -104,6 +107,7 @@ def ansiblelog_page():
             'time': time_string,
             'version': config["version"],
             'daemon_status': service_status('anmad'),
+            'messages': config["queues"].info_list[0:config["args"].messagelist_size],
             'logs': loglist,
             }
         return render_template('playbooklogs.html', **template_data)
@@ -117,6 +121,7 @@ def ansiblelog_page():
         'version': config["version"],
         'daemon_status': service_status('anmad'),
         'log': requestedlog,
+        'messages': config["queues"].info_list[0:config["args"].messagelist_size],
         'text': content
         }
     return render_template('ansiblelog.html', **template_data)

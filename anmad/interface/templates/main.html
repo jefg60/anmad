@@ -1,25 +1,25 @@
 {% include 'header.html' %}
 {% include 'refreshtime.html' %}
-  <table style="table-layout:fixed; border: 1px solid black; width:80%;">
+  <table style="table-layout:fixed; width:80%;">
     <tr>
-      <td valign="top", width=34%, text-align="left", style="border:1px solid black">
+      <td style="width:34%; text-align:center;">
 	<button class="button bluebutton" onclick="self.location.href='/log'"/>
 	More Logs
 	</button>
       </td>
-      <td valign="top", width=34%, text-align="center", style="border:1px solid black">
+      <td style="width:34%; text-align:center;">
 	<button class="button bluebutton" onclick="self.location.href='/runall'">
 	run all (green) playbooks
 	</button>
       </td>
-      <td valign="top", width=33%, text-align="right", style="border:1px solid black">
+      <td style="width:34%; text-align:center;">
 	<button class="button redbutton" onclick="self.location.href='/clearqueues'">
 	Clear all queued jobs
 	</button>
       </td>
     </tr>
     <tr>
-      <td valign="top", width=34%, text-align="center", style="border:1px solid black">
+      <td style="width:34%; text-align:center; vertical-align:top;">
 
 	<h2>Pre-run playbooks</h2>
 
@@ -32,7 +32,7 @@
 
       </td>
 
-      <td valign="top", width=33%, text-align="center", style="border:1px solid black">
+      <td style="width:34%; text-align:center; vertical-align:top;">
 	<h2>Configured playbooks</h2>
 
 	{% for play in playbooks %}
@@ -47,7 +47,7 @@
 
       </td>
 
-      <td style="vertial-align:right; word-break:break-all">
+      <td style="width:34%; text-align:center; vertical-align:top;">
 	<h2>Jobs in queue</h2>
 	{% if preq_message %}
 	{% for message in preq_message %}

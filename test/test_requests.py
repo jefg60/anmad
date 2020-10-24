@@ -34,8 +34,7 @@ class TestReturnCodes(unittest.TestCase):
         requests.get(self.baseurl + 'clearqueues')
         output = requests.get(self.baseurl + 'runall')
         self.assertEqual(200, output.status_code)
-        self.assertIn("Queued Jobs:</h2>", output.text)
-        self.assertIn("(multiples between [] will be concurrently run)</h3>", output.text)
+        self.assertIn("Jobs in queue", output.text)
         self.assertIn("/vagrant/samples/deploy.yaml&#39;, &#39;/vagrant/samples/deploy2.yaml&#39;]</h3>", output.text)
         self.assertIn(
             "[&#39;/vagrant/samples/deploy4.yaml&#39;]</h3>", output.text)
@@ -47,7 +46,7 @@ class TestReturnCodes(unittest.TestCase):
         self.assertEqual(200, output.status_code)
         self.assertIn("run deploy6.yaml", output.text)
         self.assertIn("run deploy9.yml", output.text)
-        self.assertIn("Back to main interface", output.text)
+        self.assertIn("Other playbooks in root dir", output.text)
         self.check_for_valid_date(output.text)
 
     def test_jobs(self):
@@ -58,7 +57,7 @@ class TestReturnCodes(unittest.TestCase):
         self.assertIn("playbook /srv/config/deploy2.yaml", output.text)
         self.assertIn("ansible log for deploy.yaml", output.text)
         self.assertIn("ansible log for deploy2.yaml", output.text)
-        self.assertIn("Back to main interface", output.text)
+        self.assertIn("Home", output.text)
         self.assertIn("KILL PID", output.text)
         self.assertIn("KILL ALL", output.text)
         self.check_for_valid_date(output.text)

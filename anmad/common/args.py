@@ -149,7 +149,7 @@ def parse_anmad_args():
         "--messagelist_size",
         help="number of messages to display on homepage",
         type=int,
-        default=5
+        default=4
         )
 
     parser.set_defaults(debug=False, syslog=True, dryrun=False)

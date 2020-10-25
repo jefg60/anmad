@@ -17,13 +17,13 @@
 {% if jobs|length > 0 %}
 <h2>Found {{ jobs|length }} processes currently running</h2>
 <h2>(cmdline matching *ansible-playbook*):</h2>
+{% include 'killall.html' %}
 {% for job in jobs %}
-<pre class="tab">PID {{ job.pid }} playbook {{ job.cmdline|last }}  <button onclick="AreYouSurePid({{ job.pid }})" class="simplebutton">KILL PID {{ job.pid }}</button>  <a href="/ansiblelog?play={{ job.cmdline|last|basename }}.log">ansible log for {{ job.cmdline|last|basename }}</a> </pre>
+<pre>PID {{ job.pid }} {{ job.cmdline|last }} <button onclick="AreYouSurePid({{ job.pid }})" class="smallbutton redbutton">KILL</button>  <button class="smallbutton bluebutton", onclick="self.location.href='/ansiblelog?play={{ job.cmdline|last|basename }}.log'">ansible log</button> </pre>
 {% endfor %}
 {% else %}
   <h2>No running ansible-playbook processes found</h2>
 {% endif %}
 
-{% include 'killall.html' %}
 </body>
 </html>

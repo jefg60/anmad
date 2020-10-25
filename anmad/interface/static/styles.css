@@ -27,7 +27,7 @@ h4 {
   background-color: silver;
   color: black;
   border: 2px solid #4CAF50;
-  padding: 1px 1px;
+  padding: 0% 1%;
   text-align: center;
   text-decoration: none;
   display: inline-block;
@@ -35,7 +35,6 @@ h4 {
   margin: 4px 2px;
   transition: unset;
   cursor: pointer;
-  width: 40%;
 }
 
 .button {

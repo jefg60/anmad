@@ -59,7 +59,7 @@ class TestReturnCodes(unittest.TestCase):
         self.assertIn("self.location.href='/ansiblelog?play=deploy2.yaml.log'", output.text)
         self.assertIn("Home", output.text)
         self.assertIn(">KILL PID ", output.text)
-        self.assertIn("KILL ALL</button>", output.text)
+        self.assertIn("Kill all running jobs</button>", output.text)
         self.check_for_valid_date(output.text)
 
     def test_log(self):

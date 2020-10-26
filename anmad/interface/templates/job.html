@@ -10,6 +10,17 @@
     }
   }
 </script>
+<script>
+  function AreYouSureAll() {
+    var result = confirm("Are You SURE you want to kill all jobs?");
+    if (result == true) {
+      self.location.href='/killall'
+    }
+    else {
+      self.location.href='/jobs'
+    }
+  }
+</script>
 
 {% include 'header.html' %}
 {% include 'refreshtime.html' %}
@@ -17,19 +28,22 @@
 {% if jobs|length > 0 %}
 <h2>Found {{ jobs|length }} processes currently running</h2>
 <h2>(cmdline matching *ansible-playbook*):</h2>
-{% include 'killall.html' %}
 <table style="width:80%;">
-  <th style="text-align:center;"><h3>PID</h3></th>
-  <th style="text-align:center;"><h3>playbook</h3></th>
-  <th style="text-align:center;"><h3>kill</h3></th>
-  <th style="text-align:center;"><h3>log</h3></th>
-{% for job in jobs %}
-<tr>
-  <td style="text-align:center;"><h3>{{ job.pid }}</h3></td>
-  <td style="text-align:center;"><h3> {{ job.cmdline|last }}</h3></td>
-  <td style="text-align:center;"> <button onclick="AreYouSurePid({{ job.pid }})" class="smallbutton redbutton">KILL</button></td>
-  <td style="text-align:center;"><button class="smallbutton bluebutton", onclick="self.location.href='/ansiblelog?play={{ job.cmdline|last|basename }}.log'">ansible log</button> </td>
-</tr>
+  <th style="text-align:center;">
+    <h3>Playbook Filename</h3>
+  </th>
+  <th style="text-align:center;">
+    <button onclick="AreYouSureAll()" class="smallbutton redbutton", style="width:60%; padding:2% 2%;">KILL ALL</button>
+  </th>
+  <th style="text-align:center;">
+    <button onclick="self.location.href='/ansiblelog?play=list'" class="smallbutton bluebutton", style="width:60%; padding:2% 2%;">All Logs</button>
+  </th>
+  {% for job in jobs %}
+  <tr>
+    <td style="text-align:center;"><h3> {{ job.cmdline|last }}</h3></td>
+    <td style="text-align:center;"> <button onclick="AreYouSurePid({{ job.pid }})" class="smallbutton redbutton", style="width:50%;">KILL PID {{ job.pid }}</button></td>
+    <td style="text-align:center;"><button class="smallbutton bluebutton", onclick="self.location.href='/ansiblelog?play={{ job.cmdline|last|basename }}.log'">ansible log</button> </td>
+  </tr>
 {% endfor %}
 {% else %}
   <h2>No running ansible-playbook processes found</h2>

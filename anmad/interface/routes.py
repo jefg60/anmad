@@ -17,7 +17,8 @@ import anmad.common.version as anmadver
 
 config = {
     "args": parse_anmad_args(),
-    "version": anmadver.VERSION + " on " + getfqdn(),
+    "version": anmadver.VERSION,
+    "hostname": getfqdn(),
     "baseurl": "/",
     "queues": AnmadQueues('prerun', 'playbooks', 'info'),
 }
@@ -36,6 +37,7 @@ def mainpage():
         'title' : 'anmad',
         'time': time_string,
         'version': config["version"],
+        'hostname': config["hostname"],
         'daemon_status': service_status('anmad'),
         'preq_message': config["queues"].prequeue_list,
         'queue_message': config["queues"].queue_list,
@@ -57,6 +59,7 @@ def log_page():
         'title' : 'anmad log',
         'time': time_string,
         'version': config["version"],
+        'hostname': config["hostname"],
         'daemon_status': service_status('anmad'),
         'messages_long': config["queues"].info_list,
         }
@@ -71,6 +74,7 @@ def jobs_page():
         'title' : 'ansible-playbook processes',
         'time': time_string,
         'version': config["version"],
+        'hostname': config["hostname"],
         'daemon_status': service_status('anmad'),
         'messages': config["queues"].info_list[0:config["args"].messagelist_size],
         'jobs': get_ansible_playbook_procs()
@@ -86,6 +90,7 @@ def otherplaybooks_page():
         'title' : 'anmad others',
         'time': time_string,
         'version': config["version"],
+        'hostname': config["hostname"],
         'daemon_status': service_status('anmad'),
         'messages': config["queues"].info_list[0:config["args"].messagelist_size],
         'extras': extraplays(**config)
@@ -106,6 +111,7 @@ def ansiblelog_page():
             'title' : 'ansible playbook logs',
             'time': time_string,
             'version': config["version"],
+            'hostname': config["hostname"],
             'daemon_status': service_status('anmad'),
             'messages': config["queues"].info_list[0:config["args"].messagelist_size],
             'logs': loglist,
@@ -119,6 +125,7 @@ def ansiblelog_page():
         'title' : 'ansible log for ' + requestedlog,
         'time': time_string,
         'version': config["version"],
+        'hostname': config["hostname"],
         'daemon_status': service_status('anmad'),
         'log': requestedlog,
         'messages': config["queues"].info_list[0:config["args"].messagelist_size],

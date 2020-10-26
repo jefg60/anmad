@@ -9,7 +9,9 @@
     </td>
 
     <td style="text-align:right; vertical-align:top;">
-      <h3>Anmad {{ version }}
+      <h3>Anmad {{ version }} on
+	<br />
+	{{ hostname }}
 	<br />
 	daemon
 	{% if daemon_status["active_state"] != 'active' or daemon_status["sub_state"] != 'running' %}

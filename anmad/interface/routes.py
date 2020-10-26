@@ -42,6 +42,7 @@ def mainpage():
         'messages': config["queues"].info_list[0:config["args"].messagelist_size],
         'playbooks': config["args"].playbooks,
         'prerun': config["args"].pre_run_playbooks,
+        'jobs': get_ansible_playbook_procs()
         }
     config["logger"].debug("Rendering control page")
     return render_template('main.html',

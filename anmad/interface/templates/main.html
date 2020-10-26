@@ -19,7 +19,7 @@
       </td>
       <td style="width:20%; text-align:center;">
 	<button class="button orangebutton" onclick="self.location.href='/jobs'">
-	ansible-playbook processes
+	Running Job details
 	</button>
       </td>
     </tr>
@@ -63,6 +63,17 @@
 	{% if queue_message %}
 	{% for message in queue_message %}
 	<h3 style="color:silver">{{ message }}</h3>
+	{% endfor %}
+	{% else %}
+	<h3>None</h3>
+	{% endif %}
+      </td>
+
+      <td style="width:20%; text-align:center; vertical-align:top;">
+	<h2>Jobs currently running</h2>
+	{% if jobs %}
+	{% for job in jobs %}
+	<h3 style="color:silver">{{ job.cmdline|last }}</h3>
 	{% endfor %}
 	{% else %}
 	<h3>None</h3>

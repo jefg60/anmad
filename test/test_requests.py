@@ -53,13 +53,13 @@ class TestReturnCodes(unittest.TestCase):
         """Test the jobs / processes page."""
         output = requests.get(self.baseurl + 'jobs')
         self.assertEqual(200, output.status_code)
-        self.assertIn("playbook /srv/config/deploy.yaml", output.text)
-        self.assertIn("playbook /srv/config/deploy2.yaml", output.text)
-        self.assertIn("ansible log for deploy.yaml", output.text)
-        self.assertIn("ansible log for deploy2.yaml", output.text)
+        self.assertIn("/srv/config/deploy.yaml", output.text)
+        self.assertIn("/srv/config/deploy2.yaml", output.text)
+        self.assertIn("self.location.href='/ansiblelog?play=deploy.yaml.log'", output.text)
+        self.assertIn("self.location.href='/ansiblelog?play=deploy2.yaml.log'", output.text)
         self.assertIn("Home", output.text)
-        self.assertIn("KILL PID", output.text)
-        self.assertIn("KILL ALL", output.text)
+        self.assertIn(">KILL PID ", output.text)
+        self.assertIn("KILL ALL</button>", output.text)
         self.check_for_valid_date(output.text)
 
     def test_log(self):

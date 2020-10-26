@@ -2,9 +2,10 @@
 {% include 'refreshtime.html' %}
 
 {% for log in logs -%}
-<h3>
-<a href="/ansiblelog?play={{ log|basename }}">ansible log for {{ log|basename }}</a>
-</h3>
+<button class="button bluebutton", style="width:45%;padding:10px 10px", onclick="self.location.href='/ansiblelog?play={{ log|basename }}'">
+  log for {{ log|basename }}
+</button>
+</br>
 {%- endfor %}
 
 </body>

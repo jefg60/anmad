@@ -23,27 +23,25 @@
 {% include 'refreshtime.html' %}
 
 {% if jobs|length > 0 %}
-<h2>Found {{ jobs|length }} processes currently running</h2>
-<h2>(cmdline matching *ansible-playbook*):</h2>
+<h1>Found {{ jobs|length }} processes currently running
+ (cmdline matching *ansible-playbook*):</h1>
 <table style="width:80%;">
   <thead>
     <tr>
-      <th style="text-align:center;">
-        Playbook Filename
+      <th style="text-align:right;">
+        Playbook path
       </th>
 
       <th style="text-align:center;">
         <button onclick="AreYouSurePid()"
-          class="button redbutton"
-          style="width:60%; padding:2% 2%;">
+          class="button redbutton">
             Kill all running jobs
         </button>
       </th>
 
       <th style="text-align:center;">
         <button onclick="self.location.href='/ansiblelog?play=list'"
-          class="button bluebutton"
-          style="width:60%; padding:2% 2%;">
+          class="button bluebutton">
             All ansible logs
         </button>
       </th>
@@ -55,22 +53,21 @@
 {% for job in jobs %}
     <tr>
 
-      <td style="text-align:center;">
-        <h3>{{ job.cmdline|last }}</h3>
+      <td style="text-align:right;">
+        <h2>{{ job.cmdline|last }}</h2>
       </td>
 
       <td style="text-align:center;">
         <button onclick="AreYouSurePid({{ job.pid }})"
-          class="smallbutton redbutton"
-          style="width:50%;">
+          class="button redbutton">
             KILL PID {{ job.pid }}
         </button>
       </td>
 
       <td style="text-align:center;">
         <button onclick="self.location.href='/ansiblelog?play={{ job.cmdline|last|basename }}.log'"
-          class="smallbutton bluebutton">
-          ansible log
+          class="button bluebutton">
+          {{ job.cmdline|last|basename }}.log
         </button>
       </td>
 

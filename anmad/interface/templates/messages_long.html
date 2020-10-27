@@ -3,18 +3,18 @@
       <h2>Last {{ messages_long|length }} messages (newest first):</h2>
   {% for message in messages_long %}
     {% if '[CRITICAL]' in message %}
-      <span style="color:red">
+      <h3 style="color:red">
     {% elif '[ERROR]' in message %}
-      <span style="color:orange">
+      <h3 style="color:orange">
     {% elif '[WARNING]' in message %}
-      <span style="color:lightcyan">
+      <h3 style="color:lightcyan">
     {% elif '[INFO]' in message %}
-      <span style="color:silver">
+      <h3 style="color:silver">
     {% else %}
-      <span>
+      <h3>
     {% endif %}
-      <h4>{{ message }}</h4>
-      </span>
+      {{ message }}
+      </h3>
   {% endfor %}
 
 {% else %}

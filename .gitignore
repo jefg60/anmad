@@ -7,3 +7,4 @@ samples/*.retry
 *.log
 roles
 *.egg-info
+.DS_Store

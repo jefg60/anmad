@@ -33,60 +33,71 @@
       <td style="width:20%; text-align:center; vertical-align:top;">
         <h2>Pre-run playbooks</h2>
 
-	{% for play in prerun %}
-	<button class="button greenbutton" style="width:44%" onclick="self.location.href='/playbooks/{{ play }}'">
-	  run <br>{{ play }}
-	</button>
-	<button class="button bluebutton" style="width:44%" onclick="self.location.href='/ansiblelog?play={{ play }}.log'">
-	  log for <br>{{ play }}
-	</button>
-	<br>
-	{% endfor %}
+{% for play in prerun %}
+        <button class="button greenbutton" style="width:44%" onclick="self.location.href='/playbooks/{{ play }}'">
+          run <br>{{ play }}
+        </button>
+
+        <button class="button bluebutton" style="width:44%" onclick="self.location.href='/ansiblelog?play={{ play }}.log'">
+          log for <br>{{ play }}
+        </button>
+        <br>
+{% endfor %}
       </td>
 
       <td style="width:20%; text-align:center; vertical-align:top;">
-	<h2>Configured playbooks</h2>
+        <h2>Configured playbooks</h2>
 
-	{% for play in playbooks %}
-	<button class="button greenbutton" style="width:44%" onclick="self.location.href='/playbooks/{{ play }}'">
-	  run <br>{{ play }}
-	</button>
-	<button class="button bluebutton" style="width:44%" onclick="self.location.href='/ansiblelog?play={{ play }}.log'">
-	  log for <br>{{ play }}
-	</button>
-	<br>
-	{% endfor %}
-	<button class="button orangebutton" onclick="self.location.href='/otherplays'">
-	Other Playbooks
-	</button>
+{% for play in playbooks %}
+        <button class="button greenbutton" style="width:44%" onclick="self.location.href='/playbooks/{{ play }}'">
+          run <br>{{ play }}
+        </button>
+
+        <button class="button bluebutton" style="width:44%" onclick="self.location.href='/ansiblelog?play={{ play }}.log'">
+          log for <br>{{ play }}
+        </button>
+
+        <br>
+
+{% endfor %}
+
+        <button class="button orangebutton" onclick="self.location.href='/otherplays'">
+          Other Playbooks
+        </button>
       </td>
 
       <td style="width:20%; text-align:center; vertical-align:top;">
-	<h2>Jobs in queue</h2>
-	{% if preq_message %}
-	{% for message in preq_message %}
-	<h3 style="color:silver">{{ message }}</h3>
-	{% endfor %}
-	{% endif %}
+        <h2>Jobs in queue</h2>
+{% if preq_message %}
 
-	{% if queue_message %}
-	{% for message in queue_message %}
-	<h3 style="color:silver">{{ message }}</h3>
-	{% endfor %}
-	{% else %}
-	<h3>None</h3>
-	{% endif %}
+  {% for message in preq_message %}
+        <h3 style="color:silver">{{ message }}</h3>
+  {% endfor %}
+
+{% endif %}
+
+{% if queue_message %}
+
+  {% for message in queue_message %}
+        <h3 style="color:silver">{{ message }}</h3>
+  {% endfor %}
+
+{% else %}
+        <h3>None</h3>
+{% endif %}
       </td>
 
       <td style="width:20%; text-align:center; vertical-align:top;">
-	<h2>Jobs currently running</h2>
-	{% if jobs %}
-	{% for job in jobs %}
-	<h3 style="color:silver">{{ job.cmdline|last }}</h3>
-	{% endfor %}
-	{% else %}
-	<h3>None</h3>
-	{% endif %}
+        <h2>Jobs currently running</h2>
+{% if jobs %}
+
+  {% for job in jobs %}
+        <h3 style="color:silver">{{ job.cmdline|last }}</h3>
+  {% endfor %}
+
+{% else %}
+        <h3>None</h3>
+{% endif %}
       </td>
 
     </tr>

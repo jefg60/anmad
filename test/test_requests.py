@@ -58,8 +58,8 @@ class TestReturnCodes(unittest.TestCase):
         self.assertIn("self.location.href='/ansiblelog?play=deploy.yaml.log'", output.text)
         self.assertIn("self.location.href='/ansiblelog?play=deploy2.yaml.log'", output.text)
         self.assertIn("Home", output.text)
-        self.assertIn(">KILL PID ", output.text)
-        self.assertIn("Kill all running jobs</button>", output.text)
+        self.assertIn("KILL PID", output.text)
+        self.assertIn("Kill all running jobs", output.text)
         self.check_for_valid_date(output.text)
 
     def test_log(self):
@@ -75,8 +75,8 @@ class TestReturnCodes(unittest.TestCase):
         output = requests.get(self.baseurl + 'ansiblelog?play=list')
         self.assertEqual(200, output.status_code)
         self.check_for_valid_date(output.text)
-        self.assertIn("log for deploy.yaml.log", output.text)
-        self.assertIn("log for deploy9.yml.log", output.text)
+        self.assertIn("deploy.yaml.log", output.text)
+        self.assertIn("deploy9.yml.log", output.text)
 
 if __name__ == '__main__':
     unittest.main()

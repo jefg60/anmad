@@ -2,6 +2,11 @@ body {
   background-color: #585757;
 }
 
+th {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 100%;
+}
+
 h1 {
   font-family: Arial, Helvetica, sans-serif;
   font-size: 100%;

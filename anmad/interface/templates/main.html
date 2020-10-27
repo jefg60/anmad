@@ -4,26 +4,30 @@
   <table style="table-layout:fixed; width:100%;">
     <tr>
       <td style="width:20%; text-align:center;">
-        <button class="button bluebutton" onclick="self.location.href='/log'">
-          View More Logs
+        <button onclick="self.location.href='/log'"
+          class="button bluebutton" >
+            View More Logs
         </button>
       </td>
 
       <td style="width:20%; text-align:center;">
-        <button class="button greenbutton" onclick="self.location.href='/runall'">
-          run all (green) playbooks
+        <button onclick="self.location.href='/runall'"
+          class="button greenbutton" >
+            run all (green) playbooks
         </button>
       </td>
 
       <td style="width:20%; text-align:center;">
-        <button class="button redbutton" onclick="self.location.href='/clearqueues'">
-          Clear all queued jobs
+        <button onclick="self.location.href='/clearqueues'"
+          class="button redbutton" >
+            Clear all queued jobs
         </button>
       </td>
 
       <td style="width:20%; text-align:center;">
-        <button class="button orangebutton" onclick="self.location.href='/jobs'">
-          Running Job details
+        <button onclick="self.location.href='/jobs'"
+          class="button orangebutton" >
+            Running Job details
         </button>
       </td>
 
@@ -34,12 +38,16 @@
         <h2>Pre-run playbooks</h2>
 
 {% for play in prerun %}
-        <button class="button greenbutton" style="width:44%" onclick="self.location.href='/playbooks/{{ play }}'">
-          run <br>{{ play }}
+        <button onclick="self.location.href='/playbooks/{{ play }}'"
+          class="button greenbutton"
+          style="width:44%" >
+            run <br>{{ play }}
         </button>
 
-        <button class="button bluebutton" style="width:44%" onclick="self.location.href='/ansiblelog?play={{ play }}.log'">
-          log for <br>{{ play }}
+        <button onclick="self.location.href='/ansiblelog?play={{ play }}.log'"
+          class="button bluebutton"
+          style="width:44%" >
+            log for <br>{{ play }}
         </button>
         <br>
 {% endfor %}
@@ -49,20 +57,25 @@
         <h2>Configured playbooks</h2>
 
 {% for play in playbooks %}
-        <button class="button greenbutton" style="width:44%" onclick="self.location.href='/playbooks/{{ play }}'">
-          run <br>{{ play }}
+        <button onclick="self.location.href='/playbooks/{{ play }}'"
+          class="button greenbutton"
+          style="width:44%" >
+            run <br>{{ play }}
         </button>
 
-        <button class="button bluebutton" style="width:44%" onclick="self.location.href='/ansiblelog?play={{ play }}.log'">
-          log for <br>{{ play }}
+        <button onclick="self.location.href='/ansiblelog?play={{ play }}.log'"
+          class="button bluebutton"
+          style="width:44%" >
+            log for <br>{{ play }}
         </button>
 
         <br>
 
 {% endfor %}
 
-        <button class="button orangebutton" onclick="self.location.href='/otherplays'">
-          Other Playbooks
+        <button onclick="self.location.href='/otherplays'"
+          class="button orangebutton" >
+            Other Playbooks
         </button>
       </td>
 

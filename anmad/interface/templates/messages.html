@@ -21,11 +21,15 @@
 
   {% elif messages_long|length > 0 %}
       <h3>NOTE: for full logs, check syslog!</h3>
-        <button class="smallbutton bluebutton" style="width:35%; padding:2px 2px" onclick="self.location.href='/ansiblelog?play=list'">
+        <button onclick="self.location.href='/ansiblelog?play=list'"
+          class="smallbutton bluebutton"
+          style="width:35%; padding:2px 2px" >
         all ansible-playbook logs
         </button>
       <br>
-        <button class="smallbutton orangebutton" style="width:35%; padding:2px 2px" onclick="self.location.href='/jobs'">
+        <button onclick="self.location.href='/jobs'"
+          class="smallbutton orangebutton"
+          style="width:35%; padding:2px 2px" >
         running ansible-playbook processes
         </button>
 {% else %}

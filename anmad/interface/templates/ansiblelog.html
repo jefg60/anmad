@@ -6,7 +6,9 @@
 </pre>
 
 <button onclick='window.scrollTo(0,document.body.scrollHeight);'
-	class="smallbutton">Scroll to end</button>
+  class="smallbutton">
+    Scroll to end
+</button>
 
 <pre style="white-space: pre-wrap;">
 {%- for line in text -%}
@@ -17,7 +19,7 @@
 {%- elif ' changed: ' in line -%}
 <span style="color:yellow">
 {%- elif ' WARNING]: ' in line -%}
-<span style="color:purple">
+<span style="color:lightcyan">
 {%- elif ' ERROR!' in line -%}
 <span style="color:maroon">
 {%- elif ' fatal: ' in line -%}
@@ -28,8 +30,13 @@
 {{ line }}</span>
 {%- endfor -%}
 </pre>
+
 <button onclick='window.scrollTo(0,0);'
-	class="smallbutton">Scroll back to top</button>
-  {% include 'refreshtime.html' %}
+  class="smallbutton">
+    Scroll back to top
+</button>
+
+{% include 'refreshtime.html' %}
+
 </body>
 </html>

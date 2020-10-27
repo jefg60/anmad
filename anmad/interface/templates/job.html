@@ -1,20 +1,16 @@
 <script>
   function AreYouSurePid(p) {
-    message=`Are You SURE you want to kill PID ${p} ?`
-    var result = confirm(message);
-    if (result == true) {
-      self.location.href=`/kill?pid=${p}`
+    if (p == undefined) {
+      message='Are You SURE you want to kill all jobs?'
+      target='/killall'
     }
     else {
-      self.location.href='/jobs'
+      message=`Are You SURE you want to kill PID ${p} ?`
+      target=`/kill?pid=${p}`
     }
-  }
-</script>
-<script>
-  function AreYouSureAll() {
-    var result = confirm("Are You SURE you want to kill all jobs?");
+    var result = confirm(message);
     if (result == true) {
-      self.location.href='/killall'
+      self.location.href=target
     }
     else {
       self.location.href='/jobs'
@@ -33,7 +29,7 @@
     <h3>Playbook Filename</h3>
   </th>
   <th style="text-align:center;">
-    <button onclick="AreYouSureAll()" class="smallbutton redbutton", style="width:60%; padding:2% 2%;">Kill all running jobs</button>
+    <button onclick="AreYouSurePid()" class="smallbutton redbutton", style="width:60%; padding:2% 2%;">Kill all running jobs</button>
   </th>
   <th style="text-align:center;">
     <button onclick="self.location.href='/ansiblelog?play=list'" class="smallbutton bluebutton", style="width:60%; padding:2% 2%;">All ansible logs</button>

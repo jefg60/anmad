@@ -10,40 +10,42 @@
 
     <td style="text-align:right; vertical-align:top;">
       <h3>Anmad {{ version }} on
-	<br />
-	{{ hostname }}
-	<br />
-	daemon
-	{% if daemon_status["active_state"] != 'active' or daemon_status["sub_state"] != 'running' %}
-	<span style="color:red">
-	{% else %}
-	<span style="color:green">
-	{% endif %}
-	{{ daemon_status["active_state"] }},
-	{{ daemon_status["sub_state"] }} 
-	</span>
-	{{ daemon_status["state_change_timestamp"] }}
-	<br />
-	<br />
-	last update: (Local Time)
-	<br />
-	<script>
-	  document.write(moment("{{ time }} Z").format('ddd YYYY-MM-D HH:mm:ss'));
-	</script>
-	<br />
-	<br />
-	<script>
-	  document.write(moment("{{ time }}").format('ddd YYYY-MM-D HH:mm:ss'));
-	</script>
-	<br />
-	(UTC)
+      <br />
+      {{ hostname }}
+      <br />
+      daemon
+      {% if daemon_status["active_state"] != 'active' or daemon_status["sub_state"] != 'running' %}
+      <span style="color:red">
+      {% else %}
+      <span style="color:green">
+      {% endif %}
+      {{ daemon_status["active_state"] }},
+      {{ daemon_status["sub_state"] }} 
+      </span>
+      {{ daemon_status["state_change_timestamp"] }}
+      <br />
+      <br />
+      last update: (Local Time)
+      <br />
+      <script>
+        document.write(moment("{{ time }} Z").format('ddd YYYY-MM-D HH:mm:ss'));
+      </script>
+      <br />
+      <br />
+      <script>
+        document.write(moment("{{ time }}").format('ddd YYYY-MM-D HH:mm:ss'));
+      </script>
+      <br />
+      (UTC)
       </h3>
-        <button class="smallbutton greenbutton", onclick="self.location.href='/'">
-	  Home
-	</button>
-	<button class="smallbutton bluebutton", onclick="ReloadFunc()"/>
-	  Refresh
-	</button>
+      <button onclick="self.location.href='/'" 
+        class="smallbutton greenbutton">
+        Home
+      </button>
+      <button onclick="ReloadFunc()"
+        class="smallbutton bluebutton">
+        Refresh
+      </button>
     </td>
   </tr>
 </table>

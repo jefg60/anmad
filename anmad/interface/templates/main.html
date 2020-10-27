@@ -29,11 +29,11 @@
 	<h2>Pre-run playbooks</h2>
 
 	{% for play in prerun %}
-	<button class="button greenbutton", style="width:44%", onclick="self.location.href='/playbooks/{{ play }}'">
-	  run </br>{{ play }}
+	<button class="button greenbutton" style="width:44%" onclick="self.location.href='/playbooks/{{ play }}'">
+	  run <br>{{ play }}
 	</button>
-	<button class="button bluebutton", style="width:44%", onclick="self.location.href='/ansiblelog?play={{ play }}.log'">
-	  log for </br>{{ play }}
+	<button class="button bluebutton" style="width:44%" onclick="self.location.href='/ansiblelog?play={{ play }}.log'">
+	  log for <br>{{ play }}
 	</button>
 	<br />
 	{% endfor %}
@@ -43,11 +43,11 @@
 	<h2>Configured playbooks</h2>
 
 	{% for play in playbooks %}
-	<button class="button greenbutton", style="width:44%", onclick="self.location.href='/playbooks/{{ play }}'">
-	  run </br>{{ play }}
+	<button class="button greenbutton" style="width:44%" onclick="self.location.href='/playbooks/{{ play }}'">
+	  run <br>{{ play }}
 	</button>
-	<button class="button bluebutton", style="width:44%", onclick="self.location.href='/ansiblelog?play={{ play }}.log'">
-	  log for </br>{{ play }}
+	<button class="button bluebutton" style="width:44%" onclick="self.location.href='/ansiblelog?play={{ play }}.log'">
+	  log for <br>{{ play }}
 	</button>
 	<br />
 	{% endfor %}

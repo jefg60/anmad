@@ -1,31 +1,34 @@
 <!-- messages.html -->
 {% if messages|length > 0 %}
-<h3>Last {{ messages|length }} messages (newest first):</h3>
-{% for message in messages %}
-  {% if '[CRITICAL]' in message %}
-  <span style="color:red">
-  {% elif '[ERROR]' in message %}
-  <span style="color:orange">
-  {% elif '[WARNING]' in message %}
-  <span style="color:lightcyan">
-  {% elif '[INFO]' in message %}
-  <span style="color:silver">
-  {% else %}
-  <span>
-  {% endif %}
-  <h4>{{ message }}</h4>
-  </span>
-{% endfor %}
-{% elif messages_long %}
-<h3>NOTE: for full logs, check syslog!</h3>
+      <h3>Last {{ messages|length }} messages (newest first):</h3>
+
+  {% for message in messages %}
+
+    {% if '[CRITICAL]' in message %}
+      <span style="color:red">
+    {% elif '[ERROR]' in message %}
+      <span style="color:orange">
+    {% elif '[WARNING]' in message %}
+      <span style="color:lightcyan">
+    {% elif '[INFO]' in message %}
+      <span style="color:silver">
+    {% else %}
+      <span>
+    {% endif %}
+        <h4>{{ message }}</h4>
+      </span>
+  {% endfor %}
+
+  {% elif messages_long|length > 0 %}
+      <h3>NOTE: for full logs, check syslog!</h3>
         <button class="smallbutton bluebutton" style="width:35%; padding:2px 2px" onclick="self.location.href='/ansiblelog?play=list'">
         all ansible-playbook logs
         </button>
-	<br>
+      <br>
         <button class="smallbutton orangebutton" style="width:35%; padding:2px 2px" onclick="self.location.href='/jobs'">
         running ansible-playbook processes
         </button>
 {% else %}
-  <h3>No messages found yet</h3>
+      <h3>No messages found yet</h3>
 {% endif %}
 <!-- messages.html -->

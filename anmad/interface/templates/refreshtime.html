@@ -5,28 +5,28 @@
   <tr>
     <td style="width:80%; vertical-align:top;">
       <div style="height:125px; width:100%;">
-      {% include 'messages.html' %}
+{% include 'messages.html' %}
       </div>
     </td>
 
     <td style="text-align:right; vertical-align:top;">
       <h3>Anmad {{ version }} on
       <br>
-      {{ hostname }}
+        {{ hostname }}
       <br>
-      daemon
-      {% if daemon_status["active_state"] != 'active' or daemon_status["sub_state"] != 'running' %}
+        daemon
+{% if daemon_status["active_state"] != 'active' or daemon_status["sub_state"] != 'running' %}
       <span style="color:red">
-      {% else %}
+{% else %}
       <span style="color:green">
-      {% endif %}
-      {{ daemon_status["active_state"] }},
-      {{ daemon_status["sub_state"] }} 
+{% endif %}
+        {{ daemon_status["active_state"] }},
+        {{ daemon_status["sub_state"] }} 
       </span>
-      {{ daemon_status["state_change_timestamp"] }}
+        {{ daemon_status["state_change_timestamp"] }}
       <br>
       <br>
-      last update: (Local Time)
+        last update: (Local Time)
       <br>
       <script>
         document.write(moment("{{ time }} Z").format('ddd YYYY-MM-D HH:mm:ss'));
@@ -37,7 +37,7 @@
         document.write(moment("{{ time }}").format('ddd YYYY-MM-D HH:mm:ss'));
       </script>
       <br>
-      (UTC)
+        (UTC)
       </h3>
       <button onclick="self.location.href='/'" 
         class="smallbutton greenbutton">

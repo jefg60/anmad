@@ -51,6 +51,8 @@ def service_status(service):
 
     if state_change_timestamp != '':
         state_change_timestamp = str(' since ' + lines[2])
+    else
+        state_change_timestamp = str(' since boot')
     active_state = lines[0]
     return {"service": service,
             "active_state": active_state,

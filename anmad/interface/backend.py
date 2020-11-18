@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
 """Functions for anmad_interface."""
 
+from time import localtime,gmtime,strftime,strptime
 from os.path import basename
 import subprocess
 
 from anmad.common.yaml import find_yaml_files
+
+TIME_FORMAT = '%a %d %b %H:%M:%S %Z'
 
 def buttonlist(playbooks, prerun=None):
     """Get a list of allowed playbook buttons."""
@@ -47,14 +50,24 @@ def service_status(service):
     lines = servicestatus.stdout.splitlines()
     active_state = lines[0]
     sub_state = lines[1]
-    state_change_timestamp = lines[2]
-
-    if state_change_timestamp != '':
-        state_change_timestamp = str(' since ' + lines[2])
+    if lines[2] != '':
+        state_change_time = strftime(TIME_FORMAT,
+            strptime(lines[2],'%a %Y-%m-%d %H:%M:%S %Z'))
     else:
-        state_change_timestamp = str(' since boot')
+        state_change_time = 'system boot'
     active_state = lines[0]
     return {"service": service,
             "active_state": active_state,
             "sub_state": sub_state,
-            "state_change_timestamp": state_change_timestamp}
+            "state_change_time": state_change_time}
+
+def timestring():
+    """Return a tuple with formatted strings for localtime, and GMT time as a
+    second value if localtime is not GMT."""
+    gmt_time = gmtime()
+    local_time = localtime()
+    gmt_time_string = strftime(TIME_FORMAT, gmt_time)
+    local_time_string = strftime(TIME_FORMAT, local_time)
+    if local_time.tm_gmtoff == 0:
+        return (local_time_string,)
+    return (local_time_string, gmt_time_string)

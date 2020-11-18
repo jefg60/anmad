@@ -4,17 +4,18 @@
 <table style="width:100%; border: 1px solid black">
   <tr>
     <td style="width:75%; vertical-align:top;">
-      <div style="height:125px; width:100%; word-wrap: break-word; overflow: hidden">
+      <div style="height:130px; width:100%; word-wrap: break-word; overflow: hidden">
 {% include 'messages.html' %}
       </div>
     </td>
 
     <td style="text-align:right; vertical-align:top;">
-      <h3>Anmad {{ version }} on
+      <body style="font-family: monospace">
+	Anmad {{ version }}
       <br>
-        {{ hostname }}
+        on {{ hostname }}
       <br>
-        daemon
+        Status:
 {% if daemon_status["active_state"] != 'active' or daemon_status["sub_state"] != 'running' %}
       <span style="color:red">
 {% else %}
@@ -23,23 +24,21 @@
         {{ daemon_status["active_state"] }},
         {{ daemon_status["sub_state"] }}
       </span>
+        as of
       <br>
-        {{ daemon_status["state_change_timestamp"] }}
-      <br>
-      <br>
-        last update: (Local Time)
-      <br>
-      <script>
-        document.write(moment("{{ time }} Z").format('ddd YYYY-MM-D HH:mm:ss'));
-      </script>
+        {{ daemon_status["state_change_time"] }}
       <br>
       <br>
-      <script>
-        document.write(moment("{{ time }}").format('ddd YYYY-MM-D HH:mm:ss'));
-      </script>
+      Page last refreshed at:
       <br>
-        (UTC)
-      </h3>
+      {{ time[0] }}
+      <br>
+{% if time[1] %}
+      {{ time[1] }}
+{% endif %}
+      <br>
+      <br>
+      </body>
       <button onclick="self.location.href='/'" 
         class="smallbutton greenbutton">
         Home

@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """Configuration and routes for anmad flask app."""
-import datetime
+
 from socket import getfqdn
 from glob import glob
 from os.path import basename
 from flask import Flask, render_template, request
 
-from anmad.interface.backend import service_status, extraplays
+from anmad.interface.backend import service_status, extraplays, timestring
 from anmad.common.queues import AnmadQueues
 from anmad.common.args import parse_anmad_args
 from anmad.common.logging import logsetup
@@ -32,10 +32,9 @@ flaskapp.add_template_filter(basename)
 def mainpage():
     """Render main page."""
     config["queues"].update_job_lists()
-    time_string = datetime.datetime.utcnow()
     template_data = {
         'title' : 'anmad',
-        'time': time_string,
+        'time': timestring(),
         'version': config["version"],
         'hostname': config["hostname"],
         'daemon_status': service_status('anmad'),
@@ -54,10 +53,9 @@ def mainpage():
 def log_page():
     """Display info queues."""
     config["queues"].update_job_lists()
-    time_string = datetime.datetime.utcnow()
     template_data = {
         'title' : 'anmad log',
-        'time': time_string,
+        'time': timestring(),
         'version': config["version"],
         'hostname': config["hostname"],
         'daemon_status': service_status('anmad'),
@@ -69,10 +67,9 @@ def log_page():
 @flaskapp.route(config["baseurl"] + "jobs")
 def jobs_page():
     """Display running jobs (like ps -ef | grep ansible-playbook)."""
-    time_string = datetime.datetime.utcnow()
     template_data = {
         'title' : 'ansible-playbook processes',
-        'time': time_string,
+        'time': timestring(),
         'version': config["version"],
         'hostname': config["hostname"],
         'daemon_status': service_status('anmad'),
@@ -85,10 +82,9 @@ def jobs_page():
 @flaskapp.route(config["baseurl"] + "otherplays")
 def otherplaybooks_page():
     """Display other playbooks."""
-    time_string = datetime.datetime.utcnow()
     template_data = {
         'title' : 'anmad others',
-        'time': time_string,
+        'time': timestring(),
         'version': config["version"],
         'hostname': config["hostname"],
         'daemon_status': service_status('anmad'),
@@ -102,14 +98,13 @@ def otherplaybooks_page():
 def ansiblelog_page():
     """Display ansible.log."""
     config["logger"].debug("Displaying ansible.log")
-    time_string = datetime.datetime.utcnow()
     requestedlog = request.args.get('play')
     if requestedlog == 'list':
         loglist = glob('/var/log/ansible/playbook/' + '*.log')
         loglist.sort()
         template_data = {
             'title' : 'ansible playbook logs',
-            'time': time_string,
+            'time': timestring(),
             'version': config["version"],
             'hostname': config["hostname"],
             'daemon_status': service_status('anmad'),
@@ -123,7 +118,7 @@ def ansiblelog_page():
     text.close()
     template_data = {
         'title' : 'ansible log for ' + requestedlog,
-        'time': time_string,
+        'time': timestring(),
         'version': config["version"],
         'hostname': config["hostname"],
         'daemon_status': service_status('anmad'),

@@ -10,26 +10,53 @@
   class="smallbutton">
     Scroll to end
 </button>
+<br>
+<br>
 
-<pre style="white-space: pre-wrap;">
-{%- for line in text -%}
-{%- if ' ok: ' in line -%}
-<span style="color:green">
-{%- elif ' skipping: ' in line -%}
-<span style="color:teal">
-{%- elif ' changed: ' in line -%}
-<span style="color:yellow">
-{%- elif ' WARNING]: ' in line -%}
-<span style="color:lightcyan">
-{%- elif ' ERROR!' in line -%}
-<span style="color:maroon">
-{%- elif ' fatal: ' in line -%}
-<span style="color:maroon">
-{%- else -%}
+<pre style="margin: 0; white-space: pre-wrap;">
 <span style="color:silver">
-{%- endif -%}
-{{ line }}</span>
+{%- set continuespan = false %}
+{%- for line in text -%}
+  {#- just set variables about the line
+      - note minus signs to trim jinja blocks newlines! -#}
+  {%- if (' ok: ' in line or
+           ('unreachable=0' in line and 'failed=0' in line) ) -%}
+        {%- set spancolor = "green" -%}
+    {%- elif (' skipping: ' in line or '...ignoring: ' in line) -%}
+        {%- set spancolor = "teal" -%}
+    {%- elif ' changed: ' in line -%}
+        {%- set spancolor = "yellow" -%}
+    {%- elif ' WARNING]: ' in line -%}
+        {%- set spancolor = "lightcyan" -%}
+    {%- elif (' ERROR!' in line or ' fatal: ' in line or ' failed: ' in line) -%}
+        {%- set spancolor = "maroon" -%}
+    {%- else -%}
+        {%- set spancolor = "default" -%}
+	{%- set continuespan = true -%}
+  {%- endif -%}
+  {#- check for json blocks -#}
+  {#- start of json: -#}
+  {%- if line.endswith('{\n') -%}
+    {%- set continuespan = true %}
+  {%- endif -%}
+  {%- if line.endswith('}\n') -%}
+    {%- set continuespan = false %}
+  {%- endif -%}
+  {#- end of json: -#}
+  {%- if line|last == ('}') -%}
+    {%- set continuespan = false %}
+  {%- endif -%}
+  {#- change color if needed - one line at a time -#}
+  {%- if spancolor != "default" -%}
+<span style="color:{{ spancolor }}">
+  {%- endif -%}
+{{- line -}}
+  {%- if continuespan == false -%}
+</span>
+  {%- endif -%}
 {%- endfor -%}
+
+</span>
 </pre>
 
 <button onclick='window.scrollTo(0,0);'
@@ -37,7 +64,8 @@
     Scroll back to top
 </button>
 
-<pre><br></pre>
+<br>
+<br>
 
 {% include 'refreshtime.html' %}
 

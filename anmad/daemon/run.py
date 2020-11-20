@@ -47,8 +47,9 @@ class AnmadRun:
         my_logdir = ('/var/log/ansible/playbook/' + os.path.basename(playbook)
             + '/' + my_rundate + '/')
         Path(my_logdir).mkdir(parents=True, exist_ok=True)
-        my_env['ANSIBLE_LOG_PATH'] = ( my_logdir +
-                os.path.basename(playbook) + '.' + my_runtime + '.log')
+        my_env['ANSIBLE_LOG_PATH'] = ( my_logdir
+                + os.path.basename(playbook) + '.' + my_rundate
+                + '.' + my_runtime + '.log')
         #my_env['ANSIBLE_TRANSFORM_INVALID_GROUP_CHARS'] = 'silently'
 
         self.logger.info(

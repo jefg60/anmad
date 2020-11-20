@@ -99,7 +99,7 @@ def ansiblelog_page():
     """Display ansible.log."""
     config["logger"].debug("Displaying ansible.log")
     requestedlog = request.args.get('play')
-    if requestedlog == 'list':
+    if requestedlog == 'list' or '..' in requestedlog:
         loglist = glob('/var/log/ansible/playbook/' + '*.log')
         loglist.sort()
         template_data = {

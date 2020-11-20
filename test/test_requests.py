@@ -60,10 +60,16 @@ class TestReturnCodes(unittest.TestCase):
 
     def test_log_list(self):
         """Test the log list page."""
-        output = requests.get(self.baseurl + 'ansiblelog?play=list')
+        output = requests.get(self.baseurl + 'ansiblelog?play=')
         self.assertEqual(200, output.status_code)
         self.assertIn("deploy.yaml", output.text)
         self.assertIn("deploy9.yml", output.text)
+        output = requests.get(self.baseurl + 'ansiblelog?play=..')
+        self.assertEqual(403, output.status_code)
+        output = requests.get(self.baseurl + 'ansiblelog?play=/..')
+        self.assertEqual(403, output.status_code)
+        output = requests.get(self.baseurl + 'ansiblelog?play=/../')
+        self.assertEqual(403, output.status_code)
 
 if __name__ == '__main__':
     unittest.main()

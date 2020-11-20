@@ -2,12 +2,28 @@
 {% include 'header.html' %}
 {% include 'refreshtime.html' %}
 
+<button
+   onclick="self.location.href='/ansiblelog?play='"
+   class="button greenbutton"
+   style="width:75%;padding:10px 10px">
+   Top log directory
+</button>
+
+{% if parent != '/' %}
+<button
+       onclick="self.location.href='/ansiblelog?play={{ parent }}'"
+   class="button greenbutton"
+   style="width:75%;padding:10px 10px">
+   Go up one dir
+</button>
+{% endif %}
+
 {% for log in logs -%}
   <button
-     onclick="self.location.href='/ansiblelog?play={{ parent }}/{{ log|basename }}'"
+    onclick="self.location.href='/ansiblelog?play={{ log_base }}/{{ log|basename }}'"
      class="button bluebutton"
-     style="width:30%;padding:10px 10px">
-    {{ log|basename }}
+     style="width:75%;padding:10px 10px">
+     {{ log|basename }}
   </button>
 {%- endfor %}
 

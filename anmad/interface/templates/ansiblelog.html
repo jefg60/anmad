@@ -2,9 +2,15 @@
 {% include 'header.html' %}
 {% include 'refreshtime.html' %}
 
-<pre>
-{{ log }}:
-</pre>
+<button
+   onclick="self.location.href='/ansiblelog?play={{ parent }}'"
+   class="smallbutton bluebutton">
+   Back to list
+</button>
+
+<h2 style="color: silver;">
+{{ log|basename }}:
+</h2>
 
 <button onclick='window.scrollTo(0,document.body.scrollHeight);'
   class="smallbutton">

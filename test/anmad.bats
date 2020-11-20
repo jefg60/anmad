@@ -55,6 +55,11 @@ load test_helper
   [[ "$output" == "1234567890abc321" ]]
 }
 
+@test "deploy9.yml.log exists" {
+  run compgen -G /var/log/ansible/playbook/deploy9.yml/*/deploy9.yml.*.log
+  [ "$status" -eq 0 ]
+}
+
 @test "anmad_buttons control page has correct version $version" {
     curl http://localhost:9999/ | grep "$version"
 }

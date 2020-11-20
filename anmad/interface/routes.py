@@ -3,7 +3,7 @@
 
 from socket import getfqdn
 from glob import glob
-from os.path import basename, isfile, isdir
+from os.path import basename, isfile, isdir, abspath, dirname, normpath
 from flask import Flask, render_template, request, abort
 
 from anmad.interface.backend import service_status, extraplays, timestring
@@ -98,11 +98,15 @@ def otherplaybooks_page():
 def ansiblelog_page():
     """Display ansible.logs."""
     requestedlog = request.args.get('play')
-    log_base = '/var/log/ansible/playbook/'
-    if requestedlog == 'list' or '..' in requestedlog:
-        config["logger"].debug("Displaying ansible log TOP LIST")
-        loglist = glob(log_base + '/*')
-        loglist.sort()
+    if not requestedlog:
+        requestedlog = '/'
+    log_base = '/var/log/ansible/playbook'
+    try_path = (log_base + requestedlog)
+    if (isdir(try_path) and not '..' in try_path):
+        config["logger"].debug("Displaying ansible log CHILD DIR " + try_path)
+        loglist = glob(abspath(try_path) + '/*')
+        loglist.sort(reverse=True)
+        config["logger"].debug(requestedlog)
         template_data = {
             'title' : 'ansible playbook logs',
             'time': timestring(),
@@ -111,29 +115,14 @@ def ansiblelog_page():
             'daemon_status': service_status('anmad'),
             'messages': config["queues"].info_list[0:config["args"].messagelist_size],
             'logs': loglist,
-            'parent': ''
-            }
-        return render_template('playbooklogs.html', **template_data)
-    if isdir(log_base + requestedlog):
-        config["logger"].debug("Displaying ansible log CHILD DIR " + requestedlog)
-        loglist = glob(log_base + requestedlog + '/*')
-        loglist.sort()
-        template_data = {
-            'title' : 'ansible playbook logs',
-            'time': timestring(),
-            'version': config["version"],
-            'hostname': config["hostname"],
-            'daemon_status': service_status('anmad'),
-            'messages': config["queues"].info_list[0:config["args"].messagelist_size],
-            'logs': loglist,
-            'parent': requestedlog,
+            'parent': dirname(requestedlog),
+            'log_base': normpath(requestedlog)
             }
         return render_template('playbooklogs.html', **template_data)
     # If we get here, we should be looking at a file, not a dir
-    logfile = '/var/log/ansible/playbook/' + requestedlog
-    if isfile(logfile):
+    if isfile(try_path):
         config["logger"].debug("Displaying ansible log file")
-        text = open(logfile, 'r+')
+        text = open(try_path, 'r+')
         content = text.readlines()
         text.close()
         template_data = {
@@ -144,7 +133,8 @@ def ansiblelog_page():
             'daemon_status': service_status('anmad'),
             'log': requestedlog,
             'messages': config["queues"].info_list[0:config["args"].messagelist_size],
-            'text': content
+            'text': content,
+            'parent': dirname(requestedlog),
             }
         return render_template('ansiblelog.html', **template_data)
     # Abort if it turns out to not be a file, or a dir.

@@ -29,7 +29,7 @@
     {%- elif ' WARNING]: ' in line -%}
         {%- set spancolor = "lightcyan" -%}
     {%- elif (' ERROR!' in line or ' fatal: ' in line or ' failed: ' in line) -%}
-        {%- set spancolor = "maroon" -%}
+        {%- set spancolor = "red" -%}
     {%- else -%}
         {%- set spancolor = "default" -%}
 	{%- set continuespan = true -%}

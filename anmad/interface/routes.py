@@ -3,7 +3,7 @@
 
 from socket import getfqdn
 from glob import glob
-from os.path import basename, isfile
+from os.path import basename, isfile, isdir
 from flask import Flask, render_template, request, abort
 
 from anmad.interface.backend import service_status, extraplays, timestring
@@ -97,10 +97,11 @@ def otherplaybooks_page():
 @flaskapp.route(config["baseurl"] + "ansiblelog")
 def ansiblelog_page():
     """Display ansible.logs."""
-    config["logger"].debug("Displaying ansible.log")
     requestedlog = request.args.get('play')
+    log_base = '/var/log/ansible/playbook/'
     if requestedlog == 'list' or '..' in requestedlog:
-        loglist = glob('/var/log/ansible/playbook/' + '*.log')
+        config["logger"].debug("Displaying ansible log TOP LIST")
+        loglist = glob(log_base + '/*')
         loglist.sort()
         template_data = {
             'title' : 'ansible playbook logs',
@@ -110,25 +111,44 @@ def ansiblelog_page():
             'daemon_status': service_status('anmad'),
             'messages': config["queues"].info_list[0:config["args"].messagelist_size],
             'logs': loglist,
+            'parent': ''
             }
         return render_template('playbooklogs.html', **template_data)
+    if isdir(log_base + requestedlog):
+        config["logger"].debug("Displaying ansible log CHILD DIR " + requestedlog)
+        loglist = glob(log_base + requestedlog + '/*')
+        loglist.sort()
+        template_data = {
+            'title' : 'ansible playbook logs',
+            'time': timestring(),
+            'version': config["version"],
+            'hostname': config["hostname"],
+            'daemon_status': service_status('anmad'),
+            'messages': config["queues"].info_list[0:config["args"].messagelist_size],
+            'logs': loglist,
+            'parent': requestedlog,
+            }
+        return render_template('playbooklogs.html', **template_data)
+    # If we get here, we should be looking at a file, not a dir
     logfile = '/var/log/ansible/playbook/' + requestedlog
-    if not isfile(logfile):
-        abort(403)
-    text = open(logfile, 'r+')
-    content = text.readlines()
-    text.close()
-    template_data = {
-        'title' : 'ansible log for ' + requestedlog,
-        'time': timestring(),
-        'version': config["version"],
-        'hostname': config["hostname"],
-        'daemon_status': service_status('anmad'),
-        'log': requestedlog,
-        'messages': config["queues"].info_list[0:config["args"].messagelist_size],
-        'text': content
-        }
-    return render_template('ansiblelog.html', **template_data)
+    if isfile(logfile):
+        config["logger"].debug("Displaying ansible log file")
+        text = open(logfile, 'r+')
+        content = text.readlines()
+        text.close()
+        template_data = {
+            'title' : 'ansible log for ' + requestedlog,
+            'time': timestring(),
+            'version': config["version"],
+            'hostname': config["hostname"],
+            'daemon_status': service_status('anmad'),
+            'log': requestedlog,
+            'messages': config["queues"].info_list[0:config["args"].messagelist_size],
+            'text': content
+            }
+        return render_template('ansiblelog.html', **template_data)
+    # Abort if it turns out to not be a file, or a dir.
+    return abort(403, 'Not a logfile or directory containing logfiles')
 
 @flaskapp.route(config["baseurl"] + "kill")
 def kill_route():

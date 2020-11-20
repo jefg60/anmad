@@ -96,7 +96,7 @@ def otherplaybooks_page():
 
 @flaskapp.route(config["baseurl"] + "ansiblelog")
 def ansiblelog_page():
-    """Display ansible.log."""
+    """Display ansible.logs."""
     config["logger"].debug("Displaying ansible.log")
     requestedlog = request.args.get('play')
     if requestedlog == 'list' or '..' in requestedlog:

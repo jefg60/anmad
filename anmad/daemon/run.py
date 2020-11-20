@@ -16,7 +16,7 @@ class AnmadRun:
                  ansible_playbook_cmd,
                  vault_password_file=None,
                  timeout=1800):
-        """Init ansibleRun."""
+        """Init AnmadRun."""
         self.logger = logger
         self.inventory = inventory
         self.ansible_playbook_cmd = [ansible_playbook_cmd]

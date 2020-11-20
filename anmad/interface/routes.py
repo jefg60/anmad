@@ -3,8 +3,8 @@
 
 from socket import getfqdn
 from glob import glob
-from os.path import basename
-from flask import Flask, render_template, request
+from os.path import basename, isfile
+from flask import Flask, render_template, request, abort
 
 from anmad.interface.backend import service_status, extraplays, timestring
 from anmad.common.queues import AnmadQueues
@@ -113,6 +113,8 @@ def ansiblelog_page():
             }
         return render_template('playbooklogs.html', **template_data)
     logfile = '/var/log/ansible/playbook/' + requestedlog
+    if not isfile(logfile):
+        abort(403)
     text = open(logfile, 'r+')
     content = text.readlines()
     text.close()

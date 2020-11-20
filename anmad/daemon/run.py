@@ -3,6 +3,8 @@ import os
 import subprocess
 import copy
 
+from pathlib import Path
+from time import gmtime,strftime
 from anmad.daemon.process import killall
 
 class AnmadRun:
@@ -24,6 +26,8 @@ class AnmadRun:
             self.ansible_playbook_cmd.extend(
                 ['--vault-password-file', vault_password_file])
         self.timeout = timeout
+        self.time_format = '%H-%M-%S'
+        self.date_format = '%Y-%m-%d'
 
     def run_playbook(self, playbook, syncheck=False, checkmode=False):
         """Run an ansible playbook, optionally in syntax check mode or
@@ -38,8 +42,13 @@ class AnmadRun:
         my_ansible_playbook_cmd.extend(['--inventory', inventory, playbook])
 
         my_env = os.environ.copy()
-        my_env['ANSIBLE_LOG_PATH'] = (
-            '/var/log/ansible/playbook/' + os.path.basename(playbook) + '.log')
+        my_rundate = strftime(self.date_format, gmtime())
+        my_runtime = strftime(self.time_format, gmtime())
+        my_logdir = ('/var/log/ansible/playbook/' + os.path.basename(playbook)
+            + '/' + my_rundate + '/')
+        Path(my_logdir).mkdir(parents=True, exist_ok=True)
+        my_env['ANSIBLE_LOG_PATH'] = ( my_logdir +
+                os.path.basename(playbook) + '.' + my_runtime + '.log')
         #my_env['ANSIBLE_TRANSFORM_INVALID_GROUP_CHARS'] = 'silently'
 
         self.logger.info(

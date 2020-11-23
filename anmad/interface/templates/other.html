@@ -9,7 +9,7 @@
         class="button orangebutton" >
           run {{ play }}
       </button>
-      <button onclick="self.location.href='/ansiblelog?play={{ play }}.log'"
+      <button onclick="self.location.href='/ansiblelog?play={{ play }}&latest=True'"
         style="width:20%;padding:10px 10px"
         class="button bluebutton" >
           log for {{ play }}

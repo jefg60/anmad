@@ -2,18 +2,26 @@
 {% include 'header.html' %}
 {% include 'refreshtime.html' %}
 
+<div style='width: 75%;'>
+
+{% if toplevel %}
+<h1 style="color:silver; text-align: center;">
+  Listing all ansible logs (top level)
+</h1>
+{% endif %}
+
+{% if not toplevel %}
 <button
    onclick="self.location.href='/ansiblelog?play='"
    class="button greenbutton"
-   style="width:75%;padding:10px 10px">
+   style="width: 100%; padding:10px 10px">
    Top log directory
 </button>
 
-{% if parent != '/' %}
 <button
        onclick="self.location.href='/ansiblelog?play={{ parent }}'"
    class="button greenbutton"
-   style="width:75%;padding:10px 10px">
+   style="width: 100%; padding:10px 10px">
    Go up one dir
 </button>
 {% endif %}
@@ -22,11 +30,11 @@
   <button
     onclick="self.location.href='/ansiblelog?play={{ log_base }}/{{ log|basename }}'"
      class="button bluebutton"
-     style="width:75%;padding:10px 10px">
+     style="width: 100%; padding:10px 10px">
      {{ log|basename }}
   </button>
 {%- endfor %}
-
+</div>
 </body>
 </html>
 <!-- playbooklogs.html -->

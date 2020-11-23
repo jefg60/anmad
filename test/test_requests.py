@@ -72,11 +72,11 @@ class TestReturnCodes(unittest.TestCase):
         self.assertEqual(403, output.status_code)
 
     def test_ansiblelog(self):
-        """Test that homepage log buttons work."""
-        output = requests.get(self.baseurl + 'ansiblelog?play=deploy4.yaml')
+        """Test that latest log uris work."""
+        output = requests.get(self.baseurl + 'ansiblelog?play=deploy4.yaml&latest=True')
         self.assertEqual(200, output.status_code)
         self.assertIn("deploy4.yaml", output.text)
-        output = requests.get(self.baseurl + 'ansiblelog?play=deploy.yaml')
+        output = requests.get(self.baseurl + 'ansiblelog?play=deploy.yaml&latest=True')
         self.assertEqual(200, output.status_code)
         self.assertIn("deploy.yaml", output.text)
 

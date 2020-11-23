@@ -3,7 +3,7 @@
 
 from socket import getfqdn
 from glob import glob
-from os.path import basename, isfile, isdir, abspath, dirname, normpath
+from os.path import basename, isfile, isdir, abspath, dirname, normpath, getctime, relpath
 from flask import Flask, render_template, request, abort
 
 from anmad.interface.backend import service_status, extraplays, timestring
@@ -97,17 +97,27 @@ def otherplaybooks_page():
 @flaskapp.route(config["baseurl"] + "ansiblelog")
 def ansiblelog_page():
     """Display ansible.logs."""
-    requestedlog = request.args.get('play')
-    if not requestedlog:
-        requestedlog = '/'
+    play = request.args.get('play')
+    toplevel = False
+    if not play or normpath(play) == '/' or normpath(play) == '//':
+        play = '/'
+        toplevel = True
     log_base = '/var/log/ansible/playbook'
-    try_path = (log_base + requestedlog)
+    try_path = (log_base + play)
+    latest = request.args.get('latest')
+    parent = dirname(play)
+    # prevent use of .. to browse dirs above log_base
+    if '..' in try_path:
+        return abort(403)
     # Get log dir lists if the param turns out to be a dir
-    if (isdir(try_path) and not '..' in try_path):
+    if isdir(try_path):
         config["logger"].debug("Displaying ansible log CHILD DIR " + try_path)
         loglist = glob(abspath(try_path) + '/*')
-        loglist.sort(reverse=True)
-        config["logger"].debug(requestedlog)
+        if not toplevel:
+            loglist.sort(reverse=True)
+        else:
+            loglist.sort()
+        config["logger"].debug(play)
         template_data = {
             'title' : 'ansible playbook logs',
             'time': timestring(),
@@ -116,26 +126,35 @@ def ansiblelog_page():
             'daemon_status': service_status('anmad'),
             'messages': config["queues"].info_list[0:config["args"].messagelist_size],
             'logs': loglist,
-            'parent': dirname(requestedlog),
-            'log_base': normpath(requestedlog)
+            'parent': parent,
+            'log_base': normpath(play),
+            'toplevel': toplevel,
             }
         return render_template('playbooklogs.html', **template_data)
+    # Try to find the latest logfile for play in the directory hierarchy
+    if latest == 'True':
+        config["logger"].debug("Finding latest log for " + play)
+        list_of_logs = glob(log_base + '/' + play + '/**/*.log', recursive=True)
+        latest_log = max(list_of_logs, key=getctime)
+        relative_path = relpath(latest_log, start=log_base)
+        try_path = (log_base + '/' + relative_path)
+        parent = dirname('/' + relative_path)
     # If we get here, we should be looking at a file, not a dir
     if isfile(try_path):
-        config["logger"].debug("Displaying ansible log file")
+        config["logger"].debug("Displaying ansible log file " + try_path)
         text = open(try_path, 'r+')
         content = text.readlines()
         text.close()
         template_data = {
-            'title' : 'ansible log for ' + requestedlog,
+            'title' : 'ansible log for ' + play,
             'time': timestring(),
             'version': config["version"],
             'hostname': config["hostname"],
             'daemon_status': service_status('anmad'),
-            'log': requestedlog,
+            'log': play,
             'messages': config["queues"].info_list[0:config["args"].messagelist_size],
             'text': content,
-            'parent': dirname(requestedlog),
+            'parent': parent,
             }
         return render_template('ansiblelog.html', **template_data)
     # Abort if it turns out to not be a file, or a dir.

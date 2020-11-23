@@ -102,6 +102,7 @@ def ansiblelog_page():
         requestedlog = '/'
     log_base = '/var/log/ansible/playbook'
     try_path = (log_base + requestedlog)
+    # Get log dir lists if the param turns out to be a dir
     if (isdir(try_path) and not '..' in try_path):
         config["logger"].debug("Displaying ansible log CHILD DIR " + try_path)
         loglist = glob(abspath(try_path) + '/*')

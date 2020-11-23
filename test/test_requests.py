@@ -71,5 +71,14 @@ class TestReturnCodes(unittest.TestCase):
         output = requests.get(self.baseurl + 'ansiblelog?play=/../')
         self.assertEqual(403, output.status_code)
 
+    def test_ansiblelog(self):
+        """Test that homepage log buttons work."""
+        output = requests.get(self.baseurl + 'ansiblelog?play=deploy4.yaml')
+        self.assertEqual(200, output.status_code)
+        self.assertIn("deploy4.yaml", output.text)
+        output = requests.get(self.baseurl + 'ansiblelog?play=deploy.yaml')
+        self.assertEqual(200, output.status_code)
+        self.assertIn("deploy.yaml", output.text)
+
 if __name__ == '__main__':
     unittest.main()

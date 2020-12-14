@@ -9,6 +9,7 @@ from anmad.daemon.process import get_ansible_playbook_procs, kill, killall
 
 def runall(**config):
     """Run all playbooks after verifying that files exist."""
+    # here we need some kind of git_pull() function. to be implemented.
     problemfile = list_missing_files(
         config["logger"],
         config["args"].prerun_list)

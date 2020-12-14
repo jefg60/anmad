@@ -99,6 +99,9 @@ def ansiblelog_page():
     """Display ansible.logs."""
     play = request.args.get('play')
     toplevel = False
+    # prevent use of .. to browse dirs above log_base
+    if '..' in play:
+        return abort(403)
     if not play or normpath(play) == '/' or normpath(play) == '//':
         play = '/'
         toplevel = True
@@ -106,9 +109,6 @@ def ansiblelog_page():
     try_path = (log_base + play)
     latest = request.args.get('latest')
     parent = dirname(play)
-    # prevent use of .. to browse dirs above log_base
-    if '..' in try_path:
-        return abort(403)
     # Get log dir lists if the param turns out to be a dir
     if isdir(try_path):
         config["logger"].debug("Displaying ansible log CHILD DIR " + try_path)

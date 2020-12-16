@@ -21,6 +21,7 @@ setup(name='anmad',
         'redis',
         'requests',
         'ssh_agent_setup',
+        'gitpython',
         ],
     packages=find_packages()
     )

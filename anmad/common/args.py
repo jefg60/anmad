@@ -151,6 +151,12 @@ def parse_anmad_args():
         type=int,
         default=4
         )
+    parser.add_argument(
+        "--git-pull",
+        dest="gitpull",
+        action="store_false",
+        help="enable git pull functionality on playbookroot"
+        )
 
     parser.set_defaults(debug=False, syslog=True, dryrun=False)
     myargs, unknown = parser.parse_known_args()

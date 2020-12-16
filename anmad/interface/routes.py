@@ -4,7 +4,7 @@
 from socket import getfqdn
 from glob import glob
 from os.path import basename, isfile, isdir, abspath, dirname, normpath, getctime, relpath
-from flask import Flask, render_template, request, abort
+from flask import Flask, render_template, request, abort, redirect
 
 from anmad.interface.backend import service_status, extraplays, timestring
 from anmad.common.queues import AnmadQueues
@@ -189,6 +189,13 @@ def clearqueues_route():
 def runall_button():
     """Run all playbooks after verifying that files exist."""
     return apibackend.runall(**config)
+
+@flaskapp.route(config["baseurl"] + "gitpull")
+def gitpull_button():
+    """Git pull the playbook root dir."""
+    if config["args"].gitpull:
+        config["logger"].info(apibackend.git_pull(**config))
+    return redirect(config["baseurl"])
 
 @flaskapp.route(config["baseurl"] + 'playbooks/<path:playbook>')
 def configuredplaybook_button(playbook):

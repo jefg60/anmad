@@ -9,9 +9,14 @@ from anmad.common.yaml import list_missing_files
 from anmad.daemon.process import get_ansible_playbook_procs, kill, killall
 
 def git_pull(**config):
-    """Execute git pull on playbook_root_dir."""
-    local_repo = git.cmd.Git(config["args"].playbook_root_dir)
-    local_repo.pull()
+    """Execute git pull on playbook_root_dir.
+    Returns output of git pull op"""
+    try:
+        local_repo = git.cmd.Git(config["args"].playbook_root_dir)
+        output = local_repo.pull()
+    except Exception as e:
+        output = e
+    return output
 
 def runall(**config):
     """Run all playbooks after verifying that files exist."""

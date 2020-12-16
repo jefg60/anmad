@@ -11,26 +11,33 @@
 {% endif %}
 
 {% if not toplevel %}
-<button
-   onclick="self.location.href='/ansiblelog?play='"
-   class="button greenbutton"
-   style="width: 100%; padding:10px 10px">
-   Top log directory
-</button>
+  <button
+     onclick="self.location.href='/ansiblelog?play='"
+     class="button greenbutton"
+     style="width: 32%; padding:10px 10px">
+     Top log directory
+  </button>
 
-<button
-       onclick="self.location.href='/ansiblelog?play={{ parent }}'"
-   class="button greenbutton"
-   style="width: 100%; padding:10px 10px">
-   Go up one dir
-</button>
+  <button
+     onclick="self.location.href='/ansiblelog?play={{ parent }}'"
+     class="button orangebutton"
+     style="width: 32%; padding:10px 10px">
+     Go up one dir
+  </button>
+
+  <button
+    onclick="self.location.href='/ansiblelog?play={{ playbook }}&latest=True'"
+     class="button bluebutton"
+     style="width: 32%; padding:10px 10px">
+     Latest log for {{ playbook }}
+  </button>
 {% endif %}
 
 {% for log in logs -%}
   <button
     onclick="self.location.href='/ansiblelog?play={{ log_base }}/{{ log|basename }}'"
      class="button bluebutton"
-     style="width: 100%; padding:10px 10px">
+     style="width: 98%; padding:10px 10px">
      {{ log|basename }}
   </button>
 {%- endfor %}

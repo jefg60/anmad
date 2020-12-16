@@ -109,6 +109,10 @@ def ansiblelog_page():
     try_path = (log_base + play)
     latest = request.args.get('latest')
     parent = dirname(play)
+    if normpath(parent) == '/' or normpath(parent) == '//':
+        playbook = basename(play)
+    else:
+        playbook = basename(normpath(parent))
     # Get log dir lists if the param turns out to be a dir
     if isdir(try_path):
         config["logger"].debug("Displaying ansible log CHILD DIR " + try_path)
@@ -129,6 +133,7 @@ def ansiblelog_page():
             'parent': parent,
             'log_base': normpath(play),
             'toplevel': toplevel,
+            'playbook': playbook,
             }
         return render_template('playbooklogs.html', **template_data)
     # Try to find the latest logfile for play in the directory hierarchy

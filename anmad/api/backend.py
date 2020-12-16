@@ -2,14 +2,19 @@
 """API functions."""
 
 from flask import abort, redirect
+import git
 
 import anmad.interface.backend as intbackend
 from anmad.common.yaml import list_missing_files
 from anmad.daemon.process import get_ansible_playbook_procs, kill, killall
 
+def git_pull(**config):
+    """Execute git pull on playbook_root_dir."""
+    local_repo = git.cmd.Git(config["args"].playbook_root_dir)
+    local_repo.pull()
+
 def runall(**config):
     """Run all playbooks after verifying that files exist."""
-    # here we need some kind of git_pull() function. to be implemented.
     problemfile = list_missing_files(
         config["logger"],
         config["args"].prerun_list)

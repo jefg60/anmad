@@ -135,10 +135,13 @@ def ansiblelog_page():
     if latest == 'True':
         config["logger"].debug("Finding latest log for " + play)
         list_of_logs = glob(log_base + '/' + play + '/**/*.log', recursive=True)
-        latest_log = max(list_of_logs, key=getctime)
-        relative_path = relpath(latest_log, start=log_base)
-        try_path = (log_base + '/' + relative_path)
-        parent = dirname('/' + relative_path)
+        if list_of_logs:
+            latest_log = max(list_of_logs, key=getctime)
+            relative_path = relpath(latest_log, start=log_base)
+            try_path = (log_base + '/' + relative_path)
+            parent = dirname('/' + relative_path)
+        else:
+            return abort(404, 'No logs found yet for ' + play)
     # If we get here, we should be looking at a file, not a dir
     if isfile(try_path):
         config["logger"].debug("Displaying ansible log file " + try_path)

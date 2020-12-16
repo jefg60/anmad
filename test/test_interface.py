@@ -59,7 +59,8 @@ class TestInterfaceApp(unittest.TestCase):
         self.assertIn(self.version, str(response.data))
         self.assertIn('Other Playbooks', str(response.data))
         self.assertIn('Jobs in queue', str(response.data))
-        self.assertIn('More Logs', str(response.data))
+        self.assertIn('Full log', str(response.data))
+        self.assertIn('Git Pull', str(response.data))
         self.assertIn(self.pre_run_playbooks[0], str(response.data))
         self.assertIn(self.playbooks[1], str(response.data))
 

@@ -155,7 +155,7 @@ def parse_anmad_args():
         "--git-pull",
         dest="gitpull",
         action="store_false",
-        help="enable git pull functionality on playbookroot"
+        help="enable git pull functionality on playbook_root_dir"
         )
 
     parser.set_defaults(debug=False, syslog=True, dryrun=False)

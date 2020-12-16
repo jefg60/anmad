@@ -14,8 +14,8 @@ def git_pull(**config):
     try:
         local_repo = git.cmd.Git(config["args"].playbook_root_dir)
         output = local_repo.pull()
-    except Exception as e:
-        output = e
+    except git.GitCommandError as error:
+        output = error
     return output
 
 def runall(**config):

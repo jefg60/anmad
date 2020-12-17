@@ -194,7 +194,13 @@ def runall_button():
 def gitpull_button():
     """Git pull the playbook root dir."""
     if config["args"].gitpull:
-        config["logger"].info(apibackend.git_pull(**config))
+        gitpull_out = apibackend.git_pull(**config)
+        if isinstance(gitpull_out, apibackend.git.GitCommandError):
+            config["logger"].error(str(gitpull_out))
+        else:
+            config["logger"].info(str(gitpull_out))
+    else:
+        config["logger"].warning("Git pull requested but it is disabled")
     return redirect(config["baseurl"])
 
 @flaskapp.route(config["baseurl"] + 'playbooks/<path:playbook>')

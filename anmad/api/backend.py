@@ -13,10 +13,9 @@ def git_pull(**config):
     Returns output of git pull op"""
     try:
         local_repo = git.cmd.Git(config["args"].playbook_root_dir)
-        output = local_repo.pull()
+        return local_repo.pull()
     except git.GitCommandError as error:
-        output = error
-    return output
+        return error
 
 def runall(**config):
     """Run all playbooks after verifying that files exist."""

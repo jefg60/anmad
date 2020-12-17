@@ -80,5 +80,13 @@ class TestReturnCodes(unittest.TestCase):
         self.assertEqual(200, output.status_code)
         self.assertIn("deploy.yaml", output.text)
 
+    def test_gitpull(self):
+        """Test that /gitpull errors and that it redirects to /"""
+        output = requests.get(self.baseurl + 'gitpull')
+        self.assertEqual(200, output.status_code)
+        self.assertIn("Other Playbooks", output.text)
+        output = requests.get(self.baseurl + 'log')
+        self.assertIn("Cmd(&#39;git&#39;) failed due to: exit code", output.text)
+
 if __name__ == '__main__':
     unittest.main()

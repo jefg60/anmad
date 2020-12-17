@@ -14,6 +14,8 @@ fi
 /home/vagrant/venv/bin/pylint /vagrant/*.py &&\
 /home/vagrant/venv/bin/pylint /vagrant/anmad &&\
 export PYTHONPATH=/vagrant &&\
+/usr/bin/ssh-keygen -F github.com ||\
+/usr/bin/ssh-keyscan github.com >>~/.ssh/known_hosts &&\
 /home/vagrant/venv/bin/python -m unittest discover -s /vagrant &&\
 bats /vagrant/test/anmad.bats &&\
 /home/vagrant/venv/bin/python /vagrant/test/test_requests.py

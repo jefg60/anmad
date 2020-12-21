@@ -14,8 +14,10 @@ def git_pull(**config):
     try:
         local_repo = git.cmd.Git(config["args"].playbook_root_dir)
         if config["args"].repo_deploykey:
+            gitssh_cmd = 'ssh -i' + config["args"].repo_deploykey
+            config["logger"].info("GIT_SSH_COMMAND=" + gitssh_cmd)
             local_repo.update_environment(
-                GIT_SSH_COMMAND='ssh -i ' + config["args"].repo_deploykey )
+                GIT_SSH_COMMAND=gitssh_cmd )
         return local_repo.pull()
     except git.GitCommandError as error:
         return error

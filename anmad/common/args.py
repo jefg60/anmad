@@ -157,6 +157,10 @@ def parse_anmad_args():
         action="store_false",
         help="enable git pull functionality on playbook_root_dir"
         )
+    parser.add_argument(
+        "--repo_deploykey",
+        help="ssh private key file for git pull operations"
+        )
 
     parser.set_defaults(debug=False, syslog=True, dryrun=False)
     myargs, unknown = parser.parse_known_args()

@@ -195,10 +195,11 @@ def gitpull_button():
     """Git pull the playbook root dir."""
     if config["args"].gitpull:
         gitpull_out = apibackend.git_pull(**config)
+        gitstr = 'git pull: '
         if isinstance(gitpull_out, apibackend.git.GitCommandError):
-            config["logger"].error(str(gitpull_out))
+            config["logger"].error(gitstr + str(gitpull_out))
         else:
-            config["logger"].info(str(gitpull_out))
+            config["logger"].info(gitstr + str(gitpull_out))
     else:
         config["logger"].warning("Git pull requested but it is disabled")
     return redirect(config["baseurl"])

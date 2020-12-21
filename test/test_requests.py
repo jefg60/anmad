@@ -86,7 +86,7 @@ class TestReturnCodes(unittest.TestCase):
         self.assertEqual(200, output.status_code)
         self.assertIn("Other Playbooks", output.text)
         output = requests.get(self.baseurl + 'log')
-        self.assertIn("Cmd(&#39;git&#39;) failed due to: exit code", output.text)
+        self.assertIn("git pull: Already up to date.", output.text)
 
 if __name__ == '__main__':
     unittest.main()

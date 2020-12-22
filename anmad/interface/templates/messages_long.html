@@ -8,8 +8,10 @@
       <h3 style="color:orange">
     {% elif '[WARNING]' in message or 'Queueing' in message %}
       <h3 style="color:lightcyan">
-    {% elif '[INFO]' in message %}
+    {% elif 'Interface - [INFO]' in message %}
       <h3 style="color:silver">
+    {% elif 'Daemon - [INFO]' in message %}
+      <h3 style="color:lightgreen">
     {% else %}
       <h3>
     {% endif %}

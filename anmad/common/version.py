@@ -1,3 +1,3 @@
 #!/usr/bin/env python3
 """Module to set version number for print_vault_value and anmad modules"""
-VERSION = "0.19.1"
+VERSION = "0.20.0"

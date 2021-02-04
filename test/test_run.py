@@ -22,7 +22,7 @@ class TestPlaybook(unittest.TestCase):
         self.badplay = '/vagrant/samples/deploy3.yaml'
         self.testinv = '/vagrant/samples/inventory-internal'
         self.ansible_playbook_cmd = '/home/vagrant/venv/bin/ansible-playbook'
-        self.ansible_log_path = '/home/vagrant/ansible/log'
+        self.ansible_log_path = '/home/vagrant/log/ansible'
         self.vaultpw = '/vagrant/test/vaultpassword'
         self.timeout = 5
         self.playbookobject = AnmadRun(

@@ -2,9 +2,6 @@
 """Test http return codes."""
 
 import unittest
-import re
-import datetime
-
 import requests
 
 class TestReturnCodes(unittest.TestCase):

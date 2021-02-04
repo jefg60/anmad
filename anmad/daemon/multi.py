@@ -11,23 +11,20 @@ class AnmadMulti:
 
 
     def __init__(self,
-                 logger,
-                 inventories,
-                 ansible_playbook_cmd,
-                 ansible_log_path,
                  vault_password_file=None,
-                 timeout=1800):
+                 timeout=1800,
+                 **kwargs):
         """Init ansibleSyntaxCheck."""
-        self.logger = logger
+        self.logger = kwargs.get('logger')
+        self.ansible_log_path = kwargs.get('ansible_log_path')
+        inventories = kwargs.get('inventories')
+        self.ansible_playbook_cmd = kwargs.get('ansible_playbook_cmd')
         if not isinstance(inventories, list):
             self.inventories = [inventories]
         else:
             self.inventories = inventories
         self.maininventory = self.inventories[0]
-        self.ansible_playbook_cmd = ansible_playbook_cmd
-        self.ansible_log_path = ansible_log_path
         self.vault_password_file = vault_password_file
-        self.concurrency = os.cpu_count()
         self.timeout = timeout
 
     def syntax_check_one_play_many_inv(self, playbook):
@@ -53,12 +50,12 @@ class AnmadMulti:
                     return 2
 
             playbookobject = AnmadRun(
-                self.logger,
-                my_inventory,
                 self.ansible_playbook_cmd,
-                self.ansible_log_path,
                 self.vault_password_file,
-                self.timeout)
+                self.timeout,
+                logger=self.logger,
+                inventory=my_inventory,
+                ansible_log_path=self.ansible_log_path)
             if playbookobject.syncheck_playbook(playbook).returncode != 0:
                 return 3
         # if none of the above return statements happen, then syntax checks
@@ -72,15 +69,16 @@ class AnmadMulti:
         if isinstance(listofplaybooks, str):
             listofplaybooks = [listofplaybooks]
         playbookobj = AnmadRun(
-            self.logger,
-            self.maininventory,
             self.ansible_playbook_cmd,
-            self.ansible_log_path,
             self.vault_password_file,
-            self.timeout)
+            self.timeout,
+            logger=self.logger,
+            inventory=self.maininventory,
+            ansible_log_path=self.ansible_log_path)
 
         output = []
-        pool = Pool(self.concurrency)
+        concurrency = os.cpu_count()
+        pool = Pool(concurrency)
         if syncheck:
             completed_processes = pool.map(
                 playbookobj.syncheck_playbook, listofplaybooks)

@@ -12,16 +12,14 @@ class AnmadRun:
 
 
     def __init__(self,
-                 logger,
-                 inventory,
                  ansible_playbook_cmd,
-                 ansible_log_path,
                  vault_password_file=None,
-                 timeout=1800):
+                 timeout=1800,
+                 **kwargs):
         """Init AnmadRun."""
-        self.logger = logger
-        self.inventory = inventory
-        self.ansible_log_path = ansible_log_path
+        self.logger = kwargs.get('logger')
+        self.inventory = kwargs.get('inventory')
+        self.ansible_log_path = kwargs.get('ansible_log_path')
         self.ansible_playbook_cmd = [ansible_playbook_cmd]
         if vault_password_file is not None:
             self.ansible_playbook_cmd.extend(

@@ -14,12 +14,12 @@ QUEUES = AnmadQueues('prerun', 'playbooks', 'info')
 ARGS = parse_anmad_args()
 LOGGER = logsetup(ARGS, 'ANMAD Daemon')
 MULTIOBJ = AnmadMulti(
-    LOGGER,
-    ARGS.inventories,
-    ARGS.ansible_playbook_cmd,
-    ARGS.ansible_log_path,
     ARGS.vault_password_file,
-    ARGS.timeout)
+    ARGS.timeout,
+    logger=LOGGER,
+    ansible_log_path=ARGS.ansible_log_path,
+    inventories=ARGS.inventories,
+    ansible_playbook_cmd=ARGS.ansible_playbook_cmd)
 
 LOGGER.info("anmad_run version: %s starting", str(anmadver.VERSION))
 LOGGER.debug("config file: %s",

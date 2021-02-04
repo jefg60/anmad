@@ -26,10 +26,10 @@ class TestPlaybook(unittest.TestCase):
         self.vaultpw = '/vagrant/test/vaultpassword'
         self.timeout = 5
         self.playbookobject = AnmadRun(
-            self.logger,
-            self.testinv,
             self.ansible_playbook_cmd,
-            self.ansible_log_path)
+            logger=self.logger,
+            inventory=self.testinv,
+            ansible_log_path=self.ansible_log_path)
 
     def test_ansible_playbook_novault_syn(self):
         """Test run_playbook with no vault and syntax check."""
@@ -55,11 +55,11 @@ class TestPlaybook(unittest.TestCase):
     def test_ansible_playbook_vault_syn(self):
         """Test run_playbook with vault."""
         playbookobject = AnmadRun(
-            self.logger,
-            self.testinv,
             self.ansible_playbook_cmd,
-            self.ansible_log_path,
-            self.vaultpw)
+            self.vaultpw,
+            logger=self.logger,
+            inventory=self.testinv,
+            ansible_log_path=self.ansible_log_path)
         returned = playbookobject.run_playbook(self.testplay, syncheck=True)
         self.assertEqual(returned.returncode, 0)
 
@@ -77,12 +77,12 @@ class TestPlaybook(unittest.TestCase):
         if also setting timeout"""
         #pylint: disable=duplicate-code
         playbookobject = AnmadRun(
-            self.logger,
-            self.testinv,
             self.ansible_playbook_cmd,
-            self.ansible_log_path,
             self.vaultpw,
-            self.timeout)
+            self.timeout,
+            logger=self.logger,
+            inventory=self.testinv,
+            ansible_log_path=self.ansible_log_path)
         returned = playbookobject.run_playbook(self.timedplay)
         self.assertEqual(returned.returncode, 255)
         returned = playbookobject.run_playbook(self.timedplay, syncheck = True)

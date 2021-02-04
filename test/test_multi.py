@@ -29,17 +29,17 @@ class TestMulti(unittest.TestCase):
         self.checkdir = '/vagrant/samples'
         self.ansible_log_path = '/home/vagrant/log/ansible'
         self.multiobj = AnmadMulti(
-            self.logger,
-            self.testinv,
-            self.ansible_playbook_cmd,
-            self.ansible_log_path,
-            self.vaultpw)
+            self.vaultpw,
+            logger=self.logger,
+            inventories=self.testinv,
+            ansible_playbook_cmd=self.ansible_playbook_cmd,
+            ansible_log_path=self.ansible_log_path)
         self.multimultiobj = AnmadMulti(
-            self.logger,
-            [self.testinv, self.testinv],
-            self.ansible_playbook_cmd,
-            self.ansible_log_path,
-            self.vaultpw)
+            self.vaultpw,
+            logger=self.logger,
+            inventories=[self.testinv, self.testinv],
+            ansible_playbook_cmd=self.ansible_playbook_cmd,
+            ansible_log_path=self.ansible_log_path)
 
     def test_one_play_many_inv(self):
         """Test syntax_check_one_play_many_inv func with single inv
@@ -80,12 +80,12 @@ class TestMulti(unittest.TestCase):
         because it runs against localhost, unlike the other plays"""
         #pylint: disable=duplicate-code
         timedmultiobj = AnmadMulti(
-            self.logger,
-            self.testinv,
-            self.ansible_playbook_cmd,
-            self.ansible_log_path,
             self.vaultpw,
-            self.timeout)
+            self.timeout,
+            logger=self.logger,
+            inventories=self.testinv,
+            ansible_playbook_cmd=self.ansible_playbook_cmd,
+            ansible_log_path=self.ansible_log_path)
         output = timedmultiobj.runplaybooks(self.timedplay)
         self.assertEqual(output, 1)
 

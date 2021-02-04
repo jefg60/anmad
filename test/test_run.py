@@ -22,12 +22,14 @@ class TestPlaybook(unittest.TestCase):
         self.badplay = '/vagrant/samples/deploy3.yaml'
         self.testinv = '/vagrant/samples/inventory-internal'
         self.ansible_playbook_cmd = '/home/vagrant/venv/bin/ansible-playbook'
+        self.ansible_log_path = '/home/vagrant/ansible/log'
         self.vaultpw = '/vagrant/test/vaultpassword'
         self.timeout = 5
         self.playbookobject = AnmadRun(
             self.logger,
             self.testinv,
-            self.ansible_playbook_cmd)
+            self.ansible_playbook_cmd,
+            self.ansible_log_path)
 
     def test_ansible_playbook_novault_syn(self):
         """Test run_playbook with no vault and syntax check."""
@@ -56,6 +58,7 @@ class TestPlaybook(unittest.TestCase):
             self.logger,
             self.testinv,
             self.ansible_playbook_cmd,
+            self.ansible_log_path,
             self.vaultpw)
         returned = playbookobject.run_playbook(self.testplay, syncheck=True)
         self.assertEqual(returned.returncode, 0)
@@ -77,6 +80,7 @@ class TestPlaybook(unittest.TestCase):
             self.logger,
             self.testinv,
             self.ansible_playbook_cmd,
+            self.ansible_log_path,
             self.vaultpw,
             self.timeout)
         returned = playbookobject.run_playbook(self.timedplay)

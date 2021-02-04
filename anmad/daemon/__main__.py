@@ -17,6 +17,7 @@ MULTIOBJ = AnmadMulti(
     LOGGER,
     ARGS.inventories,
     ARGS.ansible_playbook_cmd,
+    ARGS.ansible_log_path,
     ARGS.vault_password_file,
     ARGS.timeout)
 

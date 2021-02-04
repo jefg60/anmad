@@ -27,15 +27,18 @@ class TestMulti(unittest.TestCase):
         self.ansible_playbook_cmd = '/home/vagrant/venv/bin/ansible-playbook'
         self.vaultpw = '/vagrant/test/vaultpassword'
         self.checkdir = '/vagrant/samples'
+        self.ansible_log_path = '/home/vagrant/log/ansible'
         self.multiobj = AnmadMulti(
             self.logger,
             self.testinv,
             self.ansible_playbook_cmd,
+            self.ansible_log_path,
             self.vaultpw)
         self.multimultiobj = AnmadMulti(
             self.logger,
             [self.testinv, self.testinv],
             self.ansible_playbook_cmd,
+            self.ansible_log_path,
             self.vaultpw)
 
     def test_one_play_many_inv(self):
@@ -80,6 +83,7 @@ class TestMulti(unittest.TestCase):
             self.logger,
             self.testinv,
             self.ansible_playbook_cmd,
+            self.ansible_log_path,
             self.vaultpw,
             self.timeout)
         output = timedmultiobj.runplaybooks(self.timedplay)

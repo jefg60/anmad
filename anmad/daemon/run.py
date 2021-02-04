@@ -9,18 +9,19 @@ from anmad.daemon.process import killall
 
 class AnmadRun:
     """Ansible-playbook operations class."""
-    # pylint: disable=too-many-arguments
 
 
     def __init__(self,
                  logger,
                  inventory,
                  ansible_playbook_cmd,
+                 ansible_log_path,
                  vault_password_file=None,
                  timeout=1800):
         """Init AnmadRun."""
         self.logger = logger
         self.inventory = inventory
+        self.ansible_log_path = ansible_log_path
         self.ansible_playbook_cmd = [ansible_playbook_cmd]
         if vault_password_file is not None:
             self.ansible_playbook_cmd.extend(
@@ -44,7 +45,7 @@ class AnmadRun:
         my_env = os.environ.copy()
         my_rundate = strftime(self.date_format, gmtime())
         my_runtime = strftime(self.time_format, gmtime())
-        my_logdir = (config["args"].ansible_log_path
+        my_logdir = (self.ansible_log_path
             + '/' + os.path.basename(playbook)
             + '/' + my_rundate + '/')
         Path(my_logdir).mkdir(parents=True, exist_ok=True)

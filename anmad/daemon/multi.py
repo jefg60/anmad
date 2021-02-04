@@ -8,13 +8,13 @@ from anmad.daemon.run import AnmadRun
 class AnmadMulti:
     """Anmad Multi inventory / playbook class. Accepts a list of inventories.
     Multi playbooks will run against the first inventory in the list."""
-    # pylint: disable=too-many-arguments
 
 
     def __init__(self,
                  logger,
                  inventories,
                  ansible_playbook_cmd,
+                 ansible_log_path,
                  vault_password_file=None,
                  timeout=1800):
         """Init ansibleSyntaxCheck."""
@@ -25,6 +25,7 @@ class AnmadMulti:
             self.inventories = inventories
         self.maininventory = self.inventories[0]
         self.ansible_playbook_cmd = ansible_playbook_cmd
+        self.ansible_log_path = ansible_log_path
         self.vault_password_file = vault_password_file
         self.concurrency = os.cpu_count()
         self.timeout = timeout
@@ -55,6 +56,7 @@ class AnmadMulti:
                 self.logger,
                 my_inventory,
                 self.ansible_playbook_cmd,
+                self.ansible_log_path,
                 self.vault_password_file,
                 self.timeout)
             if playbookobject.syncheck_playbook(playbook).returncode != 0:
@@ -73,6 +75,7 @@ class AnmadMulti:
             self.logger,
             self.maininventory,
             self.ansible_playbook_cmd,
+            self.ansible_log_path,
             self.vault_password_file,
             self.timeout)
 

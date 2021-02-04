@@ -56,7 +56,7 @@ load test_helper
 }
 
 @test "deploy9.yml.log exists" {
-  run compgen -G /var/log/ansible/playbook/deploy9.yml/*/deploy9.yml.*.log
+  run compgen -G /home/vagrant/log/ansible/deploy9.yml/*/deploy9.yml.*.log
   [ "$status" -eq 0 ]
 }
 

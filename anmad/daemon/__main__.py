@@ -14,8 +14,8 @@ QUEUES = AnmadQueues('prerun', 'playbooks', 'info')
 ARGS = parse_anmad_args()
 LOGGER = logsetup(ARGS, 'ANMAD Daemon')
 MULTIOBJ = AnmadMulti(
-    ARGS.vault_password_file,
-    ARGS.timeout,
+    vault_password_file=ARGS.vault_password_file,
+    timeout=ARGS.timeout,
     logger=LOGGER,
     ansible_log_path=ARGS.ansible_log_path,
     inventories=ARGS.inventories,

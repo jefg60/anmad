@@ -10,22 +10,19 @@ class AnmadMulti:
     Multi playbooks will run against the first inventory in the list."""
 
 
-    def __init__(self,
-                 vault_password_file=None,
-                 timeout=1800,
-                 **kwargs):
+    def __init__(self, **kwargs):
         """Init ansibleSyntaxCheck."""
         self.logger = kwargs.get('logger')
         self.ansible_log_path = kwargs.get('ansible_log_path')
-        inventories = kwargs.get('inventories')
         self.ansible_playbook_cmd = kwargs.get('ansible_playbook_cmd')
+        self.vault_password_file = kwargs.get('vault_password_file', None)
+        self.timeout = kwargs.get('timeout', 1800)
+        inventories = kwargs.get('inventories')
         if not isinstance(inventories, list):
             self.inventories = [inventories]
         else:
             self.inventories = inventories
         self.maininventory = self.inventories[0]
-        self.vault_password_file = vault_password_file
-        self.timeout = timeout
 
     def syntax_check_one_play_many_inv(self, playbook):
         """Check a single playbook against all inventories.

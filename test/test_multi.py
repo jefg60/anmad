@@ -29,13 +29,13 @@ class TestMulti(unittest.TestCase):
         self.checkdir = '/vagrant/samples'
         self.ansible_log_path = '/home/vagrant/log/ansible'
         self.multiobj = AnmadMulti(
-            self.vaultpw,
+            vault_password_file=self.vaultpw,
             logger=self.logger,
             inventories=self.testinv,
             ansible_playbook_cmd=self.ansible_playbook_cmd,
             ansible_log_path=self.ansible_log_path)
         self.multimultiobj = AnmadMulti(
-            self.vaultpw,
+            vault_password_file=self.vaultpw,
             logger=self.logger,
             inventories=[self.testinv, self.testinv],
             ansible_playbook_cmd=self.ansible_playbook_cmd,
@@ -80,8 +80,8 @@ class TestMulti(unittest.TestCase):
         because it runs against localhost, unlike the other plays"""
         #pylint: disable=duplicate-code
         timedmultiobj = AnmadMulti(
-            self.vaultpw,
-            self.timeout,
+            vault_password_file=self.vaultpw,
+            timeout=self.timeout,
             logger=self.logger,
             inventories=self.testinv,
             ansible_playbook_cmd=self.ansible_playbook_cmd,

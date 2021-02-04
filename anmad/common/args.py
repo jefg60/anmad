@@ -161,6 +161,11 @@ def parse_anmad_args():
         "--repo_deploykey",
         help="ssh private key file for git pull operations"
         )
+    parser.add_argument(
+        "--ansible_log_path",
+        help="path for ansible playbook logs",
+        default="/var/log/ansible/playbook"
+        )
 
     parser.set_defaults(debug=False, syslog=True, dryrun=False)
     myargs, unknown = parser.parse_known_args()

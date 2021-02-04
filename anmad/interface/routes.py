@@ -105,7 +105,7 @@ def ansiblelog_page():
     if not play or normpath(play) == '/' or normpath(play) == '//':
         play = '/'
         toplevel = True
-    log_base = '/var/log/ansible/playbook'
+    log_base = config["args"].ansible_log_path
     try_path = (log_base + play)
     latest = request.args.get('latest')
     parent = dirname(play)

@@ -44,7 +44,8 @@ class AnmadRun:
         my_env = os.environ.copy()
         my_rundate = strftime(self.date_format, gmtime())
         my_runtime = strftime(self.time_format, gmtime())
-        my_logdir = ('/var/log/ansible/playbook/' + os.path.basename(playbook)
+        my_logdir = (config["args"].ansible_log_path
+            + '/' + os.path.basename(playbook)
             + '/' + my_rundate + '/')
         Path(my_logdir).mkdir(parents=True, exist_ok=True)
         my_env['ANSIBLE_LOG_PATH'] = ( my_logdir

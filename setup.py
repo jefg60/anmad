@@ -2,7 +2,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    version='0.21.0',
+    version='0.21.1',
     name='anmad',
     description='Creates a simple api and a browser interface for running ansible playbooks.',
     url='https://github.com/jefg60/anmad',

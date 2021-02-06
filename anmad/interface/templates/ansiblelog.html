@@ -1,5 +1,7 @@
 <!-- ansiblelog.html -->
 {% include 'header.html' %}
+<div id="topoflog">
+</div>
 {% include 'refreshtime.html' %}
 
 <button
@@ -12,13 +14,12 @@
 {{ log|basename }}:
 </h2>
 
-<button onclick='window.scrollTo(0,document.body.scrollHeight);'
+<button onclick='self.location.href=window.location.href.split("#")[0] + "#endoflog"'
   class="smallbutton">
     Scroll to end
 </button>
 <br>
 <br>
-
 <pre style="margin: 0; white-space: pre-wrap;">
 <span style="color:silver">
 {%- set continuespan = false %}
@@ -64,16 +65,18 @@
 
 </span>
 </pre>
-
-<button onclick='window.scrollTo(0,0);'
+<div id="endoflog">
+<button onclick='self.location.href=window.location.href.split("#")[0] + "#topoflog"'
   class="smallbutton">
     Scroll back to top
 </button>
-
+<button onclick='ReloadFunc();'
+  class="smallbutton bluebutton">
+  Refresh
+</button>
+</div>
 <br>
 <br>
-
-{% include 'refreshtime.html' %}
 
 </body>
 </html>

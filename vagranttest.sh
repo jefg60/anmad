@@ -1,7 +1,7 @@
 #!/bin/bash
 if [ ! -d ~/venv ] ; then
     virtualenv -p python3 ~/venv &&\
-    ~/venv/bin/pip install pylint git+https://github.com/jefg60/ansible-vault.git
+    ~/venv/bin/pip install pylint
     git clone https://github.com/bats-core/bats-core.git
     cd bats-core
     sudo ./install.sh /usr/local

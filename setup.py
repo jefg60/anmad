@@ -12,7 +12,7 @@ setup(
     include_package_data=True,
     install_requires=[
         'ansible',
-        'ansible-vault >=2.0.1',
+        'ansible-vault >=2.0.0',
         'configargparse',
         'cryptography >=3.1.1',
         'flask',

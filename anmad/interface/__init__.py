@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """flaskapp as application object."""
-import sys
-import anmad.interface.routes as anmadroutes
 
 def main():
     """Normal entry point."""
+    # this gunicorn stuff doesnt work if imports are global!
+    # pylint: disable=import-outside-toplevel
+    import anmad.interface.routes as anmadroutes
     application = anmadroutes.flaskapp
     return application
 
@@ -17,6 +18,9 @@ def app(**kwargs):
     # Start the application in modified environment.
     # https://stackoverflow.com/questions/18668947/
     #
+    # this gunicorn stuff doesnt work if imports are global!
+    # pylint: disable=import-outside-toplevel
+    import sys
     sys.argv = ['--gunicorn']
     for k in kwargs:
         sys.argv.append("--" + k)

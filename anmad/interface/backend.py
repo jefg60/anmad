@@ -39,7 +39,6 @@ def service_status(service):
         ['systemctl',
          '--property',
          'StateChangeTimestamp,ActiveState,SubState',
-         '--value',
          'show',
          service],
         stdout=subprocess.PIPE,
@@ -48,14 +47,13 @@ def service_status(service):
         check=False)
 
     lines = servicestatus.stdout.splitlines()
-    active_state = lines[0]
-    sub_state = lines[1]
-    if lines[2] != '':
+    active_state = lines[0].split("=", 1)[1]
+    sub_state = lines[1].split("=", 1)[1]
+    if len(lines) > 2:
         state_change_time = strftime(TIME_FORMAT,
             strptime(lines[2],'%a %Y-%m-%d %H:%M:%S %Z'))
     else:
         state_change_time = 'system boot'
-    active_state = lines[0]
     return {"service": service,
             "active_state": active_state,
             "sub_state": sub_state,

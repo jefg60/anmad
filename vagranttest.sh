@@ -1,6 +1,7 @@
 #!/bin/bash
 if [ ! -d ~/venv ] ; then
-    virtualenv -p python3 ~/venv &&\
+    python -m virtualenv -p python3 ~/venv &&\
+    ~/venv/bin/python -m pip install -U pip
     ~/venv/bin/pip install pylint
     git clone https://github.com/bats-core/bats-core.git
     cd bats-core

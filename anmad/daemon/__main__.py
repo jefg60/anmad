@@ -10,8 +10,8 @@ from anmad.daemon.ssh import add_ssh_key_to_agent
 from anmad.common.queues import AnmadQueues
 import anmad.common.version as anmadver
 
-QUEUES = AnmadQueues('prerun', 'playbooks', 'info')
 ARGS = parse_anmad_args()
+QUEUES = AnmadQueues(ARGS.prerun_queue, ARGS.playbook_queue, ARGS.info_queue)
 LOGGER = logsetup(ARGS, 'ANMAD Daemon')
 MULTIOBJ = AnmadMulti(
     vault_password_file=ARGS.vault_password_file,

@@ -20,10 +20,13 @@ config = {
     "version": anmadver.VERSION,
     "hostname": getfqdn(),
     "baseurl": "/",
-    "queues": AnmadQueues('prerun', 'playbooks', 'info'),
 }
 
 config["logger"] = logsetup(config["args"], 'ANMAD Interface')
+config["queues"] = AnmadQueues(
+        config["args"].prerun_queue,
+        config["args"].playbook_queue,
+        config["args"].info_queue)
 
 flaskapp = Flask(__name__)
 flaskapp.add_template_filter(basename)

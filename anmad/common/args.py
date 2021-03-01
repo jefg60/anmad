@@ -11,9 +11,8 @@ def prepend_rootdir(myrootdir, mylist):
     ret = [myrootdir + '/' + str(x) for x in mylist]
     return ret
 
-def parse_anmad_args():
-    """Read arguments from command line or config file."""
-
+def init_argparser():
+    """Create an argument parser"""
     home = expanduser("~")
     default_configfile = '/etc/anmad.conf'
     alternate_configfile = home + '/.anmad.conf'
@@ -39,7 +38,22 @@ def parse_anmad_args():
             ],
         formatter_class=configargparse.ArgumentDefaultsHelpFormatter
         )
+    return (parser,
+           home,
+           default_configfile,
+           alternate_configfile,
+           __version__,
+           ansible_home)
 
+def parse_anmad_args():
+    """Read arguments from command line or config file."""
+    parser_init = init_argparser()
+    parser = parser_init[0]
+    home = parser_init[1]
+    default_configfile = parser_init[2]
+    alternate_configfile = parser_init[3]
+    __version__ = parser_init[4]
+    ansible_home = parser_init[5]
     parser.add_argument(
         "-v",
         "-V",
@@ -165,6 +179,21 @@ def parse_anmad_args():
         "--ansible_log_path",
         help="path for ansible playbook logs",
         default="/var/log/ansible/playbook"
+        )
+    parser.add_argument(
+        "--prerun-queue",
+        help="Name for prerun queue",
+        default="prerun-dev"
+        )
+    parser.add_argument(
+        "--playbook-queue",
+        help="Name for playbook queue",
+        default="playbooks-dev"
+        )
+    parser.add_argument(
+        "--info-queue",
+        help="Name for info queue",
+        default="info-dev"
         )
 
     parser.set_defaults(debug=False, syslog=True, dryrun=False)

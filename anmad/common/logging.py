@@ -13,7 +13,10 @@ class AnmadInfoHandler(logging.handlers.QueueHandler):
 def logsetup(args, name):
     """Set up anmad logging."""
     logger = logging.getLogger(name)
-    queues = anmadqueues.AnmadQueues('prerun', 'playbooks', 'info')
+    queues = anmadqueues.AnmadQueues(
+        args.prerun_queue,
+        args.playbook_queue,
+        args.info_queue)
 
     syslog_formatter = logging.Formatter(
         '%(name)s - [%(levelname)s] - %(message)s')

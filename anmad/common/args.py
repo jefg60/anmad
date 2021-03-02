@@ -179,6 +179,16 @@ def parse_anmad_args():
         help="Name for info queue",
         default="info-dev"
         )
+    parser.add_argument(
+        "--queue-type",
+        help="Type of queues to use",
+        choices=["sqs", "localredis"],
+        default="localredis"
+        )
+    parser.add_argument(
+        "--aws-profile",
+        help="aws profile to use if needed",
+        )
 
     parser.set_defaults(debug=False, syslog=True, dryrun=False)
     myargs, unknown = parser.parse_known_args()

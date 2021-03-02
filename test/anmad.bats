@@ -8,7 +8,7 @@ load test_helper
 
 @test "running in python3.8" {
   run "$python" --version
-  [[ "$output" == *"3.8."* ]]
+  [[ "$output" == *"3.7."* ]]
 }
 
 @test "unit test of args" {

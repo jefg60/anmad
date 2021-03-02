@@ -12,80 +12,65 @@ def prepend_rootdir(myrootdir, mylist):
     return ret
 
 def init_argparser():
-    """Create an argument parser"""
-    home = expanduser("~")
-    default_configfile = '/etc/anmad.conf'
-    alternate_configfile = home + '/.anmad.conf'
-    __version__ = anmadver.VERSION
+    """Create an argument parser and some other vars, return as dict"""
+    defaults = {
+        "home": expanduser("~"),
+        "configfiles": ["/etc/anmad.conf",]
+        }
+    defaults["configfiles"].append(defaults["home"] + "/.anmad.conf")
 
     try:
-        ansible_home = dirname(
+        defaults["ansible_home"] = dirname(
             dirname(which("ansible-playbook"))
         )
     except TypeError:
-        ansible_home = getcwd()
+        defaults["ansible_home"] = getcwd()
 
     # This is here so we see if we are re-parsing args unecessarily
     # It should only print once per module import / invocation
-    print('\nANMAD: Parsing args, trying config files '
-            + default_configfile + ', '
-            + alternate_configfile)
+    print(f"\nANMAD: Parsing args, trying config files \n\
+            {defaults['configfiles']}")
 
-    parser = configargparse.ArgParser(
-        default_config_files=[
-            default_configfile,
-            alternate_configfile
-            ],
+    defaults["parser"] = configargparse.ArgParser(
+        default_config_files=defaults["configfiles"],
         formatter_class=configargparse.ArgumentDefaultsHelpFormatter
         )
-    return (parser,
-           home,
-           default_configfile,
-           alternate_configfile,
-           __version__,
-           ansible_home)
+    return defaults
 
 def parse_anmad_args():
     """Read arguments from command line or config file."""
-    parser_init = init_argparser()
-    parser = parser_init[0]
-    home = parser_init[1]
-    default_configfile = parser_init[2]
-    alternate_configfile = parser_init[3]
-    __version__ = parser_init[4]
-    ansible_home = parser_init[5]
+    defaults = init_argparser()
+    parser = defaults["parser"]
     parser.add_argument(
         "-v",
         "-V",
         "--version",
         action="version",
-        version=__version__
+        version=anmadver.VERSION
         )
     parser.add_argument(
         "-c",
         "--configfile",
         is_config_file=True,
-        help="override default config files ("
-            + default_configfile + ","
-            + alternate_configfile + ")"
+        help=f"override default config files {defaults['configfiles']}"
         )
     parser.add_argument(
         "--venv",
         help="python virtualenv to run ansible from",
-        default=ansible_home
+        default=defaults["ansible_home"]
         )
     parser.add_argument(
-        "--ssh_id",
+        "--ssh-id",
         help="ssh id file to use",
-        default=home + "/.ssh/id_rsa"
+        default=defaults["home"] + "/.ssh/id_rsa"
         )
     parser.add_argument(
-        "--vault_password_file",
+        "--vault-password-file",
         help="vault password file",
-        default=home + "/.vaultpw"
+        default=defaults["home"] + "/.vaultpw"
         )
     parser.add_argument(
-        "--syntax_check_dir",
+        "--syntax-check-dir",
         help="Optional directory to search for *.yml and *.yaml files to "
              "syntax check when changes are detected"
         )
@@ -97,12 +82,12 @@ def parse_anmad_args():
         help="space separated list of ansible playbooks to run. "
         )
     parser.add_argument(
-        "--playbook_root_dir",
+        "--playbook-root-dir",
         help="base directory to run playbooks from",
         required=True,
         )
     parser.add_argument(
-        "--pre_run_playbooks",
+        "--pre-run-playbooks",
         nargs='*',
         help="space separated list of ansible playbooks to run "
              "before doing any syntax checking. Useful "
@@ -119,7 +104,7 @@ def parse_anmad_args():
              "checks pass"
         )
     parser.add_argument(
-        "--ssh_askpass",
+        "--ssh-askpass",
         help="location of a script to pass as SSH_ASKPASS env var,"
              "which will enable this program to load an ssh key if "
              "it has a passphrase. Only works if not running in a terminal"
@@ -160,7 +145,7 @@ def parse_anmad_args():
         default=1800
         )
     parser.add_argument(
-        "--messagelist_size",
+        "--messagelist-size",
         help="number of messages to display on homepage",
         type=int,
         default=4
@@ -172,11 +157,11 @@ def parse_anmad_args():
         help="enable git pull functionality on playbook_root_dir"
         )
     parser.add_argument(
-        "--repo_deploykey",
+        "--repo-deploykey",
         help="ssh private key file for git pull operations"
         )
     parser.add_argument(
-        "--ansible_log_path",
+        "--ansible-log-path",
         help="path for ansible playbook logs",
         default="/var/log/ansible/playbook"
         )
@@ -217,8 +202,7 @@ def parse_anmad_args():
     # First inventory is the one that plays run against
     myargs.maininventory = abspath(myargs.inventories[0])
     myargs.ansible_playbook_cmd = myargs.venv + '/bin/ansible-playbook'
-    myargs.default_configfile = default_configfile
-    myargs.alternate_configfile = alternate_configfile
-    myargs.version = __version__
+    myargs.default_configfile = defaults['configfiles']
+    myargs.version = defaults['version']
 
     return myargs

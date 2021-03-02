@@ -28,8 +28,7 @@ def init_argparser():
 
     # This is here so we see if we are re-parsing args unecessarily
     # It should only print once per module import / invocation
-    print(f"\nANMAD: Parsing args, trying config files \n\
-            {defaults['configfiles']}")
+    print(f"ANMAD: Parsing args, trying config files {defaults['configfiles']}")
 
     defaults["parser"] = configargparse.ArgParser(
         default_config_files=defaults["configfiles"],
@@ -203,6 +202,6 @@ def parse_anmad_args():
     myargs.maininventory = abspath(myargs.inventories[0])
     myargs.ansible_playbook_cmd = myargs.venv + '/bin/ansible-playbook'
     myargs.default_configfile = defaults['configfiles']
-    myargs.version = defaults['version']
+    myargs.version = anmadver.VERSION
 
     return myargs

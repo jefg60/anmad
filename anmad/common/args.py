@@ -187,7 +187,7 @@ def parse_anmad_args():
         )
     parser.add_argument(
         "--aws-profile",
-        help="aws profile to use if needed",
+        help="aws profile to use",
         )
 
     parser.set_defaults(debug=False, syslog=True, dryrun=False)

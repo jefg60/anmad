@@ -52,9 +52,41 @@ def start_daemon():
             }
     return daemon
 
-def main_daemon_loop():
+def process_prerun_queue(daemon):
+    """Process items in prerun queue."""
+    while True:
+        # get first item in preQ and check if its a list of 1 item,
+        # if so run it
+        prequeue_job = daemon['queues'].prequeue.get()
+        if isinstance(prequeue_job, list) and len(prequeue_job) == 1:
+            daemon['logger'].info(
+                " Found a pre-run queue item: %s", str(prequeue_job))
+            # statements to process pre-Q job
+            daemon['multiobj'].runplaybooks(prequeue_job)
+
+        # if it wasnt a list, but something is there, something is wrong
+        elif prequeue_job is not None:
+            daemon['logger'].warning(
+                "item found in pre-run queue but its not a single item list")
+            break
+        else:
+            daemon['logger'].info(
+                "processed all items in pre-run queue")
+            break #stop processing pre-Q if its empty
+
+def restart_daemon(daemon):
+    """ Restart the daemon."""
+    daemon['logger'].info(
+        'Restarting %s %s %s %s',
+        str(sys.executable),
+        str(sys.executable),
+        str(__file__),
+        " ".join(sys.argv[1:])
+        )
+    os.execl(sys.executable, sys.executable, __file__, *sys.argv[1:])
+
+def main_daemon_loop(daemon):
     """Loop over queue and run jobs."""
-    daemon = start_daemon()
     for playbookjob in daemon['queues'].queue.consume():
         daemon['logger'].info("Starting to consume playbooks queue...")
         if playbookjob is not None:
@@ -62,35 +94,10 @@ def main_daemon_loop():
 
             # when an item is found in the PLAYQ, first process all jobs in preQ!
             daemon['logger'].info("Starting to consume prerun queue...")
-            while True:
-                # get first item in preQ and check if its a list of 1 item,
-                # if so run it
-                prequeue_job = daemon['queues'].prequeue.get()
-                if isinstance(prequeue_job, list) and len(prequeue_job) == 1:
-                    daemon['logger'].info(
-                        " Found a pre-run queue item: %s", str(prequeue_job))
-                    # statements to process pre-Q job
-                    daemon['multiobj'].runplaybooks(prequeue_job)
-
-                # if it wasnt a list, but something is there, something is wrong
-                elif prequeue_job is not None:
-                    daemon['logger'].warning(
-                        "item found in pre-run queue but its not a single item list")
-                    break
-                else:
-                    daemon['logger'].info(
-                        "processed all items in pre-run queue")
-                    break #stop processing pre-Q if its empty
+            process_prerun_queue(daemon)
 
             if playbookjob[0] == 'restart_anmad_run':
-                daemon['logger'].info(
-                    'Restarting %s %s %s %s',
-                    str(sys.executable),
-                    str(sys.executable),
-                    str(__file__),
-                    " ".join(sys.argv[1:])
-                    )
-                os.execl(sys.executable, sys.executable, __file__, *sys.argv[1:])
+                restart_daemon()
 
             daemon['logger'].info('Running job from playqueue: %s', str(playbookjob))
             #Syntax check playbooks, or all playbooks in syntax_check_dir
@@ -116,4 +123,5 @@ def main_daemon_loop():
     daemon['logger'].warning("Stopped processing playbooks queue!")
 
 if __name__ == '__main__':
-    main_daemon_loop()
+    daemon = start_daemon()
+    main_daemon_loop(daemon)

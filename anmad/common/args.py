@@ -50,8 +50,8 @@ def init_argparser():
 
 def parse_anmad_args():
     """Read arguments from command line or config file."""
-    parser_init = init_argparser()
-    parser = parser_init["parser"]
+    config = init_argparser()
+    parser = config["parser"]
 
     # Args used by daemon AND interface
     parser.add_argument(
@@ -59,20 +59,20 @@ def parse_anmad_args():
         "-V",
         "--version",
         action="version",
-        version=parser_init["version"]
+        version=config["version"]
         )
     parser.add_argument(
         "-c",
         "--configfile",
         is_config_file=True,
         help="override default config files ("
-            + parser_init['default_configfile'] + ","
-            + parser_init['alternate_configfile'] + ")"
+            + config['default_configfile'] + ","
+            + config['alternate_configfile'] + ")"
         )
     parser.add_argument(
         "--venv",
         help="python virtualenv to run from",
-        default=parser_init["ansible_home"]
+        default=config["ansible_home"]
         )
     parser.add_argument(
         "--playbooks",
@@ -98,12 +98,12 @@ def parse_anmad_args():
     parser.add_argument(
         "--ssh_id",
         help="ssh id file to use",
-        default=parser_init["home"] + "/.ssh/id_rsa"
+        default=config["home"] + "/.ssh/id_rsa"
         )
     parser.add_argument(
         "--vault_password_file",
         help="vault password file",
-        default=parser_init["home"] + "/.vaultpw"
+        default=config["home"] + "/.vaultpw"
         )
     parser.add_argument(
         "--syntax_check_dir",
@@ -219,8 +219,8 @@ def parse_anmad_args():
     # First inventory is the one that plays run against
     myargs.maininventory = abspath(myargs.inventories[0])
     myargs.ansible_playbook_cmd = myargs.venv + '/bin/ansible-playbook'
-    myargs.default_configfile = parser_init["default_configfile"]
-    myargs.alternate_configfile = parser_init["alternate_configfile"]
-    myargs.version = parser_init["version"]
+    myargs.default_configfile = config["default_configfile"]
+    myargs.alternate_configfile = config["alternate_configfile"]
+    myargs.version = config["version"]
 
     return myargs

@@ -10,95 +10,100 @@ from anmad.daemon.ssh import add_ssh_key_to_agent
 from anmad.common.queues import AnmadQueues
 import anmad.common.version as anmadver
 
-ARGS = parse_anmad_args()
-QUEUES = AnmadQueues(ARGS.prerun_queue, ARGS.playbook_queue, ARGS.info_queue)
-LOGGER = logsetup(ARGS, 'ANMAD Daemon')
-MULTIOBJ = AnmadMulti(
-    vault_password_file=ARGS.vault_password_file,
-    timeout=ARGS.timeout,
-    logger=LOGGER,
-    ansible_log_path=ARGS.ansible_log_path,
-    inventories=ARGS.inventories,
-    ansible_playbook_cmd=ARGS.ansible_playbook_cmd)
+def main_daemon_loop():
+    """Loop over queue and run jobs."""
+    args = parse_anmad_args()
+    queues = AnmadQueues(args.prerun_queue, args.playbook_queue, args.info_queue)
+    logger = logsetup(args, 'ANMAD Daemon')
+    multiobj = AnmadMulti(
+        vault_password_file=args.vault_password_file,
+        timeout=args.timeout,
+        logger=logger,
+        ansible_log_path=args.ansible_log_path,
+        inventories=args.inventories,
+        ansible_playbook_cmd=args.ansible_playbook_cmd)
 
-LOGGER.info("anmad_run version: %s starting", str(anmadver.VERSION))
-LOGGER.debug("config file: %s",
-             str(ARGS.configfile)
-             if ARGS.configfile is not None
-             else str(ARGS.default_configfile))
-LOGGER.debug("vault password file: %s", str(ARGS.vault_password_file))
-LOGGER.debug("ssh id: %s", str(ARGS.ssh_id))
-LOGGER.debug("venv: %s", str(ARGS.venv))
-LOGGER.debug("ansible_playbook_cmd: %s", str(ARGS.ansible_playbook_cmd))
-LOGGER.debug("inventorylist: %s", " ".join(ARGS.inventories))
-LOGGER.debug("maininventory: %s", str(ARGS.maininventory))
-if ARGS.pre_run_playbooks:
-    LOGGER.debug("pre_run_playbooks: %s",
-                 " ".join(ARGS.pre_run_playbooks))
-    LOGGER.debug("PRERUN_LIST: %s",
-                 " ".join(ARGS.prerun_list))
-LOGGER.debug("playbooks: %s", " ".join(ARGS.playbooks))
-LOGGER.debug("RUN_LIST: %s", " ".join(ARGS.run_list))
-LOGGER.debug("playbook_root_dir: %s", str(ARGS.playbook_root_dir))
+    logger.info("anmad_run version: %s starting", str(anmadver.VERSION))
+    logger.debug("config file: %s",
+                 str(args.configfile)
+                 if args.configfile is not None
+                 else str(args.default_configfile))
+    logger.debug("vault password file: %s", str(args.vault_password_file))
+    logger.debug("ssh id: %s", str(args.ssh_id))
+    logger.debug("venv: %s", str(args.venv))
+    logger.debug("ansible_playbook_cmd: %s", str(args.ansible_playbook_cmd))
+    logger.debug("inventorylist: %s", " ".join(args.inventories))
+    logger.debug("maininventory: %s", str(args.maininventory))
+    if args.pre_run_playbooks:
+        logger.debug("pre_run_playbooks: %s",
+                     " ".join(args.pre_run_playbooks))
+        logger.debug("PRERUN_LIST: %s",
+                     " ".join(args.prerun_list))
+    logger.debug("playbooks: %s", " ".join(args.playbooks))
+    logger.debug("RUN_LIST: %s", " ".join(args.run_list))
+    logger.debug("playbook_root_dir: %s", str(args.playbook_root_dir))
 
-add_ssh_key_to_agent(LOGGER, ARGS.ssh_id, ARGS.ssh_askpass)
+    add_ssh_key_to_agent(logger, args.ssh_id, args.ssh_askpass)
 
-for playbookjob in QUEUES.queue.consume():
-    LOGGER.info("Starting to consume playbooks queue...")
-    if playbookjob is not None:
-        LOGGER.info("Found playbook queue job: %s", str(playbookjob))
+    for playbookjob in queues.queue.consume():
+        logger.info("Starting to consume playbooks queue...")
+        if playbookjob is not None:
+            logger.info("Found playbook queue job: %s", str(playbookjob))
 
-        # when an item is found in the PLAYQ, first process all jobs in preQ!
-        LOGGER.info("Starting to consume prerun queue...")
-        while True:
-            # get first item in preQ and check if its a list of 1 item,
-            # if so run it
-            preQ_job = QUEUES.prequeue.get()
-            if isinstance(preQ_job, list) and len(preQ_job) == 1:
-                LOGGER.info(
-                    " Found a pre-run queue item: %s", str(preQ_job))
-                # statements to process pre-Q job
-                MULTIOBJ.runplaybooks(preQ_job)
+            # when an item is found in the PLAYQ, first process all jobs in preQ!
+            logger.info("Starting to consume prerun queue...")
+            while True:
+                # get first item in preQ and check if its a list of 1 item,
+                # if so run it
+                prequeue_job = queues.prequeue.get()
+                if isinstance(prequeue_job, list) and len(prequeue_job) == 1:
+                    logger.info(
+                        " Found a pre-run queue item: %s", str(prequeue_job))
+                    # statements to process pre-Q job
+                    multiobj.runplaybooks(prequeue_job)
 
-            # if it wasnt a list, but something is there, something is wrong
-            elif preQ_job is not None:
-                LOGGER.warning(
-                    "item found in pre-run queue but its not a single item list")
-                break
+                # if it wasnt a list, but something is there, something is wrong
+                elif prequeue_job is not None:
+                    logger.warning(
+                        "item found in pre-run queue but its not a single item list")
+                    break
+                else:
+                    logger.info(
+                        "processed all items in pre-run queue")
+                    break #stop processing pre-Q if its empty
+
+            if playbookjob[0] == 'restart_anmad_run':
+                logger.info(
+                    'Restarting %s %s %s %s',
+                    str(sys.executable),
+                    str(sys.executable),
+                    str(__file__),
+                    " ".join(sys.argv[1:])
+                    )
+                os.execl(sys.executable, sys.executable, __file__, *sys.argv[1:])
+
+            logger.info('Running job from playqueue: %s', str(playbookjob))
+            #Syntax check playbooks, or all playbooks in syntax_check_dir
+            if args.syntax_check_dir is None or len(playbookjob) == 1:
+                problemcount = multiobj.checkplaybooks(playbookjob)
             else:
-                LOGGER.info(
-                    "processed all items in pre-run queue")
-                break #stop processing pre-Q if its empty
+                problemcount = multiobj.syncheck_dir(
+                    args.syntax_check_dir)
 
-        if playbookjob[0] == 'restart_anmad_run':
-            LOGGER.info(
-                'Restarting %s %s %s %s',
-                str(sys.executable),
-                str(sys.executable),
-                str(__file__),
-                " ".join(sys.argv[1:])
-                )
-            os.execl(sys.executable, sys.executable, __file__, *sys.argv[1:])
+            if problemcount != 0:
+                logger.warning(
+                    "Refusing to queue requested playbooks until "
+                    "syntax checks pass")
+                continue
 
-        LOGGER.info('Running job from playqueue: %s', str(playbookjob))
-        #Syntax check playbooks, or all playbooks in syntax_check_dir
-        if ARGS.syntax_check_dir is None or len(playbookjob) == 1:
-            problemcount = MULTIOBJ.checkplaybooks(playbookjob)
-        else:
-            problemcount = MULTIOBJ.syncheck_dir(
-                ARGS.syntax_check_dir)
+            # if we get to here syntax checks passed. Run the job
+            logger.info(
+                "Running playbooks %s", str(playbookjob))
+            multiobj.runplaybooks(playbookjob)
+            logger.info(
+                "Continuing to process items in playbooks queue...")
 
-        if problemcount != 0:
-            LOGGER.warning(
-                "Refusing to queue requested playbooks until "
-                "syntax checks pass")
-            continue
+    logger.warning("Stopped processing playbooks queue!")
 
-        # if we get to here syntax checks passed. Run the job
-        LOGGER.info(
-            "Running playbooks %s", str(playbookjob))
-        MULTIOBJ.runplaybooks(playbookjob)
-        LOGGER.info(
-            "Continuing to process items in playbooks queue...")
-
-LOGGER.warning("Stopped processing playbooks queue!")
+if __name__ == '__main__':
+    main_daemon_loop()

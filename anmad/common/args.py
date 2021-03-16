@@ -50,14 +50,14 @@ def init_argparser():
 
 def add_common_args(**config):
     """Args used by daemon AND interface."""
-    parser.add_argument(
+    config['parser'].add_argument(
         "-v",
         "-V",
         "--version",
         action="version",
         version=config["version"]
         )
-    parser.add_argument(
+    config['parser'].add_argument(
         "-c",
         "--configfile",
         is_config_file=True,
@@ -65,24 +65,24 @@ def add_common_args(**config):
             + config['default_configfile'] + ","
             + config['alternate_configfile'] + ")"
         )
-    parser.add_argument(
+    config['parser'].add_argument(
         "--venv",
         help="python virtualenv to run from",
         default=config["ansible_home"]
         )
-    parser.add_argument(
+    config['parser'].add_argument(
         "--playbooks",
         "-p",
         nargs='*',
         required=True,
         help="space separated list of ansible playbooks to run. "
         )
-    parser.add_argument(
+    config['parser'].add_argument(
         "--playbook_root_dir",
         help="base directory to run playbooks from",
         required=True,
         )
-    parser.add_argument(
+    config['parser'].add_argument(
         "--pre_run_playbooks",
         nargs='*',
         help="space separated list of ansible playbooks to run "
@@ -90,30 +90,24 @@ def add_common_args(**config):
              "for playbooks that fetch roles required by other playbooks"
         )
 
-def parse_anmad_args():
-    """Read arguments from command line or config file."""
-    config = init_argparser()
-    parser = config["parser"]
-
-    add_common_args(config)
-
-    # anmad daemon args
-    parser.add_argument(
+def add_daemon_args(**config):
+    """Anmad daemon args."""
+    config['parser'].add_argument(
         "--ssh_id",
         help="ssh id file to use",
         default=config["home"] + "/.ssh/id_rsa"
         )
-    parser.add_argument(
+    config['parser'].add_argument(
         "--vault_password_file",
         help="vault password file",
         default=config["home"] + "/.vaultpw"
         )
-    parser.add_argument(
+    config['parser'].add_argument(
         "--syntax_check_dir",
         help="Optional directory to search for *.yml and *.yaml files to "
              "syntax check when changes are detected"
         )
-    parser.add_argument(
+    config['parser'].add_argument(
         "--inventories",
         "-i",
         nargs='*',
@@ -123,86 +117,99 @@ def parse_anmad_args():
              "will be the one that playbooks are run against if syntax "
              "checks pass"
         )
-    parser.add_argument(
+    config['parser'].add_argument(
         "--ssh_askpass",
         help="location of a script to pass as SSH_ASKPASS env var,"
              "which will enable this program to load an ssh key if "
              "it has a passphrase. Only works if not running in a terminal"
         )
-    parser.add_argument(
+    config['parser'].add_argument(
         "--concurrency",
         type=int,
         help="number of simultaneous processes to run,"
              "defaults to number of cpu reported by OS",
         default=cpu_count()
         )
-    parser.add_argument(
+    config['parser'].add_argument(
         "--timeout",
         help="timeout in seconds before aborting playbooks",
         default=1800
         )
 
-    # Logging args
-    parser.add_argument(
+def add_logging_args(**config):
+    """Add Logging args."""
+    config['parser'].add_argument(
         "--no-syslog",
         dest="syslog",
         action="store_false",
         help="disable logging to syslog"
         )
-    parser.add_argument(
+    config['parser'].add_argument(
         "--syslogdevice",
         help="syslog device to use",
         default="/dev/log"
         )
-    parser.add_argument(
+    config['parser'].add_argument(
         "--debug",
         dest="debug",
         action="store_true",
         help="print debugging info to logs"
         )
-    parser.add_argument(
+    config['parser'].add_argument(
         "--ansible_log_path",
         help="path for ansible playbook logs",
         default="/var/log/ansible/playbook"
         )
 
-    # Interface args
-    parser.add_argument(
+def add_interface_args(**config):
+    """Interface args."""
+    config['parser'].add_argument(
         "--messagelist_size",
         help="number of messages to display on homepage",
         type=int,
         default=4
         )
-    parser.add_argument(
+    config['parser'].add_argument(
         "--git-pull",
         dest="gitpull",
         action="store_false",
         help="enable git pull functionality on playbook_root_dir"
         )
-    parser.add_argument(
+    config['parser'].add_argument(
         "--repo_deploykey",
         help="ssh private key file for git pull operations"
         )
 
-    # Queue args
-    parser.add_argument(
+def add_queue_args(**config):
+    """Queue args."""
+    config['parser'].add_argument(
         "--prerun-queue",
         help="Name for prerun queue",
         default="prerun-dev"
         )
-    parser.add_argument(
+    config['parser'].add_argument(
         "--playbook-queue",
         help="Name for playbook queue",
         default="playbooks-dev"
         )
-    parser.add_argument(
+    config['parser'].add_argument(
         "--info-queue",
         help="Name for info queue",
         default="info-dev"
         )
 
-    parser.set_defaults(debug=False, syslog=True, dryrun=False)
-    myargs, unknown = parser.parse_known_args()
+def parse_anmad_args():
+    """Read arguments from command line or config file."""
+    config = init_argparser()
+
+    add_common_args(config)
+    add_daemon_args(config)
+    add_logging_args(config)
+    add_interface_args(config)
+    add_queue_args(config)
+
+    config['parser'].set_defaults(debug=False, syslog=True, dryrun=False)
+    myargs, unknown = config['parser'].parse_known_args()
     if len(unknown) > 0:
         print('ANMAD: Ignoring unknown args: ' + str(unknown))
     # filter list args to remove empty strings that may have been passed from

@@ -3,7 +3,7 @@
 from anmad.common.queues import AnmadQueues
 from anmad.common.args import parse_anmad_args
 
-ARGS = parse_anmad_args()
+ARGS = parse_anmad_args(daemon=True)
 QUEUES = AnmadQueues(ARGS.prerun_queue, ARGS.playbook_queue, ARGS.info_queue)
 
 QUEUES.queue_job(['restart_anmad_run'])

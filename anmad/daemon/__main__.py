@@ -12,7 +12,7 @@ import anmad.common.version as anmadver
 
 def start_daemon():
     """Start the daemon. Return daemon objects as dict"""
-    args = parse_anmad_args()
+    args = parse_anmad_args(daemon=True)
     queues = AnmadQueues(args.prerun_queue, args.playbook_queue, args.info_queue)
     logger = logsetup(args, 'ANMAD Daemon')
     multiobj = AnmadMulti(

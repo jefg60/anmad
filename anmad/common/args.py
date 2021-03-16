@@ -163,14 +163,6 @@ def parse_anmad_args():
         default="/var/log/ansible/playbook"
         )
 
-    # Is this needed at all now???
-    parser.add_argument(
-        "--dry-run",
-        dest="dryrun",
-        action="store_true",
-        help="only wait for one --interval, for testing"
-        )
-
     # Interface args
     parser.add_argument(
         "--messagelist_size",

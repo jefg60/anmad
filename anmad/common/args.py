@@ -38,22 +38,25 @@ def init_argparser():
             ],
         formatter_class=configargparse.ArgumentDefaultsHelpFormatter
         )
-    return (parser,
-           home,
-           default_configfile,
-           alternate_configfile,
-           __version__,
-           ansible_home)
+    output_dict = {
+            "parser": parser,
+            "home": home,
+            "default_configfile": default_configfile,
+            "alternate_configfile": alternate_configfile,
+            "version": __version__,
+            "ansible_home": ansible_home)
+    return output_dict
 
 def parse_anmad_args():
     """Read arguments from command line or config file."""
     parser_init = init_argparser()
-    parser = parser_init[0]
-    home = parser_init[1]
-    default_configfile = parser_init[2]
-    alternate_configfile = parser_init[3]
-    __version__ = parser_init[4]
-    ansible_home = parser_init[5]
+    parser = parser_init["parser"]
+    home = parser_init["home"]
+    default_configfile = parser_init["default_configfile"]
+    alternate_configfile = parser_init["alternate_configfile"]
+    __version__ = parser_init["version"]
+    ansible_home = parser_init["ansible_home"]
+
     parser.add_argument(
         "-v",
         "-V",

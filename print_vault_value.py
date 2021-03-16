@@ -50,13 +50,16 @@ def get_yaml_vault_data():
     myoutput = vault_data.get(ARGS.yaml_key)
     return myoutput
 
-if __name__ == '__main__':
-
-    ARGS = parse_args()
-    OUTPUT = get_yaml_vault_data()
-    if OUTPUT is not None:
-        print(OUTPUT)
+def main():
+    """ Main func. """
+    args = parse_args()
+    output = get_yaml_vault_data()
+    if output is not None:
+        print(output)
         raise SystemExit(0)
 
-    print("ERROR: no data found in yaml key", ARGS.yaml_key)
+    print("ERROR: no data found in yaml key", args.yaml_key)
     raise SystemExit(1)
+
+if __name__ == '__main__':
+    main()

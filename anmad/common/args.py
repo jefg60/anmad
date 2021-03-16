@@ -53,7 +53,7 @@ def parse_anmad_args():
     parser_init = init_argparser()
     parser = parser_init["parser"]
 
-    # Base args
+    # Args used by daemon AND interface
     parser.add_argument(
         "-v",
         "-V",
@@ -71,25 +71,8 @@ def parse_anmad_args():
         )
     parser.add_argument(
         "--venv",
-        help="python virtualenv to run ansible from",
+        help="python virtualenv to run from",
         default=parser_init["ansible_home"]
-        )
-    parser.add_argument(
-        "--ssh_id",
-        help="ssh id file to use",
-        default=parser_init["home"] + "/.ssh/id_rsa"
-        )
-    parser.add_argument(
-        "--vault_password_file",
-        help="vault password file",
-        default=parser_init["home"] + "/.vaultpw"
-        )
-
-    # anmad daemon args
-    parser.add_argument(
-        "--syntax_check_dir",
-        help="Optional directory to search for *.yml and *.yaml files to "
-             "syntax check when changes are detected"
         )
     parser.add_argument(
         "--playbooks",
@@ -109,6 +92,23 @@ def parse_anmad_args():
         help="space separated list of ansible playbooks to run "
              "before doing any syntax checking. Useful "
              "for playbooks that fetch roles required by other playbooks"
+        )
+
+    # anmad daemon args
+    parser.add_argument(
+        "--ssh_id",
+        help="ssh id file to use",
+        default=parser_init["home"] + "/.ssh/id_rsa"
+        )
+    parser.add_argument(
+        "--vault_password_file",
+        help="vault password file",
+        default=parser_init["home"] + "/.vaultpw"
+        )
+    parser.add_argument(
+        "--syntax_check_dir",
+        help="Optional directory to search for *.yml and *.yaml files to "
+             "syntax check when changes are detected"
         )
     parser.add_argument(
         "--inventories",

@@ -10,8 +10,8 @@ from anmad.daemon.ssh import add_ssh_key_to_agent
 from anmad.common.queues import AnmadQueues
 import anmad.common.version as anmadver
 
-def main_daemon_loop():
-    """Loop over queue and run jobs."""
+def start_daemon():
+    """Start the daemon. Return daemon objects as dict"""
     args = parse_anmad_args()
     queues = AnmadQueues(args.prerun_queue, args.playbook_queue, args.info_queue)
     logger = logsetup(args, 'ANMAD Daemon')
@@ -44,36 +44,46 @@ def main_daemon_loop():
     logger.debug("playbook_root_dir: %s", str(args.playbook_root_dir))
 
     add_ssh_key_to_agent(logger, args.ssh_id, args.ssh_askpass)
+    daemon = {
+            "args": args,
+            "queues": queues,
+            "logger": logger,
+            "multiobj": multiobj,
+            }
+    return daemon
 
-    for playbookjob in queues.queue.consume():
-        logger.info("Starting to consume playbooks queue...")
+def main_daemon_loop():
+    """Loop over queue and run jobs."""
+    daemon = start_daemon()
+    for playbookjob in daemon['queues'].queue.consume():
+        daemon['logger'].info("Starting to consume playbooks queue...")
         if playbookjob is not None:
-            logger.info("Found playbook queue job: %s", str(playbookjob))
+            daemon['logger'].info("Found playbook queue job: %s", str(playbookjob))
 
             # when an item is found in the PLAYQ, first process all jobs in preQ!
-            logger.info("Starting to consume prerun queue...")
+            daemon['logger'].info("Starting to consume prerun queue...")
             while True:
                 # get first item in preQ and check if its a list of 1 item,
                 # if so run it
-                prequeue_job = queues.prequeue.get()
+                prequeue_job = daemon['queues'].prequeue.get()
                 if isinstance(prequeue_job, list) and len(prequeue_job) == 1:
-                    logger.info(
+                    daemon['logger'].info(
                         " Found a pre-run queue item: %s", str(prequeue_job))
                     # statements to process pre-Q job
-                    multiobj.runplaybooks(prequeue_job)
+                    daemon['multiobj'].runplaybooks(prequeue_job)
 
                 # if it wasnt a list, but something is there, something is wrong
                 elif prequeue_job is not None:
-                    logger.warning(
+                    daemon['logger'].warning(
                         "item found in pre-run queue but its not a single item list")
                     break
                 else:
-                    logger.info(
+                    daemon['logger'].info(
                         "processed all items in pre-run queue")
                     break #stop processing pre-Q if its empty
 
             if playbookjob[0] == 'restart_anmad_run':
-                logger.info(
+                daemon['logger'].info(
                     'Restarting %s %s %s %s',
                     str(sys.executable),
                     str(sys.executable),
@@ -82,28 +92,28 @@ def main_daemon_loop():
                     )
                 os.execl(sys.executable, sys.executable, __file__, *sys.argv[1:])
 
-            logger.info('Running job from playqueue: %s', str(playbookjob))
+            daemon['logger'].info('Running job from playqueue: %s', str(playbookjob))
             #Syntax check playbooks, or all playbooks in syntax_check_dir
-            if args.syntax_check_dir is None or len(playbookjob) == 1:
-                problemcount = multiobj.checkplaybooks(playbookjob)
+            if daemon['args'].syntax_check_dir is None or len(playbookjob) == 1:
+                problemcount = daemon['multiobj'].checkplaybooks(playbookjob)
             else:
-                problemcount = multiobj.syncheck_dir(
-                    args.syntax_check_dir)
+                problemcount = daemon['multiobj'].syncheck_dir(
+                    daemon['args'].syntax_check_dir)
 
             if problemcount != 0:
-                logger.warning(
+                daemon['logger'].warning(
                     "Refusing to queue requested playbooks until "
                     "syntax checks pass")
                 continue
 
             # if we get to here syntax checks passed. Run the job
-            logger.info(
+            daemon['logger'].info(
                 "Running playbooks %s", str(playbookjob))
-            multiobj.runplaybooks(playbookjob)
-            logger.info(
+            daemon['multiobj'].runplaybooks(playbookjob)
+            daemon['logger'].info(
                 "Continuing to process items in playbooks queue...")
 
-    logger.warning("Stopped processing playbooks queue!")
+    daemon['logger'].warning("Stopped processing playbooks queue!")
 
 if __name__ == '__main__':
     main_daemon_loop()

@@ -202,13 +202,13 @@ def parse_anmad_args():
     """Read arguments from command line or config file."""
     config = init_argparser()
 
-    add_common_args(config)
-    add_daemon_args(config)
-    add_logging_args(config)
-    add_interface_args(config)
-    add_queue_args(config)
+    add_common_args(**config)
+    add_daemon_args(**config)
+    add_logging_args(**config)
+    add_interface_args(**config)
+    add_queue_args(**config)
 
-    config['parser'].set_defaults(debug=False, syslog=True, dryrun=False)
+    config['parser'].set_defaults(debug=False, syslog=True)
     myargs, unknown = config['parser'].parse_known_args()
     if len(unknown) > 0:
         print('ANMAD: Ignoring unknown args: ' + str(unknown))

@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""Fetches a single YAML value from an ansible vault file, and prints it.
-"""
+"""Fetches a single YAML value from an ansible vault file, and prints it."""
 
 import argparse
 from os.path import expanduser

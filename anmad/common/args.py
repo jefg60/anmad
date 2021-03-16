@@ -48,12 +48,8 @@ def init_argparser():
             }
     return output_dict
 
-def parse_anmad_args():
-    """Read arguments from command line or config file."""
-    config = init_argparser()
-    parser = config["parser"]
-
-    # Args used by daemon AND interface
+def add_common_args(**config):
+    """Args used by daemon AND interface."""
     parser.add_argument(
         "-v",
         "-V",
@@ -93,6 +89,13 @@ def parse_anmad_args():
              "before doing any syntax checking. Useful "
              "for playbooks that fetch roles required by other playbooks"
         )
+
+def parse_anmad_args():
+    """Read arguments from command line or config file."""
+    config = init_argparser()
+    parser = config["parser"]
+
+    add_common_args(config)
 
     # anmad daemon args
     parser.add_argument(

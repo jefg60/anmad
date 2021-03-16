@@ -18,12 +18,6 @@ def init_argparser():
     alternate_configfile = home + '/.anmad.conf'
     __version__ = anmadver.VERSION
 
-    # This is here so we see if we are re-parsing args unecessarily
-    # It should only print once per module import / invocation
-    print('\nANMAD: Parsing args, trying config files '
-            + default_configfile + ', '
-            + alternate_configfile)
-
     parser = configargparse.ArgParser(
         default_config_files=[
             default_configfile,
@@ -40,16 +34,18 @@ def init_argparser():
             }
     return output_dict
 
-def add_common_args(**config):
+def add_other_args(**config):
     """Args used by daemon AND interface."""
-    config['parser'].add_argument(
+    group = config['parser'].add_argument_group(
+            'Other')
+    group.add_argument(
         "-v",
         "-V",
         "--version",
         action="version",
         version=config["version"]
         )
-    config['parser'].add_argument(
+    group.add_argument(
         "-c",
         "--configfile",
         is_config_file=True,
@@ -57,19 +53,19 @@ def add_common_args(**config):
             + config['default_configfile'] + ","
             + config['alternate_configfile'] + ")"
         )
-    config['parser'].add_argument(
+    group.add_argument(
         "--playbooks",
         "-p",
         nargs='*',
         required=True,
         help="space separated list of ansible playbooks to run. "
         )
-    config['parser'].add_argument(
+    group.add_argument(
         "--playbook_root_dir",
         help="base directory to run playbooks from",
         required=True,
         )
-    config['parser'].add_argument(
+    group.add_argument(
         "--pre_run_playbooks",
         nargs='*',
         help="space separated list of ansible playbooks to run "
@@ -79,24 +75,26 @@ def add_common_args(**config):
 
 def add_logging_args(**config):
     """Add Logging args."""
-    config['parser'].add_argument(
+    group = config['parser'].add_argument_group(
+            'Logging')
+    group.add_argument(
         "--no-syslog",
         dest="syslog",
         action="store_false",
         help="disable logging to syslog"
         )
-    config['parser'].add_argument(
+    group.add_argument(
         "--syslogdevice",
         help="syslog device to use",
         default="/dev/log"
         )
-    config['parser'].add_argument(
+    group.add_argument(
         "--debug",
         dest="debug",
         action="store_true",
         help="print debugging info to logs"
         )
-    config['parser'].add_argument(
+    group.add_argument(
         "--ansible_log_path",
         help="path for ansible playbook logs",
         default="/var/log/ansible/playbook"
@@ -104,17 +102,19 @@ def add_logging_args(**config):
 
 def add_queue_args(**config):
     """Queue args."""
-    config['parser'].add_argument(
+    group = config['parser'].add_argument_group(
+            'Queues')
+    group.add_argument(
         "--prerun-queue",
         help="Name for prerun queue",
         default="prerun-dev"
         )
-    config['parser'].add_argument(
+    group.add_argument(
         "--playbook-queue",
         help="Name for playbook queue",
         default="playbooks-dev"
         )
-    config['parser'].add_argument(
+    group.add_argument(
         "--info-queue",
         help="Name for info queue",
         default="info-dev"
@@ -129,27 +129,29 @@ def add_daemon_args(**config):
     except TypeError:
         ansible_home = getcwd()
 
-    config['parser'].add_argument(
+    group = config['parser'].add_argument_group(
+            'Daemon')
+    group.add_argument(
         "--venv",
         help="python virtualenv to run ansible from",
         default=ansible_home
         )
-    config['parser'].add_argument(
+    group.add_argument(
         "--ssh_id",
         help="ssh id file to use",
         default=config["home"] + "/.ssh/id_rsa"
         )
-    config['parser'].add_argument(
+    group.add_argument(
         "--vault_password_file",
         help="vault password file",
         default=config["home"] + "/.vaultpw"
         )
-    config['parser'].add_argument(
+    group.add_argument(
         "--syntax_check_dir",
         help="Optional directory to search for *.yml and *.yaml files to "
              "syntax check when changes are detected"
         )
-    config['parser'].add_argument(
+    group.add_argument(
         "--inventories",
         "-i",
         nargs='*',
@@ -159,20 +161,20 @@ def add_daemon_args(**config):
              "will be the one that playbooks are run against if syntax "
              "checks pass"
         )
-    config['parser'].add_argument(
+    group.add_argument(
         "--ssh_askpass",
         help="location of a script to pass as SSH_ASKPASS env var,"
              "which will enable this program to load an ssh key if "
              "it has a passphrase. Only works if not running in a terminal"
         )
-    config['parser'].add_argument(
+    group.add_argument(
         "--concurrency",
         type=int,
         help="number of simultaneous processes to run,"
              "defaults to number of cpu reported by OS",
         default=cpu_count()
         )
-    config['parser'].add_argument(
+    group.add_argument(
         "--timeout",
         help="timeout in seconds before aborting playbooks",
         default=1800
@@ -180,19 +182,21 @@ def add_daemon_args(**config):
 
 def add_interface_args(**config):
     """Interface args."""
-    config['parser'].add_argument(
+    group = config['parser'].add_argument_group(
+            'Interface')
+    group.add_argument(
         "--messagelist_size",
         help="number of messages to display on homepage",
         type=int,
         default=4
         )
-    config['parser'].add_argument(
+    group.add_argument(
         "--git-pull",
         dest="gitpull",
         action="store_false",
         help="enable git pull functionality on playbook_root_dir"
         )
-    config['parser'].add_argument(
+    group.add_argument(
         "--repo_deploykey",
         help="ssh private key file for git pull operations"
         )
@@ -202,7 +206,6 @@ def parse_anmad_args(daemon=False, interface=False):
     config = init_argparser()
 
     # three groups that are used by both interface and daemon for now
-    add_common_args(**config)
     add_logging_args(**config)
     add_queue_args(**config)
 
@@ -217,6 +220,8 @@ def parse_anmad_args(daemon=False, interface=False):
         debug_str = 'Interface'
     else:
         debug_str = 'TEST'
+
+    add_other_args(**config)
 
     config['parser'].set_defaults(debug=False, syslog=True)
     myargs, unknown = config['parser'].parse_known_args()

@@ -41,19 +41,19 @@ def parse_args():
 
     return myargs
 
-def get_yaml_vault_data():
+def get_yaml_vault_data(args):
     """Gets data from vault and prints it."""
-    vault_pass_file = open(ARGS.vault_password_file, "r")
+    vault_pass_file = open(args.vault_password_file, "r")
     vault_password = vault_pass_file.read()
     vault = Vault(vault_password.rstrip())
-    vault_data = vault.load(open(ARGS.vaultfile).read())
-    myoutput = vault_data.get(ARGS.yaml_key)
+    vault_data = vault.load(open(args.vaultfile).read())
+    myoutput = vault_data.get(args.yaml_key)
     return myoutput
 
 def main():
     """ Main func. """
     args = parse_args()
-    output = get_yaml_vault_data()
+    output = get_yaml_vault_data(args)
     if output is not None:
         print(output)
         raise SystemExit(0)

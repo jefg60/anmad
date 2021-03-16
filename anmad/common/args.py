@@ -44,7 +44,8 @@ def init_argparser():
             "default_configfile": default_configfile,
             "alternate_configfile": alternate_configfile,
             "version": __version__,
-            "ansible_home": ansible_home)
+            "ansible_home": ansible_home,
+            }
     return output_dict
 
 def parse_anmad_args():

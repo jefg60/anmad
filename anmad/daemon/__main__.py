@@ -44,13 +44,13 @@ def start_daemon():
     logger.debug("playbook_root_dir: %s", str(args.playbook_root_dir))
 
     add_ssh_key_to_agent(logger, args.ssh_id, args.ssh_askpass)
-    daemon = {
+    daemon_obj = {
             "args": args,
             "queues": queues,
             "logger": logger,
             "multiobj": multiobj,
             }
-    return daemon
+    return daemon_obj
 
 def process_prerun_queue(daemon):
     """Process items in prerun queue."""
@@ -97,7 +97,7 @@ def main_daemon_loop(daemon):
             process_prerun_queue(daemon)
 
             if playbookjob[0] == 'restart_anmad_run':
-                restart_daemon()
+                restart_daemon(daemon)
 
             daemon['logger'].info('Running job from playqueue: %s', str(playbookjob))
             #Syntax check playbooks, or all playbooks in syntax_check_dir
@@ -123,5 +123,5 @@ def main_daemon_loop(daemon):
     daemon['logger'].warning("Stopped processing playbooks queue!")
 
 if __name__ == '__main__':
-    daemon = start_daemon()
-    main_daemon_loop(daemon)
+    the_daemon = start_daemon()
+    main_daemon_loop(the_daemon)

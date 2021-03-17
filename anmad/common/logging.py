@@ -42,12 +42,20 @@ def logsetup(args, name):
         logger.addHandler(sysloghandler)
 
     if args.cloudwatch:
+        prefix = "anmad"
+        group_name = f"{prefix}-{args.cloudwatch_log_group}"
+        stream_name = f"{prefix}-{args.cloudwatch_stream}"
+
         session = boto3.Session(
-            profile_name=args.aws_profile,
-            region_name=args.aws_region)
+            profile_name = args.aws_profile,
+            region_name = args.aws_region
+            )
+
         logger.addHandler(
             watchtower.CloudWatchLogHandler(
-                boto3_session=session
+                boto3_session = session,
+                log_group = group_name,
+                stream_name = stream_name,
                 )
             )
 

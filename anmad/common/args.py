@@ -121,10 +121,12 @@ def add_aws_args(**config):
     group.add_argument(
         "--cloudwatch-log-group",
         default="test",
+        help="will be prefixed with anmad-"
         )
     group.add_argument(
-        "--cloudwatch-stream-suffix",
+        "--cloudwatch-stream",
         default="test",
+        help="will be prefixed with anmad-"
         )
 
 def add_queue_args(**config):

@@ -7,6 +7,8 @@ if [ ! -d ~/venv ] ; then
     cd bats-core
     sudo ./install.sh /usr/local
     ln -s /vagrant/test/configtest.nodry.ini /home/vagrant/.anmad.conf
+    mkdir /home/vagrant/.aws/
+    ln -s /vagrant/test/credentials /home/vagrant/.aws/credentials
 fi
 
 ~/venv/bin/pip install -e /vagrant

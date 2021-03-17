@@ -42,7 +42,9 @@ def logsetup(args, name):
         logger.addHandler(sysloghandler)
 
     if args.cloudwatch:
-        session = boto3.Session(profile_name=args.aws_profile)
+        session = boto3.Session(
+            profile_name=args.aws_profile,
+            region_name=args.aws_region)
         logger.addHandler(
             watchtower.CloudWatchLogHandler(
                 boto3_session=session

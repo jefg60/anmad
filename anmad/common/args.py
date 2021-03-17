@@ -59,6 +59,11 @@ def add_other_args(**config):
         help="AWS profile to use"
         )
     group.add_argument(
+        "--aws-region",
+        default="us-east-1",
+        help="AWS region to use"
+        )
+    group.add_argument(
         "--playbooks",
         "-p",
         nargs='*',

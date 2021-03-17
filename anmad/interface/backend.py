@@ -36,6 +36,7 @@ def extraplays(prerun=None, **config):
 def service_status(service):
     """Check a service status."""
     servicestatus = subprocess.run(
+        #systemctl --property StateChangeTimestamp,ActiveState,SubState show <service>
         ['systemctl',
          '--property',
          'StateChangeTimestamp,ActiveState,SubState',
@@ -49,9 +50,10 @@ def service_status(service):
     lines = servicestatus.stdout.splitlines()
     active_state = lines[0].split("=", 1)[1]
     sub_state = lines[1].split("=", 1)[1]
-    if len(lines) > 2:
+    state_change = lines[2].split("=", 1)[1]
+    if state_change != '':
         state_change_time = strftime(TIME_FORMAT,
-            strptime(lines[2],'%a %Y-%m-%d %H:%M:%S %Z'))
+            strptime(state_change,'%a %Y-%m-%d %H:%M:%S %Z'))
     else:
         state_change_time = 'system boot'
     return {"service": service,

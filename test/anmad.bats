@@ -29,12 +29,6 @@ load test_helper
   [[ "$output" = *"usage"* ]]
 }
 
-@test "run without --debug using commandline args" {
-  run "$python" -m anmad.interface -p /vagrant/deploy.yaml /vagrant/deploy2.yaml -i /vagrant/samples/inventory-internal /vagrant/samples/inventory-internal --no-syslog --dry-run --playbook_root_dir /vagrant/samples
-  [[ "$output" != *"error"* ]]
-  [ "$status" -eq 0 ]
-}
-
 @test "run without --no-syslog but with --debug, using conf file" {
   run "$python" -m anmad.interface -c /vagrant/test/configtest.ini
   [[ "$output" != *"error"* ]]

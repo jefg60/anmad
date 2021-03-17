@@ -19,80 +19,140 @@ def init_argparser():
         }
     defaults["configfiles"].append(defaults["home"] + "/.anmad.conf")
 
-    try:
-        defaults["ansible_home"] = dirname(
-            dirname(which("ansible-playbook"))
-        )
-    except TypeError:
-        defaults["ansible_home"] = getcwd()
-
-    # This is here so we see if we are re-parsing args unecessarily
-    # It should only print once per module import / invocation
-    print(f"ANMAD: Parsing args, trying config files {defaults['configfiles']}")
-
-    defaults["parser"] = configargparse.ArgParser(
-        default_config_files=defaults["configfiles"],
+    parser = configargparse.ArgParser(
+        default_config_files=[
+            default_configfile,
+            alternate_configfile
+            ],
         formatter_class=configargparse.ArgumentDefaultsHelpFormatter
         )
-    return defaults
+    output_dict = {
+            "parser": parser,
+            "home": home,
+            "default_configfile": default_configfile,
+            "alternate_configfile": alternate_configfile,
+            "version": __version__,
+            }
+    return output_dict
 
-def parse_anmad_args():
-    """Read arguments from command line or config file."""
-    defaults = init_argparser()
-    parser = defaults["parser"]
-    parser.add_argument(
+def add_other_args(**config):
+    """Args used by daemon AND interface."""
+    group = config['parser'].add_argument_group(
+            'Other')
+    group.add_argument(
         "-v",
         "-V",
         "--version",
         action="version",
-        version=anmadver.VERSION
+        version=config["version"]
         )
-    parser.add_argument(
+    group.add_argument(
         "-c",
         "--configfile",
         is_config_file=True,
-        help=f"override default config files {defaults['configfiles']}"
+        help="override default config files ("
+            + config['default_configfile'] + ","
+            + config['alternate_configfile'] + ")"
         )
-    parser.add_argument(
-        "--venv",
-        help="python virtualenv to run ansible from",
-        default=defaults["ansible_home"]
-        )
-    parser.add_argument(
-        "--ssh-id",
-        help="ssh id file to use",
-        default=defaults["home"] + "/.ssh/id_rsa"
-        )
-    parser.add_argument(
-        "--vault-password-file",
-        help="vault password file",
-        default=defaults["home"] + "/.vaultpw"
-        )
-    parser.add_argument(
-        "--syntax-check-dir",
-        help="Optional directory to search for *.yml and *.yaml files to "
-             "syntax check when changes are detected"
-        )
-    parser.add_argument(
+    group.add_argument(
         "--playbooks",
         "-p",
         nargs='*',
         required=True,
         help="space separated list of ansible playbooks to run. "
         )
-    parser.add_argument(
+    group.add_argument(
         "--playbook-root-dir",
         help="base directory to run playbooks from",
         required=True,
         )
-    parser.add_argument(
+    group.add_argument(
         "--pre-run-playbooks",
         nargs='*',
         help="space separated list of ansible playbooks to run "
              "before doing any syntax checking. Useful "
              "for playbooks that fetch roles required by other playbooks"
         )
-    parser.add_argument(
+
+def add_logging_args(**config):
+    """Add Logging args."""
+    group = config['parser'].add_argument_group(
+            'Logging')
+    group.add_argument(
+        "--no-syslog",
+        dest="syslog",
+        action="store_false",
+        help="disable logging to syslog"
+        )
+    group.add_argument(
+        "--syslogdevice",
+        help="syslog device to use",
+        default="/dev/log"
+        )
+    group.add_argument(
+        "--debug",
+        dest="debug",
+        action="store_true",
+        help="print debugging info to logs"
+        )
+    group.add_argument(
+        "--ansible-log-path",
+        help="path for ansible playbook logs",
+        default="/var/log/ansible/playbook"
+        )
+
+def add_queue_args(**config):
+    """Queue args."""
+    group = config['parser'].add_argument_group(
+            'Queues')
+    group.add_argument(
+        "--prerun-queue",
+        help="Name for prerun queue",
+        default="prerun-dev"
+        )
+    group.add_argument(
+        "--playbook-queue",
+        help="Name for playbook queue",
+        default="playbooks-dev"
+        )
+    group.add_argument(
+        "--info-queue",
+        help="Name for info queue",
+        default="info-dev"
+        )
+
+def add_daemon_args(**config):
+    """Anmad daemon args."""
+    try:
+        ansible_home = dirname(
+            dirname(which("ansible-playbook"))
+        )
+    except TypeError:
+        ansible_home = getcwd()
+
+    group = config['parser'].add_argument_group(
+            'Daemon')
+    group.add_argument(
+        "--venv",
+        help="python virtualenv to run ansible from",
+        default=ansible_home
+        )
+    group.add_argument(
+        "--ssh-id",
+        help="ssh id file to use",
+        default=config["home"] + "/.ssh/id_rsa"
+        )
+    group.add_argument(
+        "--vault-password-file",
+        help="vault password file",
+        default=config["home"] + "/.vaultpw"
+        )
+    group.add_argument(
+        "--syntax-check-dir",
+        help="Optional directory to search for *.yml and *.yaml files to "
+             "syntax check when changes are detected"
+        )
+    group.add_argument(
         "--inventories",
         "-i",
         nargs='*',
@@ -102,101 +162,80 @@ def parse_anmad_args():
              "will be the one that playbooks are run against if syntax "
              "checks pass"
         )
-    parser.add_argument(
+    group.add_argument(
         "--ssh-askpass",
         help="location of a script to pass as SSH_ASKPASS env var,"
              "which will enable this program to load an ssh key if "
              "it has a passphrase. Only works if not running in a terminal"
         )
-    parser.add_argument(
-        "--no-syslog",
-        dest="syslog",
-        action="store_false",
-        help="disable logging to syslog"
-        )
-    parser.add_argument(
-        "--syslogdevice",
-        help="syslog device to use",
-        default="/dev/log"
-        )
-    parser.add_argument(
-        "--dry-run",
-        dest="dryrun",
-        action="store_true",
-        help="only wait for one --interval, for testing"
-        )
-    parser.add_argument(
-        "--debug",
-        dest="debug",
-        action="store_true",
-        help="print debugging info to logs"
-        )
-    parser.add_argument(
+    group.add_argument(
         "--concurrency",
         type=int,
         help="number of simultaneous processes to run,"
              "defaults to number of cpu reported by OS",
         default=cpu_count()
         )
-    parser.add_argument(
+    group.add_argument(
         "--timeout",
         help="timeout in seconds before aborting playbooks",
         default=1800
         )
-    parser.add_argument(
+
+def add_interface_args(**config):
+    """Interface args."""
+    group = config['parser'].add_argument_group(
+            'Interface')
+    group.add_argument(
         "--messagelist-size",
         help="number of messages to display on homepage",
         type=int,
         default=4
         )
-    parser.add_argument(
+    group.add_argument(
         "--git-pull",
         dest="gitpull",
         action="store_false",
         help="enable git pull functionality on playbook_root_dir"
         )
-    parser.add_argument(
+    group.add_argument(
         "--repo-deploykey",
         help="ssh private key file for git pull operations"
         )
-    parser.add_argument(
-        "--ansible-log-path",
-        help="path for ansible playbook logs",
-        default="/var/log/ansible/playbook"
-        )
-    parser.add_argument(
-        "--prerun-queue",
-        help="Name for prerun queue",
-        default="prerun-dev"
-        )
-    parser.add_argument(
-        "--playbook-queue",
-        help="Name for playbook queue",
-        default="playbooks-dev"
-        )
-    parser.add_argument(
-        "--info-queue",
-        help="Name for info queue",
-        default="info-dev"
-        )
-    parser.add_argument(
-        "--queue-type",
-        help="Type of queues to use",
-        choices=["sqs", "localredis"],
-        default="localredis"
-        )
-    parser.add_argument(
-        "--aws-profile",
-        help="aws profile to use",
-        )
 
-    parser.set_defaults(debug=False, syslog=True, dryrun=False)
-    myargs, unknown = parser.parse_known_args()
+def parse_anmad_args(daemon=False, interface=False):
+    """Read arguments from command line or config file."""
+    config = init_argparser()
+
+    # three groups that are used by both interface and daemon for now
+    add_logging_args(**config)
+    add_queue_args(**config)
+
+    if daemon and interface:
+        raise ValueError(
+            "call parse_anmad_args with either daemon=True or interface=True, never both")
+    if daemon:
+        add_daemon_args(**config)
+        debug_str = 'Daemon'
+    elif interface:
+        add_interface_args(**config)
+        debug_str = 'Interface'
+    else:
+        debug_str = 'TEST'
+
+    add_other_args(**config)
+
+    config['parser'].set_defaults(debug=False, syslog=True)
+    myargs, unknown = config['parser'].parse_known_args()
     if len(unknown) > 0:
-        print('ANMAD: Ignoring unknown args: ' + str(unknown))
+        print(f"ANMAD {debug_str}: Ignoring unknown args: {str(unknown)}")
     # filter list args to remove empty strings that may have been passed from
-    # the config file
-    myargs.inventories = list(filter(None, myargs.inventories))
+    # the config file (if we have parsed --inventories - not done for interface)
+    if daemon:
+        myargs.inventories = list(filter(None, myargs.inventories))
+        # First inventory is the one that plays run against
+        myargs.maininventory = abspath(myargs.inventories[0])
+        myargs.ansible_playbook_cmd = myargs.venv + '/bin/ansible-playbook'
+
     myargs.playbooks = list(filter(None, myargs.playbooks))
     myargs.prerun_list = None
 
@@ -208,10 +247,8 @@ def parse_anmad_args():
     myargs.run_list = prepend_rootdir(
         myargs.playbook_root_dir, myargs.playbooks)
 
-    # First inventory is the one that plays run against
-    myargs.maininventory = abspath(myargs.inventories[0])
-    myargs.ansible_playbook_cmd = myargs.venv + '/bin/ansible-playbook'
-    myargs.default_configfile = defaults['configfiles']
-    myargs.version = anmadver.VERSION
+    myargs.default_configfile = config["default_configfile"]
+    myargs.alternate_configfile = config["alternate_configfile"]
+    myargs.version = config["version"]
 
     return myargs

@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""Fetches a single YAML value from an ansible vault file, and prints it.
-"""
+"""Fetches a single YAML value from an ansible vault file, and prints it."""
 
 import argparse
 from os.path import expanduser
@@ -41,22 +40,25 @@ def parse_args():
 
     return myargs
 
-def get_yaml_vault_data():
+def get_yaml_vault_data(args):
     """Gets data from vault and prints it."""
-    vault_pass_file = open(ARGS.vault_password_file, "r")
+    vault_pass_file = open(args.vault_password_file, "r")
     vault_password = vault_pass_file.read()
     vault = Vault(vault_password.rstrip())
-    vault_data = vault.load(open(ARGS.vaultfile).read())
-    myoutput = vault_data.get(ARGS.yaml_key)
+    vault_data = vault.load(open(args.vaultfile).read())
+    myoutput = vault_data.get(args.yaml_key)
     return myoutput
 
-if __name__ == '__main__':
-
-    ARGS = parse_args()
-    OUTPUT = get_yaml_vault_data()
-    if OUTPUT is not None:
-        print(OUTPUT)
+def main():
+    """ Main func. """
+    args = parse_args()
+    output = get_yaml_vault_data(args)
+    if output is not None:
+        print(output)
         raise SystemExit(0)
 
-    print("ERROR: no data found in yaml key", ARGS.yaml_key)
+    print("ERROR: no data found in yaml key", args.yaml_key)
     raise SystemExit(1)
+
+if __name__ == '__main__':
+    main()

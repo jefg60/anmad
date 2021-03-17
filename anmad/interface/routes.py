@@ -16,7 +16,7 @@ import anmad.api.backend as apibackend
 import anmad.common.version as anmadver
 
 config = {
-    "args": parse_anmad_args(),
+    "args": parse_anmad_args(interface=True),
     "version": anmadver.VERSION,
     "hostname": getfqdn(),
     "baseurl": "/",

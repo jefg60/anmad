@@ -2,6 +2,8 @@
 import logging
 import logging.handlers
 
+import watchtower
+
 import anmad.common.queues as anmadqueues
 
 class AnmadInfoHandler(logging.handlers.QueueHandler):
@@ -37,6 +39,9 @@ def logsetup(args, name):
             facility='local3')
         sysloghandler.setFormatter(syslog_formatter)
         logger.addHandler(sysloghandler)
+
+    if args.cloudwatch:
+        logger.addHandler(watchtower.CloudWatchLogHandler())
 
     # create consolehandler if debug mode
     if args.debug:

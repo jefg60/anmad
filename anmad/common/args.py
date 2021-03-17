@@ -54,6 +54,11 @@ def add_other_args(**config):
             + config['alternate_configfile'] + ")"
         )
     group.add_argument(
+        "-aws-profile",
+        default="default",
+        help="AWS profile to use"
+        )
+    group.add_argument(
         "--playbooks",
         "-p",
         nargs='*',

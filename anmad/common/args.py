@@ -216,7 +216,7 @@ def parse_anmad_args(daemon=False, interface=False):
     """Read arguments from command line or config file."""
     config = init_argparser()
 
-    # three groups that are used by both interface and daemon for now
+    # groups that are used by both interface and daemon for now
     add_logging_args(**config)
     add_queue_args(**config)
 
@@ -232,12 +232,16 @@ def parse_anmad_args(daemon=False, interface=False):
     else:
         debug_str = 'TEST'
 
+    #another one used by daemon and interface, but put it after the specific ones
     add_other_args(**config)
 
     config['parser'].set_defaults(debug=False, syslog=True)
+
     myargs, unknown = config['parser'].parse_known_args()
+
     if len(unknown) > 0:
         print(f"ANMAD {debug_str}: Ignoring unknown args: {str(unknown)}")
+
     # filter list args to remove empty strings that may have been passed from
     # the config file (if we have parsed --inventories - not done for interface)
     if daemon:

@@ -54,16 +54,6 @@ def add_other_args(**config):
             + config['alternate_configfile'] + ")"
         )
     group.add_argument(
-        "--aws-profile",
-        default="default",
-        help="AWS profile to use"
-        )
-    group.add_argument(
-        "--aws-region",
-        default="us-east-1",
-        help="AWS region to use"
-        )
-    group.add_argument(
         "--playbooks",
         "-p",
         nargs='*',
@@ -114,6 +104,27 @@ def add_logging_args(**config):
         "--ansible-log-path",
         help="path for ansible playbook logs",
         default="/var/log/ansible/playbook"
+        )
+
+def add_aws_args(**config):
+    """Add AWS args."""
+    group = config['parser'].add_argument_group(
+            'AWS')
+    group.add_argument(
+        "--aws-profile",
+        default="default",
+        )
+    group.add_argument(
+        "--aws-region",
+        default="us-east-1",
+        )
+    group.add_argument(
+        "--cloudwatch-log-group",
+        default="test",
+        )
+    group.add_argument(
+        "--cloudwatch-stream-suffix",
+        default="test",
         )
 
 def add_queue_args(**config):
@@ -224,6 +235,7 @@ def parse_anmad_args(daemon=False, interface=False):
     # groups that are used by both interface and daemon for now
     add_logging_args(**config)
     add_queue_args(**config)
+    add_aws_args(**config)
 
     if daemon and interface:
         raise ValueError(

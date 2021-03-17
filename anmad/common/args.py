@@ -54,7 +54,7 @@ def add_other_args(**config):
             + config['alternate_configfile'] + ")"
         )
     group.add_argument(
-        "-aws-profile",
+        "--aws-profile",
         default="default",
         help="AWS profile to use"
         )

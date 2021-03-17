@@ -12,12 +12,11 @@ def prepend_rootdir(myrootdir, mylist):
     return ret
 
 def init_argparser():
-    """Create an argument parser and some other vars, return as dict"""
-    defaults = {
-        "home": expanduser("~"),
-        "configfiles": ["/etc/anmad.conf",]
-        }
-    defaults["configfiles"].append(defaults["home"] + "/.anmad.conf")
+    """Create an argument parser"""
+    home = expanduser("~")
+    default_configfile = '/etc/anmad.conf'
+    alternate_configfile = home + '/.anmad.conf'
+    __version__ = anmadver.VERSION
 
     parser = configargparse.ArgParser(
         default_config_files=[

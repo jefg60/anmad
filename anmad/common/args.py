@@ -94,6 +94,12 @@ def add_logging_args(**config):
         default="/dev/log"
         )
     group.add_argument(
+        "--cloudwatch",
+        dest="cloudwatch",
+        action="store_true",
+        help="log to aws cloudwatch"
+        )
+    group.add_argument(
         "--debug",
         dest="debug",
         action="store_true",

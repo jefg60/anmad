@@ -61,12 +61,12 @@ def add_other_args(**config):
         help="space separated list of ansible playbooks to run. "
         )
     group.add_argument(
-        "--playbook_root_dir",
+        "--playbook-root-dir",
         help="base directory to run playbooks from",
         required=True,
         )
     group.add_argument(
-        "--pre_run_playbooks",
+        "--pre-run-playbooks",
         nargs='*',
         help="space separated list of ansible playbooks to run "
              "before doing any syntax checking. Useful "
@@ -95,7 +95,7 @@ def add_logging_args(**config):
         help="print debugging info to logs"
         )
     group.add_argument(
-        "--ansible_log_path",
+        "--ansible-log-path",
         help="path for ansible playbook logs",
         default="/var/log/ansible/playbook"
         )
@@ -137,17 +137,17 @@ def add_daemon_args(**config):
         default=ansible_home
         )
     group.add_argument(
-        "--ssh_id",
+        "--ssh-id",
         help="ssh id file to use",
         default=config["home"] + "/.ssh/id_rsa"
         )
     group.add_argument(
-        "--vault_password_file",
+        "--vault-password-file",
         help="vault password file",
         default=config["home"] + "/.vaultpw"
         )
     group.add_argument(
-        "--syntax_check_dir",
+        "--syntax-check-dir",
         help="Optional directory to search for *.yml and *.yaml files to "
              "syntax check when changes are detected"
         )
@@ -162,7 +162,7 @@ def add_daemon_args(**config):
              "checks pass"
         )
     group.add_argument(
-        "--ssh_askpass",
+        "--ssh-askpass",
         help="location of a script to pass as SSH_ASKPASS env var,"
              "which will enable this program to load an ssh key if "
              "it has a passphrase. Only works if not running in a terminal"
@@ -185,7 +185,7 @@ def add_interface_args(**config):
     group = config['parser'].add_argument_group(
             'Interface')
     group.add_argument(
-        "--messagelist_size",
+        "--messagelist-size",
         help="number of messages to display on homepage",
         type=int,
         default=4
@@ -197,7 +197,7 @@ def add_interface_args(**config):
         help="enable git pull functionality on playbook_root_dir"
         )
     group.add_argument(
-        "--repo_deploykey",
+        "--repo-deploykey",
         help="ssh private key file for git pull operations"
         )
 

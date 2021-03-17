@@ -23,6 +23,7 @@ setup(
         'requests',
         'ssh_agent_setup',
         'gitpython',
+        'watchtower',
         ],
     packages=find_packages()
     )

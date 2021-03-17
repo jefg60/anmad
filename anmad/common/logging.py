@@ -3,6 +3,7 @@ import logging
 import logging.handlers
 
 import watchtower
+import boto3
 
 import anmad.common.queues as anmadqueues
 
@@ -41,7 +42,12 @@ def logsetup(args, name):
         logger.addHandler(sysloghandler)
 
     if args.cloudwatch:
-        logger.addHandler(watchtower.CloudWatchLogHandler())
+        session = boto3.Session(profile_name=args.aws_profile)
+        logger.addHandler(
+            watchtower.CloudWatchLogHandler(
+                boto3_session=session
+                )
+            )
 
     # create consolehandler if debug mode
     if args.debug:

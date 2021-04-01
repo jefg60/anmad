@@ -44,7 +44,7 @@ def logsetup(args, name):
     if args.cloudwatch:
         prefix = "anmad"
         group_name = f"{prefix}-{args.cloudwatch_log_group}"
-        stream_name = f"{prefix}-{args.cloudwatch_stream}"
+        #stream_name = f"{prefix}-{args.cloudwatch_stream}"
 
         session = boto3.Session(
             profile_name = args.aws_profile,
@@ -55,7 +55,6 @@ def logsetup(args, name):
             watchtower.CloudWatchLogHandler(
                 boto3_session = session,
                 log_group = group_name,
-                stream_name = stream_name,
                 )
             )
 
